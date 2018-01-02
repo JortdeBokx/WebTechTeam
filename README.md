@@ -2,7 +2,7 @@
 The team assignment for webtech
 How to start the development server:
 - Make sure you are running Python 3.6.x
-- Make sure you installed flask by typing 'pip install flask'
+- Make sure you installed all required packages by running `pip install -r requirements.txt`
 - Open CMD/Bash console
 - cd into 'Markis'
 - type 'pyhton app.py'
