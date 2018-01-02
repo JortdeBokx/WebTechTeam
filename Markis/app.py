@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, BooleanField, validators
 from passlib.hash import sha256_crypt
+=======
+from flask import Flask, render_template, send_from_directory
+>>>>>>> d68d85e3f1f0e5713264b054e267b6f1f8224da9
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def home():
@@ -44,6 +48,20 @@ class loginForm(Form):
 	username = StringField("Username", [validators.Length(min=3, max=35)])
 	password = PasswordField("Password", [validators.Length(min=8, max=64)])
 	keepLoggedIn = BooleanField("Keep logged in?")
+
+#############################################
+#			Paths to static Files			#
+#############################################
+
+@app.route('/css/<path:filename>')
+def css(filename):
+	return send_from_directory('css',
+                               filename)
+@app.route('/js/<path:filename>')
+def javascript(filename):
+	return send_from_directory('js',
+                               filename)
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
