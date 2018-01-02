@@ -1,0 +1,4 @@
+"flask",
+"passlib",
+"flask-wtf",
+"flask-mysqldb"

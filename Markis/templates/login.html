@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 {% block body %}
- <div class="starter-template">
-        <h1>Log in</h1>
+<h1>Log in</h1>
+    {% from 'includes/_formhelper.html' import render_field %}
+    <form method="POST" action="">
+    	<div class="form-group">
+    		{{render_field(form.username, class_="form-control")}}
+    	</div>
+    	<div class="form-group">
+    		{{render_field(form.password, class_="form-control")}}
+    	</div>
+    	<div class="form-group">
+    		{{render_field(form.keepLoggedIn)}}
+    	</div>
+    	<button type="submit" value="Log in" class="btn btn-primary">Log in</button>
+    </form>
 {% endblock %}

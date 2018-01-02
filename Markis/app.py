@@ -1,4 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask_mysqldb import MySQL
+from wtforms import Form, StringField, TextAreaField, PasswordField, BooleanField, validators
+from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
@@ -10,13 +13,37 @@ def home():
 def about():
 	return render_template('about.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-	return render_template('register.html')
+	form = registerForm(request.form)
+	if request.method == 'POST' and form.validate():
+		return "Done"
+	else:
+		return render_template('register.html', form=form)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-	return render_template('login.html')
+	form = loginForm(request.form)
+	if request.method == 'POST' and form.validate():
+		return "Logged in"
+	else:
+		return render_template('login.html', form=form)
+
+class registerForm(Form):
+	firstname = StringField("First Name", [validators.Length(min=1, max=20)])
+	lastname = StringField("Last Name", [validators.Length(min=1, max=20)])
+	email = StringField("E-mail", [validators.Email(message="Please enter a valid email address")])
+	username = StringField("Username", [validators.Length(min=3, max=35)])
+	password = PasswordField("Password", [validators.Length(min=8, max=64)])
+	password2 = PasswordField("Confirm Password", [
+		validators.Length(min=8, max=64),
+		validators.EqualTo('password', message="Both passwords need to match!")
+	])
+
+class loginForm(Form):
+	username = StringField("Username", [validators.Length(min=3, max=35)])
+	password = PasswordField("Password", [validators.Length(min=8, max=64)])
+	keepLoggedIn = BooleanField("Keep logged in?")
 
 if __name__ == '__main__':
 	app.run(debug=True)
