@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask import Flask, render_template, flash, redirect, url_for, session, logging, request, send_from_directory
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, BooleanField, validators
 from passlib.hash import sha256_crypt
-=======
-from flask import Flask, render_template, send_from_directory
->>>>>>> d68d85e3f1f0e5713264b054e267b6f1f8224da9
 
 app = Flask(__name__, static_url_path='/static')
 
