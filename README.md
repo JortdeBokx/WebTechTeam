@@ -5,5 +5,5 @@ How to start the development server:
 - Make sure you installed all required packages by running `pip install -r requirements.txt`
 - Open CMD/Bash console
 - cd into 'Markis'
-- type 'pyhton app.py'
+- type `pyhton app.py`
 - If successful open webbrowser at http://localhost:5000
