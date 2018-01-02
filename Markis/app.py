@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def home():
@@ -17,6 +17,20 @@ def register():
 @app.route('/login')
 def login():
 	return render_template('login.html')
+
+#############################################
+#			Paths to static Files			#
+#############################################
+
+@app.route('/css/<path:filename>')
+def css(filename):
+	return send_from_directory('css',
+                               filename)
+@app.route('/js/<path:filename>')
+def javascript(filename):
+	return send_from_directory('js',
+                               filename)
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
