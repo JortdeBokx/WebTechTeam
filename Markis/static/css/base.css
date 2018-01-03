@@ -10,3 +10,9 @@ body {
 nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
 	background-color: #850028 !important;
 }
+
+button.btn.btn-primary-red {
+	background-color: #850028;
+	border-color: #850028;
+	color: #FFF;
+}

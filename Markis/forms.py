@@ -14,4 +14,4 @@ class registerForm(Form):
 class loginForm(Form):
 	username = StringField("Username", [validators.Length(min=3, max=35)])
 	password = PasswordField("Password", [validators.Length(min=8, max=64)])
-	keepLoggedIn = BooleanField("Keep logged in?")
+	keepLoggedIn = BooleanField("")

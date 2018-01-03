@@ -10,8 +10,12 @@
     		{{render_field(form.password, class_="form-control")}}
     	</div>
     	<div class="form-group">
-    		{{render_field(form.keepLoggedIn)}}
+                <label class="custom-control custom-checkbox">
+                {{render_field(form.keepLoggedIn, class_="custom-control-input")}}
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Keep me logged in?</span>
+            </label>
     	</div>
-    	<button type="submit" value="Log in" class="btn btn-primary">Log in</button>
+    	<button type="submit" value="Log in" class="btn btn-primary-red">Log in</button>
     </form>
 {% endblock %}
