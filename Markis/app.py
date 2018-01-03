@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 
-from Markis.forms import registerForm, loginForm
+from forms import registerForm, loginForm
 
 app = Flask(__name__, static_url_path='/static')
 
