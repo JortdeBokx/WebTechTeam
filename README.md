@@ -6,4 +6,4 @@ How to start the development server:
 - Open CMD/Bash console
 - cd into 'Markis'
 - type `pyhton app.py`
-- If successful open webbrowser at http://localhost:5000
+- If successful open webbrowser at <http://localhost:5000>

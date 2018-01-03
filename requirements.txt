@@ -2,3 +2,4 @@
 "passlib",
 "flask-wtf",
 "flask-mysqldb"
+"Flask-SQLAlchemy"

@@ -1,8 +1,13 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request, send_from_directory
-from flask_mysqldb import MySQL
-from passlib.hash import sha256_crypt
-from forms import registerForm, loginForm
+from flask import Flask, render_template, request, send_from_directory
+
+from Markis.forms import registerForm, loginForm
+
 app = Flask(__name__, static_url_path='/static')
+
+
+#############################################
+#				App routes					#
+#############################################
 
 @app.route('/')
 def home():
