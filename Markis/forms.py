@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, TextAreaField, PasswordField, BooleanField, validators
+from wtforms import Form, StringField, PasswordField, BooleanField, validators
 
 class registerForm(Form):
 	firstname = StringField("First Name", [validators.Length(min=1, max=20)])
@@ -10,7 +10,6 @@ class registerForm(Form):
 		validators.Length(min=8, max=64),
 		validators.EqualTo('password', message="Both passwords need to match!")
 	])
-
 class loginForm(Form):
 	username = StringField("Username", [validators.Length(min=3, max=35)])
 	password = PasswordField("Password", [validators.Length(min=8, max=64)])
