@@ -1,10 +1,16 @@
 from flask import Flask, render_template, request, send_from_directory
-
+from flask_mysqldb import MySQL
 from forms import registerForm, loginForm
 
 app = Flask(__name__, static_url_path='/static')
 
 
+app.config['MYSQL_HOST'] = 'cs-students.nl'
+app.config['MYSQL_USER'] = 'markis'
+app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql = MySQL(app)
 #############################################
 #				App routes					#
 #############################################
