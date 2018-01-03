@@ -6,3 +6,7 @@ body {
   padding: 3rem 1.5rem;
   text-align: center;
 }
+
+nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
+	background-color: #850028 !important;
+}
