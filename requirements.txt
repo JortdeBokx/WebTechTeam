@@ -1,5 +1,5 @@
-"flask",
-"passlib",
-"flask-wtf",
-"flask-mysqldb"
-"Flask-SQLAlchemy"
+flask
+passlib
+flask-wtf
+flask-mysqldb
+Flask-SQLAlchemy
