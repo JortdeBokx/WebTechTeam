@@ -40,7 +40,12 @@ login_manager.login_message = "You need to be logged in to view this page!"
 
 @app.route('/')
 def home():
-	return render_template('home.html')
+	# Get subjects from Database
+	conn = mysql.connection
+	cur = conn.cursor()
+	cur.execute("""SELECT subject_id, subject_name FROM subjects WHERE 1 """)
+	rv = cur.fetchall()
+	return render_template('home.html', subjects=rv)
 
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
