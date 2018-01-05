@@ -14,57 +14,27 @@
   </div>
   <div class="search-bar">
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search subject (name/code)">
-      <button class="btn btn-primary-search my-2 my-sm-0 search-button" type="submit">Search</button>
+      <input id="search-subject" class="form-control mr-sm-2" type="text" placeholder="Search subject (name/code)">
+      <button class="btn btn-primary-search my-2 my-sm-0 search-button" type="button">Search</button>
     </form>
   </div>
  </div>
  <hr />
  <div class="content">
    <div class="card-deck">
+     {% for subject in subjects %}
     <div class="card">
-      <div class="card-block">
-        <h4 class="card-title">2ID60</h4>
-        <p class="card-text">Web Technology</p>
-        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-block">
-        <h4 class="card-title">2ID60</h4>
-        <p class="card-text">Web Technology</p>
-        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-block">
-        <h4 class="card-title">2ID60</h4>
-        <p class="card-text">Web Technology</p>
-        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
-      </div>
-    </div>
-  </div>
-  <div class="card-deck">
-   <div class="card">
-     <div class="card-block">
-       <h4 class="card-title">2ID60</h4>
-       <p class="card-text">Web Technology</p>
-       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+       <div class="card-block">
+         <h4 class="card-title">{{subject.subject_id}}</h4>
+         <p class="card-text">{{subject.subject_name}}</p>
+         <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+       </div>
      </div>
-   </div>
-   <div class="card">
-     <div class="card-block">
-       <h4 class="card-title">2ID60</h4>
-       <p class="card-text">Web Technology</p>
-       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
-     </div>
-   </div>
-   <div class="card">
-     <div class="card-block">
-       <h4 class="card-title">2ID60</h4>
-       <p class="card-text">Web Technology</p>
-       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
-     </div>
+         {% if loop.index % 3 == 0 and loop.index != 0 %}
+                 </div>
+                 <div class="card-deck">
+         {% endif %}
+     {% endfor %}
    </div>
  </div>
  <hr />
