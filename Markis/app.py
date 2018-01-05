@@ -1,27 +1,40 @@
+#############################################
+#				Imports 					#
+#############################################
+
+import os
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, Response
-from flask_mysqldb import MySQL
-from passlib.hash import sha256_crypt
 from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_mysqldb import MySQL
 from forms import registerForm, loginForm
+from passlib.hash import sha256_crypt
 from urllib.parse import urlparse, urljoin
+from werkzeug.utils import secure_filename
+
+#############################################
+#				Imports 					#
+#############################################
 
 app = Flask(__name__, static_url_path='/static')
-login_manager = LoginManager()
+
+UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put your upload folder here, used by drag&drop upload
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['MYSQL_HOST'] = 'cs-students.nl'
 app.config['MYSQL_USER'] = 'markis'
 app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
 app.config['MYSQL_DB'] = 'markis'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
-app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHVH5667HkmFxdxAjhb5Eub'
-
-mysql = MySQL(app)
-login_manager.init_app(app)
-
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
 
 login_manager.login_view = "login"
 login_manager.login_message = "You need to be logged in to view this page!"
+
+mysql = MySQL(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 #############################################
 #				App routes					#
 #############################################
@@ -29,6 +42,27 @@ login_manager.login_message = "You need to be logged in to view this page!"
 @app.route('/')
 def home():
 	return render_template('home.html')
+
+@app.route('/uploadfile', methods=["GET", "POST"])
+def uploadFile():
+	if request.method == "POST":
+		if 'file' not in request.files:
+			flash('No selected items')
+			return "Err"
+		file = request.files['file']
+		if file.filename == '':
+			flash('No file selected')
+			return "Err"
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+			return redirect(url_for('uploaded_file',
+												filename=filename))
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+		return send_from_directory(app.config['UPLOAD_FOLDER'],
+								filename)
 
 @app.route('/about')
 @login_required
@@ -102,6 +136,10 @@ def javascript(filename):
 	return send_from_directory('js',
                                filename)
 
+#############################################
+#			   Helper Functions 			#
+#############################################
+
 @login_manager.user_loader
 def load_user(userid):
     return User(userid)
@@ -111,6 +149,10 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
+
+def allowed_file(filename):
+		return '.' in filename and \
+		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class User:
 	def __init__(self, uid):
@@ -144,6 +186,10 @@ class User:
 
 	def returnUsername(self):
 		return self.username
+
+#############################################
+#   Fasten your seatbelts, here we go! 		#
+#############################################
 
 if __name__ == '__main__':
 	app.run(debug=True)
