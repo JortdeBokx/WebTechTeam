@@ -17,6 +17,12 @@ button.btn.btn-primary-red {
 	color: #FFF;
 }
 
+button.btn.btn-primary-search {
+  background-color: #0460bd;
+  border-color: #0460bd;
+  color: #FFF;
+}
+
 div.nav-item-border {
   width: 1px;
   height: 25px;
@@ -41,8 +47,12 @@ input.form-control {
   width: 230px !important;
 }
 
-button .search-button {
+button {
   cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
 }
 
 div.card-deck {
@@ -54,7 +64,7 @@ div.card {
 }
 
 div.card:hover {
-  background-color: #d14e76;
+  background-color: #e7e3e3;
   cursor: pointer;
 }
 
