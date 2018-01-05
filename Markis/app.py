@@ -28,12 +28,11 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
 
-login_manager.login_view = "login"
-login_manager.login_message = "You need to be logged in to view this page!"
-
 mysql = MySQL(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
+login_manager.login_message = "You need to be logged in to view this page!"
 
 #############################################
 #				App routes					#
