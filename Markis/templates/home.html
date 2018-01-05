@@ -1,7 +1,72 @@
 {% extends 'base.html' %}
 {% block body %}
- <div class="starter-template">
-    <h1>Bootstrap starter template</h1>
-    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-</div>
+ <div class="home-information">
+   <div class="dropdown faculties">
+     <span>Faculties:</span>
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      All
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="/">Mathematics and Computer Science</a>
+      <a class="dropdown-item" href="/">Mechanical Engineering</a>
+      <a class="dropdown-item" href="/">Applied Physics</a>
+    </div>
+  </div>
+  <div class="search-bar">
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search subject (name/code)">
+      <button class="btn btn-primary-red my-2 my-sm-0 search-button" type="submit">Search</button>
+    </form>
+  </div>
+ </div>
+ <hr />
+ <div class="content">
+   <div class="card-deck">
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">2ID60</h4>
+        <p class="card-text">Web Technology</p>
+        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">2ID60</h4>
+        <p class="card-text">Web Technology</p>
+        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-block">
+        <h4 class="card-title">2ID60</h4>
+        <p class="card-text">Web Technology</p>
+        <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+      </div>
+    </div>
+  </div>
+  <div class="card-deck">
+   <div class="card">
+     <div class="card-block">
+       <h4 class="card-title">2ID60</h4>
+       <p class="card-text">Web Technology</p>
+       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+     </div>
+   </div>
+   <div class="card">
+     <div class="card-block">
+       <h4 class="card-title">2ID60</h4>
+       <p class="card-text">Web Technology</p>
+       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+     </div>
+   </div>
+   <div class="card">
+     <div class="card-block">
+       <h4 class="card-title">2ID60</h4>
+       <p class="card-text">Web Technology</p>
+       <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+     </div>
+   </div>
+ </div>
+ <hr />
+ </div>
 {% endblock %}
