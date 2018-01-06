@@ -84,6 +84,28 @@ div.card-block {
   top: 4px;
 }
 
+form {
+  margin: 25px auto;
+}
+
+input.form-control {
+  margin: 0 auto;
+}
+
+div.starter-template {
+  width: 40%;
+  min-width: 350px;
+  margin: auto auto;
+  box-shadow: 1px 3px 2px rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03);
+  border-left: 3px solid rgba(0,0,0,.03);
+  border-top: 2px solid rgba(0,0,0,.03);
+  padding: 2rem 1.5rem;
+}
+
+button.signup {
+  margin-right: 12%;
+}
+
 @media (max-width: 992px) {
   div.nav-item-border {
     display: none;
