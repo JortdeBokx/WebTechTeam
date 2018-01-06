@@ -1,4 +1,42 @@
 {% extends 'base.html' %}
 {% block body %}
-
+<div class="home-information">
+  <div class="top-bar-left">
+    <h2>Favorites:</h2>
+ </div>
+ <div class="search-bar">
+   <form class="form-inline my-2 my-lg-0">
+     <input id="search-files" class="form-control mr-sm-2" type="text" placeholder="Search files/folders">
+     <button class="btn btn-primary-search my-2 my-sm-0 search-button" type="button">Search</button>
+   </form>
+ </div>
+</div>
+<div class="content">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Last modified</th>
+        <th>Size</th>
+        <th>Download</th>
+        <th>Remove<th>
+      </tr>
+    </thead>
+      <tr>
+        <td><i class="material-icons" id="folderIcon">folder</i> webtech documents</td>
+        <td>16/12/2017</td>
+        <td>--</td>
+        <td><i class="material-icons">file_download</i></td>
+        <td><i class="material-icons">delete</i></td>
+      </tr>
+      <tr>
+        <td><i class="material-icons" id="folderIcon">insert_drive_file</i> calculus_book.pdf</td>
+        <td>16/12/2017</td>
+        <td>15 MB</td>
+        <td><i class="material-icons">file_download</i></td>
+        <td><i class="material-icons">delete</i></td>
+      </tr>
+  </table>
+</div>
+<hr />
 {% endblock %}

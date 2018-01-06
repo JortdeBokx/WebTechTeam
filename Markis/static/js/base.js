@@ -17,6 +17,24 @@ $(document).ready(() => {
     }
   });
 
+  $('#search-files').on('keyup', function(){
+    var input, filter, tr, name, i;
+    input = document.getElementById('search-files');
+    filter = input.value.toUpperCase();
+    tr = document.getElementsByTagName("tr");
+    //Search through cards for the input
+    for (i = 0; i < tr.length; i++) {
+        name = tr[i].getElementsByTagName("td")[0];
+        if (name) {
+          if (name.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+  });
+
   $('.custom-select').change(function() {
     var option = $(".custom-select option:selected").text();
     var filter = option.toUpperCase();

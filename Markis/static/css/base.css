@@ -34,7 +34,7 @@ div.home-information {
   height: 60px;
 }
 
-div.faculties {
+div.top-bar-left {
   display: inline-block;
   float: left;
 }
@@ -78,6 +78,12 @@ div.card-block {
   margin-bottom: 0.2rem;
 }
 
+
+#folderIcon {
+  position: relative;
+  top: 4px;
+}
+
 @media (max-width: 992px) {
   div.nav-item-border {
     display: none;
@@ -90,7 +96,7 @@ div.card-block {
     margin: 20px auto;
   }
 
-  div.faculties {
+  div.top-bar-left {
     display: block;
     width: 369px;
     float: none;
