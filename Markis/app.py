@@ -72,10 +72,10 @@ def uploaded_file(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'],
                                 filename)
 
-@app.route('/about')
-@login_required
-def about():
-    return render_template('about.html')
+@app.route('/favorites')
+#@login_required
+def favorites():
+    return render_template('favorites.html')
 
 @app.route("/logout")
 def logout():

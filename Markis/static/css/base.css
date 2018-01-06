@@ -40,11 +40,12 @@ div.faculties {
 }
 
 div.search-bar {
+  display: inline-block;
   float: right;
 }
 
 input.form-control {
-  width: 230px !important;
+  width: 275px !important;
 }
 
 button {
@@ -53,10 +54,6 @@ button {
 
 button:hover {
   opacity: 0.8;
-}
-
-div.card-deck {
-  margin-top: 20px;
 }
 
 div.card {
@@ -84,5 +81,49 @@ div.card-block {
 @media (max-width: 992px) {
   div.nav-item-border {
     display: none;
+  }
+
+  div.search-bar {
+    display: block;
+    width: 369px;
+    float: none;
+    margin: 20px auto;
+  }
+
+  div.faculties {
+    display: block;
+    width: 369px;
+    float: none;
+    margin: 0 auto;
+  }
+
+  div.home-information {
+    height: 100px;
+  }
+
+  div.card-block {
+    height: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  button.my-sm-0 {
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+  }
+
+  input.mr-sm-2 {
+    margin-right: .5rem!important;
+  }
+
+  div.card-block {
+    height: 100px;
+    padding: 0.8rem;
+  }
+
+  .card-columns .card {
+   display: inline-block;
+   width: 100%;
+   margin-bottom: .75rem;
   }
 }

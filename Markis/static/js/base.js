@@ -5,17 +5,37 @@ $(document).ready(() => {
     input = document.getElementById('search-subject');
     filter = input.value.toUpperCase();
     card = document.getElementsByClassName('card');
-
-    // Loop through all list items, and hide those who don't match the search query
+    //Search through cards for the input
     for (i = 0; i < card.length; i++) {
         code = card[i].getElementsByTagName("h4")[0];
         name = card[i].getElementsByTagName("p")[0];
-        if (code.innerHTML.toUpperCase().indexOf(filter) > -1 || name.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        if ((code.innerHTML.toUpperCase().indexOf(filter) > -1 || name.innerHTML.toUpperCase().indexOf(filter) > -1) && ($(".custom-select option:selected").text() == card[i].getElementsByTagName("small")[0].innerHTML || $(".custom-select option:selected").text() == "All")) {
             card[i].style.display = "";
         } else {
             card[i].style.display = "none";
         }
     }
+  });
+
+  $('.custom-select').change(function() {
+    var option = $(".custom-select option:selected").text();
+    var filter = option.toUpperCase();
+    var input = document.getElementById('search-subject');
+    var searchFilter = input.value.toUpperCase();
+    var card = document.getElementsByClassName('card');
+    for (i = 0; i < card.length; i++) {
+        department = card[i].getElementsByTagName("small")[0];
+        if (department.innerHTML.toUpperCase().indexOf(filter) > -1 && (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1)) {
+            card[i].style.display = "";
+        } else if (option == "All") {
+          if (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1) {
+            card[i].style.display = "";
+          }
+        } else {
+            card[i].style.display = "none";
+        }
+    }
+
   });
 
 })
