@@ -1,6 +1,10 @@
 $(document).ready(() => {
 
   $('#search-subject').on('keyup', function(){
+    searchSubject();
+  });
+
+    function searchSubject() {
     var input, filter, title, code, name, i;
     input = document.getElementById('search-subject');
     filter = input.value.toUpperCase();
@@ -15,9 +19,13 @@ $(document).ready(() => {
             card[i].style.display = "none";
         }
     }
-  });
+  }
 
   $('#search-files').on('keyup', function(){
+    searchFile();
+  });
+
+  function searchFile() {
     var input, filter, tr, name, i;
     input = document.getElementById('search-files');
     filter = input.value.toUpperCase();
@@ -33,7 +41,7 @@ $(document).ready(() => {
           }
         }
       }
-  });
+    }
 
   $('.custom-select').change(function() {
     var option = $(".custom-select option:selected").text();
@@ -54,6 +62,19 @@ $(document).ready(() => {
         }
     }
 
+  });
+
+  //Search clear button
+  function tog(v){return v?'addClass':'removeClass';}
+    $(document).on('input', '.clearable', function(){
+        $(this)[tog(this.value)]('x');
+    }).on('mousemove', '.x', function( e ){
+        $(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');
+    }).on('touchstart click', '.onX', function( ev ){
+        ev.preventDefault();
+        $(this).removeClass('x onX').val('').change();
+        searchSubject();
+        searchFile();
   });
 
 })
