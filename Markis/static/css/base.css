@@ -11,7 +11,8 @@ nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
 	background-color: #850028 !important;
 }
 
-button.btn.btn-primary-red {
+
+button.btn.btn-primary-red, a.btn.btn-primary-red {
 	background-color: #850028;
 	border-color: #850028;
 	color: #FFF;
@@ -93,7 +94,7 @@ input.form-control {
 }
 
 div.starter-template {
-  width: 40%;
+  width: 30%;
   min-width: 350px;
   margin: auto auto;
   box-shadow: 1px 3px 2px rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03);
@@ -102,8 +103,43 @@ div.starter-template {
   padding: 2rem 1.5rem;
 }
 
-button.signup {
+a.signup {
   margin-right: 12%;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #850028;
+}
+
+.footertext {
+  color: white;
+  text-align: center;
+  padding-top: 8px;
+}
+
+span.left {
+  position: absolute;
+  left: 2%;
+}
+
+span.center {
+  position: absolute;
+  left: 38%;
+}
+
+span.right {
+  position: absolute;
+  right: 2%;
+}
+@media (min-width: 1200px) {
+  .container {
+      width: 80%;
+      max-width: 100%;
+    }
 }
 
 @media (max-width: 992px) {

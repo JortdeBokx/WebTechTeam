@@ -77,6 +77,11 @@ def uploaded_file(filename):
 def subject():
 	return render_template('subject.html')
 
+@app.route('/profile',)
+#@login_required
+def profile():
+	return render_template('profile.html')
+
 @app.route('/favorites')
 #@login_required
 def favorites():
