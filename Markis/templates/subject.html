@@ -2,7 +2,8 @@
 {% block body %}
 <div class="home-information">
   <div class="top-bar-left">
-    <h2>[subject_id] - subject_name </h2>
+    {% for subject in subjects %}
+    <h2>{{subject.subject_id}} - {{subject.subject_name}}</h2>
  </div>
 </div>
 
@@ -17,7 +18,7 @@
      <li class="d-inline">
          <a href="#">
              <i class="material-icons">folder</i>
-             <span>2ID50 ></span>
+             <span>{{subject.subject_id}} ></span>
          </a>
      </li>
  </ol>
@@ -31,6 +32,7 @@
  </div>
 
 <div class="content">
+  <p>{{subject.subject_description}}</p>
   <table class="table">
     <thead>
       <tr>
@@ -58,4 +60,5 @@
   </table>
 </div>
 <hr />
+{% endfor %}
 {% endblock %}

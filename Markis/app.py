@@ -44,10 +44,9 @@ login_manager.login_message = "You need to be logged in to view this page!"
 
 @app.route('/')
 def home():
-    # Get subjects from Database
     conn = engine.connect()
 
-    rv = conn.execute("""SELECT subject_id, subject_name FROM subjects ORDER BY subject_id ASC""").fetchall()
+    rv = conn.execute("""SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC""").fetchall()
     conn.close()
     return render_template('home.html', subjects=rv)
 
@@ -76,6 +75,15 @@ def uploaded_file(filename):
 #@login_required
 def subject():
 	return render_template('subject.html')
+
+@app.route('/subject/<subject_id>',)
+#@login_required
+def subject2(subject_id):
+	conn = engine.connect()
+
+	rv = conn.execute("""SELECT * FROM subjects WHERE subject_id="%s" """ % subject_id.upper() ).fetchall()
+	conn.close()
+	return render_template('subject.html', subjects=rv)
 
 @app.route('/profile',)
 #@login_required
