@@ -5,14 +5,14 @@
 import os
 from urllib.parse import urlparse, urljoin
 
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, Response
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort
 from flask_login import LoginManager, login_user, logout_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
-from forms import registerForm, loginForm
+from forms import registerForm, loginForm, uploadFileForm
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -78,7 +78,14 @@ def subject(subjectid):
 		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
 
 
-
+@app.route('/form/getUploadForm')
+def uploadFileGetForm():
+    form = uploadFileForm(request.form)
+    conn = engine.connect()
+    subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
+    conn.close()
+    form.subject.choices = [(g.subject_id, g.subject_id + ' - ' + g.subject_name) for g in subjects]
+    return render_template('uploadForm.html', form=form)
 
 
 @app.route('/subject/<subjectid>/<path:subfolder>',)
@@ -109,7 +116,7 @@ def favorites():
 @app.route("/logout")
 def logout():
 	logout_user()
-	return Response('<p>Logged out</p>')
+	return redirect("/login", code=302)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
