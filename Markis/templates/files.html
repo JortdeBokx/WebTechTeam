@@ -1,1 +1,109 @@
 {% extends 'base.html' %}
+{% block body %}
+<div class="home-information">
+  <div class="top-bar-left">
+    <h2>[{{ subjectDataSet.subject_id }}] - {{ subjectDataSet.subject_name }} </h2>
+ </div>
+</div>
+
+<div class="d-inline-block">
+ <ol>
+     <li class="d-inline">
+         <a href="/">
+             <i class="material-icons" id="icon">home</i>
+             <span> ></span>
+         </a>
+     </li>
+     <li class="d-inline">
+         <a href="">
+             <i class="material-icons" id="icon">folder</i>
+             <span>{{subjectDataSet.subject_id}} ></span>
+         </a>
+     </li>
+ </ol>
+</div>
+
+ {% include 'includes/_searchbar.html' %}
+
+<div class="content">
+  <p>{{subjectDataSet.subject_description}}</p>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Last modified</th>
+        <th>Size</th>
+        <th>Download</th>
+        <th>Favorites</th>
+
+      </tr>
+    </thead>
+      <tr>
+        <td><a href="/exams"><i class="material-icons" id="icon">folder</i> Exams</a></td>
+        <td>16/12/2017</td>
+        <td>--</td>
+        <td><i class="material-icons">file_download</i></td>
+        <td><i class="material-icons" id="favorite">favorite</i></td>
+			</tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Homework</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Literature</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Miscellaneous</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Summaries</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+
+      <!-- test pdf -->
+      <tr>
+				<td><i class="material-icons" id="icon">picture_as_pdf</i> Test</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><a class="btn btn-primary view-pdf" href="http://unec.edu.az/application/uploads/2014/12/pdf-sample.pdf">View PDF</a></td>
+      </tr>
+
+      <!-- test big picture-->
+      <tr>
+				<td><i class="material-icons" id="icon">insert_photo</i> Test with big picture</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><a class="btn btn-primary view-photo" href="https://static.pexels.com/photos/33045/lion-wild-africa-african.jpg">View Photo</a></td>
+      </tr>
+
+      <!-- test small picture-->
+      <tr>
+				<td><i class="material-icons" id="icon">insert_photo</i> Test with small picture</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><a class="btn btn-primary view-photo" href="https://vignette.wikia.nocookie.net/en.futurama/images/d/da/Fry_Looking_Squint.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20110701192358">View Photo</a></td>
+      </tr>
+
+      <!-- test video -->
+
+  </table>
+</div>
+<hr />
+{% endblock %}
