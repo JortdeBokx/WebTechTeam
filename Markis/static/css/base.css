@@ -49,11 +49,6 @@ div.search-bar {
   float: right;
 }
 
-img.sad-smiley {
-	height: 20rem;
-	width: 20rem;
-}
-
 .clearable{
   background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;
@@ -189,6 +184,7 @@ span.right {
 }
 
 @media (max-width: 768px) {
+
   span.center {
     display: none;
   }
@@ -238,4 +234,26 @@ span.right {
    width: 100%;
    margin-bottom: .75rem;
   }
+}
+
+.modal-content{
+  width=80%:
+}
+
+/* for pdf viewer iframe */
+.iframe-container {
+padding-bottom: 60%;
+padding-top: 30px;
+height:0;
+overflow: hidden;
+}
+
+.iframe-container iframe,
+.iframe-container object,
+.iframe-container embed {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
 }
