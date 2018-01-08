@@ -65,45 +65,38 @@ $(document).ready(() => {
   });
 
   //Search clear button
-  function clearSearch(v){return v?'addClass':'removeClass';}
+  function tog(v){return v?'addClass':'removeClass';}
     $(document).on('input', '.clearable', function(){
-        $(this)[clearSearch(this.value)]('x');
+        $(this)[tog(this.value)]('x');
     }).on('mousemove', '.x', function( e ){
-        $(this)[clearSearch(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');
+        $(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX');
     }).on('touchstart click', '.onX', function( ev ){
         ev.preventDefault();
         $(this).removeClass('x onX').val('').change();
-				if (document.getElementById("search-subject")) {
-					searchSubject();
-				} else {
-					searchFile();
-				}
-
+        searchSubject();
+        searchFile();
   });
+  
+/*
+* This is the plugin
+*/
+(function(a){a.createModal=function(b){defaults={title:"",message:"Modal created",closeButton:true,scrollable:false};var b=a.extend({},defaults,b);var c=(b.scrollable===true)?'style="max-height: 780px;overflow-y: auto;"':"";html='<div class="modal fade" id="myModal">';html+='<div class="modal-dialog">';html+='<div class="modal-content">';html+='<div class="modal-header">';html+='<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>';if(b.title.length>0){html+='<h4 class="modal-title">'+b.title+"</h4>"}html+="</div>";html+='<div class="modal-body" '+c+">";html+=b.message;html+="</div>";html+='<div class="modal-footer">';if(b.closeButton===true){html+='<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>'}html+="</div>";html+="</div>";html+="</div>";html+="</div>";a("body").prepend(html);a("#myModal").modal().on("hidden.bs.modal",function(){a(this).remove()})}})(jQuery);
 
-<<<<<<< HEAD
-=======
-  /*
-  * This is the plugin for pdf viewer
-  */
-  (function(a){a.createModal=function(b){defaults={title:"",message:"Modal created",closeButton:true,scrollable:false};var b=a.extend({},defaults,b);var c=(b.scrollable===true)?'style="max-height: 780px;overflow-y: auto;"':"";html='<div class="modal fade" id="myModal">';html+='<div class="modal-dialog">';html+='<div class="modal-content">';html+='<div class="modal-header">';html+='<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>';if(b.title.length>0){html+='<h4 class="modal-title">'+b.title+"</h4>"}html+="</div>";html+='<div class="modal-body" '+c+">";html+=b.message;html+="</div>";html+='<div class="modal-footer">';if(b.closeButton===true){html+='<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>'}html+="</div>";html+="</div>";html+="</div>";html+="</div>";a("body").prepend(html);a("#myModal").modal().on("hidden.bs.modal",function(){a(this).remove()})}})(jQuery);
-
-  /*
-  * Here is how to call the plugin
-  */
-  $(function(){
-      $('.view-pdf').on('click',function(){
-          var pdf_link = $(this).attr('href');
-          var iframe = '<div class="iframe-container"><iframe src="'+pdf_link+'"></iframe></div>'
-          $.createModal({
-          title:'PDF',
-          message: iframe,
-          closeButton:true,
-          scrollable:false,
-          });
-          return false;
-      });
-  })
->>>>>>> 08bc0d7bf0e26d2b6c33b52d99a76b8ef71c55f0
+/*
+* Here is how you use it
+*/
+$(function(){
+    $('.view-pdf').on('click',function(){
+        var pdf_link = $(this).attr('href');
+        var iframe = '<div class="iframe-container"><iframe src="'+pdf_link+'"></iframe></div>'
+        $.createModal({
+        title:'PDF',
+        message: iframe,
+        closeButton:true,
+        scrollable:false,
+        });
+        return false;
+    });
+})
 
 })
