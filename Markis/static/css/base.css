@@ -49,6 +49,10 @@ div.search-bar {
   float: right;
 }
 
+.dropdown-menu {
+	min-width: 21rem;
+}
+
 .clearable{
   background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;

@@ -43,6 +43,8 @@ $(document).ready(() => {
       }
     }
 
+	$('#multivalued').multiselect();
+
   $('.custom-select').change(function() {
     var option = $(".custom-select option:selected").text();
     var filter = option.toUpperCase();
