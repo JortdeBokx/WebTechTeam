@@ -75,6 +75,14 @@ def subject(subjectid):
 	else:
 		return render_template('subject.html', subjectDataSet = subjectDataSet)
 
+#@app.route('/subject/<subjectid>/<path:subfolder>',)
+#@login_required
+def subject(subjectid, subfolder):
+	subjectDataSet = getSubjectData(subjectid)
+	if subjectDataSet == None:
+		return render_template('404.html', reason="nosubject"), 404
+
+
 @app.route('/profile',)
 #@login_required
 def profile():
@@ -149,18 +157,18 @@ def css(filename):
 							   filename)
 @app.route('/js/<path:filename>')
 def javascript(filename):
-    return send_from_directory('js',
-                               filename)
+	return send_from_directory('js',
+							   filename)
 
 @app.route('/img/<path:filename>')
 def image(filename):
-    return send_from_directory('img',
-                               filename)
+	return send_from_directory('img',
+							   filename)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-        return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                filename)
+		return send_from_directory(app.config['UPLOAD_FOLDER'],
+								filename)
 
 #############################################
 #			     Error Pages    			#
@@ -168,19 +176,19 @@ def uploaded_file(filename):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+	return render_template('404.html'), 404
 
 @app.errorhandler(403)
 def page_not_found(e):
-    return render_template('403.html'), 403
+	return render_template('403.html'), 403
 
 @app.errorhandler(418)
 def page_not_found(e):
-    return render_template('418.html'), 418
+	return render_template('418.html'), 418
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template('500.html'), 500
+	return render_template('500.html'), 500
 
 #############################################
 #			   Helper Functions 			#
