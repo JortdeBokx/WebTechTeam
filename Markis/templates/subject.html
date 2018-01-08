@@ -34,21 +34,18 @@
 
       </tr>
     </thead>
+      {% for folder in folders %}
       <tr>
-        <td><a href="/exams"><i class="material-icons" id="icon">folder</i> Exams</a></td>
-			</tr>
-			<tr>
-				<td><i class="material-icons" id="icon">folder</i> Homework</td>
+        <td>
+            {% if folder.hasContent %}
+            <i class="material-icons" id="icon">folder</i>
+            {% else %}
+            <i class="material-icons" id="icon">folder_open</i>
+            {% endif %}
+            {{ folder.name }}</td>
       </tr>
-			<tr>
-				<td><i class="material-icons" id="icon">folder</i> Literature</td>
-      </tr>
-			<tr>
-				<td><i class="material-icons" id="icon">folder</i> Miscellaneous</td>
-      </tr>
-			<tr>
-				<td><i class="material-icons" id="icon">folder</i> Summaries</td>
-      </tr>
+      {% endfor %}
+
 
       <!-- test pdf -->
       <tr>

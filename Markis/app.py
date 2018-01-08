@@ -74,7 +74,8 @@ def subject(subjectid):
 	if subjectDataSet == None:
 		return render_template('404.html', reason="nosubject"), 404
 	else:
-		return render_template('subject.html', subjectDataSet = subjectDataSet)
+		foldersToShow = getSubjectFolders(subjectid)
+		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
 
 
 
@@ -92,7 +93,7 @@ def subjectfiles(subjectid, subfolder):
 		return render_template('404.html', reason="nopath"), 404
 	foldersToShow = getFoldersToShow(subfolder, FolderPath)
 	filesToShow = getFilesToShow(subfolder, FolderPath)
-	return render_template('files.html', folders=foldersToShow, files=filesToShow)
+	return render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 
 
 @app.route('/profile',)
@@ -231,6 +232,37 @@ def getSubjectData(subjectid):
 def checksubjectPath(subjectid):
 	# TODO: check if subject path exists, make path if not
 	pass
+
+
+def folderHasContent(path, subjectID):
+	conn = engine.connect()
+	pattern = "%" +path+ "%"
+	s = text(
+		"SELECT file_ID FROM files WHERE path LIKE :p and subject_code = :s")
+	rv = conn.execute(s, p=pattern, s=subjectID).fetchall()
+	conn.close()
+	return rv != []
+
+
+def getSubjectFolders(subjectID):
+	foldersToShow = []
+	examContent = folderHasContent("Exams", subjectID)
+	homeworkContent = folderHasContent("Homework", subjectID)
+	literatureContent = folderHasContent("Literature", subjectID)
+	miscContent = folderHasContent("Misc", subjectID)
+	summariesContent = folderHasContent("Summaries", subjectID)
+
+	exams = {'name': "Exams", 'hasContent': examContent}
+	homework = {'name': "Homework", 'hasContent': homeworkContent}
+	literature = {'name': "Literature", 'hasContent': literatureContent}
+	misc = {'name': "Misc", 'hasContent': miscContent}
+	summaries = {'name': "Summaries", 'hasContent': summariesContent}
+	foldersToShow.append(exams)
+	foldersToShow.append(homework)
+	foldersToShow.append(literature)
+	foldersToShow.append(misc)
+	foldersToShow.append(summaries)
+	return foldersToShow
 
 def getFoldersToShow(subfolder, FolderPath):
 	foldersToShow = []
