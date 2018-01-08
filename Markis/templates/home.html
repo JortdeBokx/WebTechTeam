@@ -5,9 +5,9 @@
      <span class="faculties">Faculties:</span>
      <select class="custom-select">
       <option selected>All</option>
-      <option value="1">Mathematics and Computer Science</option>
-      <option value="2">Mechanical Engineering</option>
-      <option value="3">Applied Physics</option>
+      {% for faculty in faculties %}
+      <option value="{{faculty.faculty_id}}">{{faculty.faculty_name}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="search-bar">

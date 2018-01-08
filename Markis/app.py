@@ -47,8 +47,9 @@ def home():
     conn = engine.connect()
 
     rv = conn.execute("""SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC""").fetchall()
+    rv2 = conn.execute("""SELECT * FROM faculties WHERE 1""").fetchall()
     conn.close()
-    return render_template('home.html', subjects=rv)
+    return render_template('home.html', subjects=rv, faculties=rv2)
 
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
