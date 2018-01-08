@@ -5,7 +5,7 @@
 import os
 from urllib.parse import urlparse, urljoin
 
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, Response
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort
 from flask_login import LoginManager, login_user, logout_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
@@ -109,7 +109,7 @@ def favorites():
 @app.route("/logout")
 def logout():
 	logout_user()
-	return Response('<p>Logged out</p>')
+	return redirect("/login", code=302)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
