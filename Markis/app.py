@@ -69,7 +69,7 @@ def uploadFile():
 @app.route('/subject/<subjectid>',)
 #@login_required
 def subject(subjectid):
-	subjectDataSet = getSubjectData(subjectid)
+	subjectDataSet = getSubjectData(subjectid.upper())
 	if subjectDataSet == None:
 		return render_template('404.html', reason="nosubject"), 404
 	else:
