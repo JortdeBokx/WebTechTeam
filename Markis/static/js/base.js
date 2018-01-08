@@ -1,4 +1,6 @@
 $(document).ready(() => {
+	var activeCards = new Array(document.getElementsByClassName('card').length);
+	selectSetup();
 
   $('#search-subject').on('keyup', function(){
     searchSubject();
@@ -13,7 +15,7 @@ $(document).ready(() => {
     for (i = 0; i < card.length; i++) {
         code = card[i].getElementsByTagName("h4")[0];
         name = card[i].getElementsByTagName("p")[0];
-        if ((code.innerHTML.toUpperCase().indexOf(filter) > -1 || name.innerHTML.toUpperCase().indexOf(filter) > -1) && ($(".custom-select option:selected").text() == card[i].getElementsByTagName("small")[0].innerHTML || $(".custom-select option:selected").text() == "All")) {
+        if ((code.innerHTML.toUpperCase().indexOf(filter) > -1 || name.innerHTML.toUpperCase().indexOf(filter) > -1) && activeCards[i] == 1) {
             card[i].style.display = "";
         } else {
             card[i].style.display = "none";
@@ -56,10 +58,12 @@ $(document).ready(() => {
 							}
 						}
 		      }
-					console.log(options);
 			    var input = document.getElementById('search-subject');
 			    var searchFilter = input.value.toUpperCase();
 			    var card = document.getElementsByClassName('card');
+					for (var i = 0; i < card.length; i++) {
+						activeCards[i] = 0;
+					}
 					var cards = [];
 			    for (var i = 0; i < card.length; i++) {
 						card[i].style.display = "none";
@@ -67,10 +71,10 @@ $(document).ready(() => {
 			        var department = card[i].getElementsByTagName("small")[0];
 			        if (department.innerHTML.indexOf(options[x]) > -1 && (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1)) {
 									cards.push(i);
+									activeCards[i] = 1;
 							}
 						}
 			    }
-					console.log(cards);
 					for (var u = 0; u < cards.length; u++) {
 						card[cards[u]].style.display = "";
 					}
@@ -78,11 +82,19 @@ $(document).ready(() => {
 						for (var y = 0; y < card.length; y++) {
 							if (card[y].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[y].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1) {
 								card[y].style.display = "";
+								activeCards.push(y);
 							}
 						}
 					}
 	    }
     });
+
+		function selectSetup() {
+			var card = document.getElementsByClassName('card');
+				for (var i = 0; i < card.length; i++) {
+					activeCards[i] = 1;
+				}
+		}
 
 
 
@@ -95,8 +107,11 @@ $(document).ready(() => {
     }).on('touchstart click', '.onX', function( ev ){
         ev.preventDefault();
         $(this).removeClass('x onX').val('').change();
-        searchSubject();
-        searchFile();
+				if ($('#search-subject').length > 0) {
+        	searchSubject();
+				} else {
+        	searchFile();
+				}
   });
 
 /*
