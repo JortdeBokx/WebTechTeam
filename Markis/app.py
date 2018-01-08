@@ -69,7 +69,6 @@ def uploadFile():
 @app.route('/subject/<subjectid>',)
 #@login_required
 def subject(subjectid):
-	#TODO: if subject does not exist, return 404
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
 		return render_template('404.html', reason="nosubject"), 404
@@ -162,6 +161,26 @@ def image(filename):
 def uploaded_file(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'],
                                 filename)
+
+#############################################
+#			     Error Pages    			#
+#############################################
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403
+
+@app.errorhandler(418)
+def page_not_found(e):
+    return render_template('418.html'), 418
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 #############################################
 #			   Helper Functions 			#

@@ -78,6 +78,23 @@ div.card:hover {
   cursor: pointer;
 }
 
+table a {
+	color: black;
+}
+
+.error_title {
+	text-align: center;
+}
+
+.sad-smiley {
+	margin: 50px auto;
+	width: 30%;
+}
+
+.sad-smiley img {
+	width: 100%;
+}
+
 div.card-block {
   height: 100px;
   padding: 0.8rem;
@@ -234,10 +251,6 @@ span.right {
    width: 100%;
    margin-bottom: .75rem;
   }
-}
-
-.modal-content{
-  width=80%:
 }
 
 /* for pdf viewer iframe */
