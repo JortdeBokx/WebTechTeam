@@ -49,7 +49,7 @@ def home():
 	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
 	faculties = conn.execute(text("SELECT * FROM faculties")).fetchall()
 	conn.close()
-	return render_template('home.html', subjects=rv, faculties=rv2)
+	return render_template('home.html', subjects=subjects, faculties=faculties)
 
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
