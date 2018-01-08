@@ -2,8 +2,7 @@
 {% block body %}
 <div class="home-information">
   <div class="top-bar-left">
-    {% for subject in subjects %}
-    <h2>{{subject.subject_id}} - {{subject.subject_name}}</h2>
+    <h2>[{{ subjectDataSet.subject_id }}] - {{ subjectDataSet.subject_name }} </h2>
  </div>
 </div>
 
@@ -90,5 +89,4 @@
   </table>
 </div>
 <hr />
-{% endfor %}
 {% endblock %}
