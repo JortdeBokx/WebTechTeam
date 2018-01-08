@@ -46,7 +46,7 @@
       </tr>
       {% endfor %}
 
-
+    {% if subjectDataSet.subject_id == "1ABCD" %}
       <!-- test pdf -->
       <tr>
 				<td><i class="material-icons" id="icon">picture_as_pdf</i> Test</td>
@@ -64,7 +64,7 @@
 				<td><i class="material-icons" id="icon">insert_photo</i> Test with small picture</td>
 				<td><a class="btn btn-primary view-photo" href="https://vignette.wikia.nocookie.net/en.futurama/images/d/da/Fry_Looking_Squint.jpg/revision/latest/zoom-crop/width/240/height/240?cb=20110701192358">View Photo</a></td>
       </tr>
-
+        {% endif %}
       <!-- test video -->
 
   </table>
