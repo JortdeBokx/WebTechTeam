@@ -53,6 +53,10 @@ div.search-bar {
 	min-width: 21rem;
 }
 
+table tr {
+	cursor: pointer;
+}
+
 .clearable{
   background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;
