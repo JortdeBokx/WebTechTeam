@@ -2,9 +2,11 @@
 {% block body %}
 <h3 class="error_title">404 - Page not found</h3>
 <div class="sad-smiley">
-	<link rel="preload" as="image"  href="{{url_for('static', filename='img/sad_smiley.png')}}" alt="404 - Page not found"/>
+	<img src="{{url_for('static', filename='img/sad_smiley.png')}}" alt="404 - Page not found"/>
 </div>
 {% if reason == "nosubject" %}
 	<div class="error-message">This subject could not be found. Make sure your link points to a valid subject code.</div>
+{% elif reason == "nopath" %}
+	<div class="error-message">This folder could not be found. It might have been removed or you link is incorrect.</div>
 {% endif %}
 {% endblock %}

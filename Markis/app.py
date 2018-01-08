@@ -30,6 +30,7 @@ app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
 app.config['MYSQL_DB'] = 'markis'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['FILE_BASE_DIR'] = os.path.join(app.root_path, "storage")
 app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
 
 
@@ -75,12 +76,23 @@ def subject(subjectid):
 	else:
 		return render_template('subject.html', subjectDataSet = subjectDataSet)
 
-#@app.route('/subject/<subjectid>/<path:subfolder>',)
+
+
+
+
+@app.route('/subject/<subjectid>/<path:subfolder>',)
 #@login_required
-def subject(subjectid, subfolder):
+def subjectfiles(subjectid, subfolder):
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
 		return render_template('404.html', reason="nosubject"), 404
+	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, subfolder)
+	if not os.path.exists(FolderPath):
+		checksubjectPath(subjectid)
+		return render_template('404.html', reason="nopath"), 404
+	foldersToShow = getFoldersToShow(subfolder, FolderPath)
+	filesToShow = getFilesToShow(subfolder, FolderPath)
+	return render_template('files.html', folders=foldersToShow, files=filesToShow)
 
 
 @app.route('/profile',)
@@ -215,6 +227,39 @@ def getSubjectData(subjectid):
 	rv = conn.execute(s, u=subjectid, i=facultyid).fetchone()
 	conn.close()
 	return rv
+
+def checksubjectPath(subjectid):
+	# TODO: check if subject path exists, make path if not
+	pass
+
+def getFoldersToShow(subfolder, FolderPath):
+	foldersToShow = []
+	if subfolder == "Exams":
+		for subdir in os.listdir(FolderPath):
+			info = {}
+			info['name'] = subdir
+			info['hasContent'] = (os.listdir(os.path.join(FolderPath, subdir)) is not None)
+			foldersToShow.append(info)
+
+	elif subfolder == "Homework":
+		for subdir in os.listdir(FolderPath):
+			info = {}
+			info['name'] = subdir
+			info['hasContent'] = (os.listdir(os.path.join(FolderPath, subdir)) is not None)
+			foldersToShow.append(info)
+
+	elif subfolder == "Literature":
+		foldersToShow = []
+	elif subfolder == "Misc":
+		foldersToShow = []
+	elif subfolder == "Summaries":
+		foldersToShow = []
+	else:
+		foldersToShow = None
+	return foldersToShow
+
+def getFilesToShow(subfolder, FolderPath):
+	pass
 
 #############################################
 #               Data Objects 	        	#
