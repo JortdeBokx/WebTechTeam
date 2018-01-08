@@ -49,6 +49,11 @@ div.search-bar {
   float: right;
 }
 
+img.sad-smiley {
+	height: 20rem;
+	width: 20rem;
+}
+
 .clearable{
   background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;

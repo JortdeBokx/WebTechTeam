@@ -2,6 +2,7 @@
 {% block body %}
 <h3 class="error_title">404 - Page not found</h3>
 {% if reason == "nosubject" %}
-<div class="error-message">This subject could not be found</div>
+<img src="{{url_for('static', filename='img/sad_smiley.png')}}" alt="404 - Page not found" class="sad-smiley"/>
+<div class="error-message">This subject could not be found. Make sure your link points to a valid subject code.</div>
 {% endif %}
 {% endblock %}

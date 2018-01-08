@@ -67,11 +67,6 @@ def uploadFile():
             return redirect(url_for('uploaded_file',
                                                 filename=filename))
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-        return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                filename)
-
 @app.route('/subject',)
 #@login_required
 def subject():
@@ -84,7 +79,6 @@ def subject2(subject_id):
 
 	rv = conn.execute("""SELECT * FROM subjects WHERE subject_id="%s" """ % subject_id.upper() ).fetchall()
 	conn.close()
-	print(rv)
 	if rv == []:
 		return render_template('404.html', reason="nosubject")
 	return render_template('subject.html', subjects=rv)
@@ -165,6 +159,16 @@ def css(filename):
 def javascript(filename):
     return send_from_directory('js',
                                filename)
+                               
+@app.route('/img/<path:filename>')
+def image(filename):
+    return send_from_directory('img',
+                               filename)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'],
+                                filename)
 
 #############################################
 #			   Helper Functions 			#
