@@ -84,6 +84,9 @@ def subject2(subject_id):
 
 	rv = conn.execute("""SELECT * FROM subjects WHERE subject_id="%s" """ % subject_id.upper() ).fetchall()
 	conn.close()
+	print(rv)
+	if rv == []:
+		return render_template('404.html', reason="nosubject")
 	return render_template('subject.html', subjects=rv)
 
 @app.route('/profile',)
