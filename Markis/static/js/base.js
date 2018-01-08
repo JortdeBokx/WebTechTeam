@@ -97,6 +97,17 @@ $(function(){
         });
         return false;
     });
+        $('.view-photo').on('click',function(){
+            var photo_link = $(this).attr('href');
+            var image = '<div><img src="'+photo_link+'" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></img></div>'
+            $.createModal({
+            title:'Picture',
+            message: image,
+            closeButton:true,
+            scrollable:false,
+            });
+            return false;
+        });
 })
 
 })
