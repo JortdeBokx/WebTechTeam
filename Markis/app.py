@@ -159,7 +159,7 @@ def css(filename):
 def javascript(filename):
     return send_from_directory('js',
                                filename)
-                               
+
 @app.route('/img/<path:filename>')
 def image(filename):
     return send_from_directory('img',
