@@ -6,7 +6,7 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, Response
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -66,11 +66,6 @@ def uploadFile():
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 			return redirect(url_for('uploaded_file',
 												filename=filename))
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-		return send_from_directory(app.config['UPLOAD_FOLDER'],
-								filename)
 
 @app.route('/subject/<subjectid>',)
 #@login_required
