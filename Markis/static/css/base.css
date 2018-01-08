@@ -24,6 +24,10 @@ button.btn.btn-primary-search {
   color: #FFF;
 }
 
+.card-columns a {
+	color: black;
+}
+
 div.nav-item-border {
   width: 1px;
   height: 25px;
@@ -88,7 +92,7 @@ div.card-block {
 }
 
 
-#folderIcon {
+#icon {
   position: relative;
   top: 4px;
 }
