@@ -43,28 +43,48 @@ $(document).ready(() => {
       }
     }
 
-	$('#multivalued').multiselect();
+		var options = [];
+		$('#multivalued').multiselect({
+	    onChange: function(element, checked) {
+	        if (checked === true) {
+						options.push(element.text());
+	        } else if (checked === false) {
+						for (var i = 0; i < options.length; i++) {
+							if (options[i] == element.text()) {
+								delete options[i];
+								options.splice(i,1);
+							}
+						}
+		      }
+					console.log(options);
+			    var input = document.getElementById('search-subject');
+			    var searchFilter = input.value.toUpperCase();
+			    var card = document.getElementsByClassName('card');
+					var cards = [];
+			    for (var i = 0; i < card.length; i++) {
+						card[i].style.display = "none";
+						for (var x = 0; x < options.length; x++) {
+			        var department = card[i].getElementsByTagName("small")[0];
+			        if (department.innerHTML.indexOf(options[x]) > -1 && (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1)) {
+									cards.push(i);
+							}
+						}
+			    }
+					console.log(cards);
+					for (var u = 0; u < cards.length; u++) {
+						card[cards[u]].style.display = "";
+					}
+					if (options.length == 0) {
+						for (var y = 0; y < card.length; y++) {
+							if (card[y].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[y].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1) {
+								card[y].style.display = "";
+							}
+						}
+					}
+	    }
+    });
 
-  $('.custom-select').change(function() {
-    var option = $(".custom-select option:selected").text();
-    var filter = option.toUpperCase();
-    var input = document.getElementById('search-subject');
-    var searchFilter = input.value.toUpperCase();
-    var card = document.getElementsByClassName('card');
-    for (i = 0; i < card.length; i++) {
-        department = card[i].getElementsByTagName("small")[0];
-        if (department.innerHTML.toUpperCase().indexOf(filter) > -1 && (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1)) {
-            card[i].style.display = "";
-        } else if (option == "All") {
-          if (card[i].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[i].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1) {
-            card[i].style.display = "";
-          }
-        } else {
-            card[i].style.display = "none";
-        }
-    }
 
-  });
 
   //Search clear button
   function tog(v){return v?'addClass':'removeClass';}
