@@ -134,7 +134,7 @@ $(function(){
         });
         return false;
     });
-        $('.view-photo').on('click',function(){
+    $('.view-photo').on('click',function(){
             var photo_link = $(this).attr('href');
             var image = '<div><img src="'+photo_link+'" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></img></div>'
             $.createModal({
@@ -144,7 +144,16 @@ $(function(){
             scrollable:false,
             });
             return false;
-        });
+    });
+    $('.upload-file').on('click',function(){
+            $.createModal({
+            title:'Upload',
+            message: '<div class="iframe-container"><iframe src="/form/getUploadForm"></iframe></div>',
+            closeButton:true,
+            scrollable:false,
+            });
+            return false;
+    });
 })
 
 })
