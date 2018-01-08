@@ -5,9 +5,9 @@
      <span class="faculties">Faculties:</span>
      <select class="custom-select">
       <option selected>All</option>
-      <option value="1">Mathematics and Computer Science</option>
-      <option value="2">Mechanical Engineering</option>
-      <option value="3">Applied Physics</option>
+      {% for faculty in faculties %}
+      <option value="{{faculty.faculty_id}}">{{faculty.faculty_name}}</option>
+      {% endfor %}
     </select>
   </div>
   <div class="search-bar">
@@ -21,13 +21,15 @@
  <div class="content">
    <div class="card-columns">
      {% for subject in subjects %}
+     <a href="/subject/{{subject.subject_id}}" alt="{{subject.subject_name}}">
       <div class="card">
          <div class="card-block">
            <h4 class="card-title">{{subject.subject_id}}</h4>
            <p class="card-text">{{subject.subject_name}}</p>
-           <p class="card-text"><small class="text-muted">Mathematics and Computer Science</small></p>
+           <p class="card-text"><small class="text-muted">{{subject.faculty_name}}</small></p>
          </div>
        </div>
+   </a>
      {% endfor %}
    </div>
  </div>

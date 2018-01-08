@@ -24,6 +24,10 @@ button.btn.btn-primary-search {
   color: #FFF;
 }
 
+.card-columns a {
+	color: black;
+}
+
 div.nav-item-border {
   width: 1px;
   height: 25px;
@@ -88,7 +92,7 @@ div.card-block {
 }
 
 
-#folderIcon {
+#icon {
   position: relative;
   top: 4px;
 }
@@ -180,6 +184,7 @@ span.right {
 }
 
 @media (max-width: 768px) {
+
   span.center {
     display: none;
   }
@@ -229,4 +234,26 @@ span.right {
    width: 100%;
    margin-bottom: .75rem;
   }
+}
+
+.modal-content{
+  width=80%:
+}
+
+/* for pdf viewer iframe */
+.iframe-container {
+padding-bottom: 60%;
+padding-top: 30px;
+height:0;
+overflow: hidden;
+}
+
+.iframe-container iframe,
+.iframe-container object,
+.iframe-container embed {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
 }

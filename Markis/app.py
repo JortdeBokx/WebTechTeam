@@ -6,7 +6,7 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, Response
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -46,10 +46,10 @@ login_manager.login_message = "You need to be logged in to view this page!"
 def home():
 	# Get subjects from Database
 	conn = engine.connect()
-
-	rv = conn.execute("""SELECT subject_id, subject_name FROM subjects ORDER BY subject_id ASC""").fetchall()
+	rv = conn.execute("""SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC""").fetchall()
+	rv2 = conn.execute("""SELECT * FROM faculties WHERE 1""").fetchall()
 	conn.close()
-	return render_template('home.html', subjects=rv)
+	return render_template('home.html', subjects=rv, faculties=rv2)
 
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
@@ -152,8 +152,18 @@ def css(filename):
 							   filename)
 @app.route('/js/<path:filename>')
 def javascript(filename):
-	return send_from_directory('js',
-							   filename)
+    return send_from_directory('js',
+                               filename)
+
+@app.route('/img/<path:filename>')
+def image(filename):
+    return send_from_directory('img',
+                               filename)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+        return send_from_directory(app.config['UPLOAD_FOLDER'],
+                                filename)
 
 #############################################
 #			   Helper Functions 			#

@@ -9,15 +9,15 @@
 <div class="d-inline-block">
  <ol>
      <li class="d-inline">
-         <a href="#">
-             <i class="material-icons">home</i>
+         <a href="/">
+             <i class="material-icons" id="icon">home</i>
              <span> ></span>
          </a>
      </li>
      <li class="d-inline">
-         <a href="#">
-             <i class="material-icons">folder</i>
-             <span>2ID50 ></span>
+         <a href="">
+             <i class="material-icons" id="icon">folder</i>
+             <span>{{subject.subject_id}} ></span>
          </a>
      </li>
  </ol>
@@ -31,6 +31,7 @@
  </div>
 
 <div class="content">
+  <p>{{subject.subject_description}}</p>
   <table class="table">
     <thead>
       <tr>
@@ -42,18 +43,46 @@
       </tr>
     </thead>
       <tr>
-        <td><i class="material-icons" id="folderIcon">folder</i> webtech documents</td>
+        <td><i class="material-icons" id="icon">folder</i> Exams</td>
         <td>16/12/2017</td>
         <td>--</td>
         <td><i class="material-icons">file_download</i></td>
         <td><i class="material-icons" id="favorite">favorite</i></td>
       </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Homework</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Literature</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Miscellaneous</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
+			<tr>
+				<td><i class="material-icons" id="icon">folder</i> Summaries</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><i class="material-icons" id="favorite">favorite</i></td>
+      </tr>
       <tr>
-        <td><i class="material-icons" id="folderIcon">insert_drive_file</i> calculus_book.pdf</td>
-        <td>16/12/2017</td>
-        <td>15 MB</td>
-        <td><i class="material-icons">file_download</i></td>
-        <td><i class="material-icons" id="favorite">favorite_border</i></td>
+				<td><i class="material-icons" id="icon">picture_as_pdf</i> Test</td>
+				<td>16/12/2017</td>
+				<td>--</td>
+				<td><i class="material-icons">file_download</i></td>
+				<td><a class="btn btn-primary view-pdf" href="http://unec.edu.az/application/uploads/2014/12/pdf-sample.pdf">View PDF</a></td>
       </tr>
   </table>
 </div>
