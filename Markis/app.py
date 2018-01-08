@@ -177,6 +177,10 @@ def javascript(filename):
 def image(filename):
 	return send_from_directory('img',
 							   filename)
+@app.route('/favicon.ico')
+def favicon():
+	return send_from_directory('img',
+							   'favicon.ico')
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
