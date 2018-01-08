@@ -1,5 +1,13 @@
-{% extends 'base.html' %}
-{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'includes/_head.html' %}
+<body>
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+      <span class="navbar-brand">Markis</span>
+
+        </ul>
+      </div>
+    </nav>
 <div class="starter-template">
   <h1>Log in</h1>
     {% from 'includes/_formhelper.html' import render_field %}
@@ -23,4 +31,5 @@
       <a href="/">Forgot Password?</a>
     </form>
   </div>
-{% endblock %}
+{% include 'includes/_footer.html' %}
+</body>
