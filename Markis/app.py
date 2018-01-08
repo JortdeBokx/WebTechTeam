@@ -44,10 +44,9 @@ login_manager.login_message = "You need to be logged in to view this page!"
 
 @app.route('/')
 def home():
-	# Get subjects from Database
 	conn = engine.connect()
-	rv = conn.execute("""SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC""").fetchall()
-	rv2 = conn.execute("""SELECT * FROM faculties WHERE 1""").fetchall()
+	rv = conn.execute(text("SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC")).fetchall()
+	rv2 = conn.execute(text("SELECT * FROM faculties WHERE 1")).fetchall()
 	conn.close()
 	return render_template('home.html', subjects=rv, faculties=rv2)
 
@@ -71,7 +70,11 @@ def uploadFile():
 #@login_required
 def subject(subjectid):
 	#TODO: if subject does not exist, return 404
-	return render_template('subject.html', subjectDataSet = getSubjectData(subjectid))
+	subjectDataSet = getSubjectData(subjectid)
+	if subjectDataSet == None:
+		return render_template('404.html', reason="nosubject"), 404
+	else:
+		return render_template('subject.html', subjectDataSet = subjectDataSet)
 
 @app.route('/profile',)
 #@login_required
@@ -181,7 +184,7 @@ def allowed_file(filename):
 def getSubjectData(subjectid):
 	facultyid = int(subjectid[0])
 	conn = engine.connect()
-	s = text("SELECT subject_id, subject_name, faculty_name FROM subjects, faculties WHERE subject_id=:u and faculty_id = :i")
+	s = text("SELECT subject_id, subject_name, subject_description, faculty_name FROM subjects, faculties WHERE subject_id=:u and faculty_id = :i")
 	rv = conn.execute(s, u=subjectid, i=facultyid).fetchone()
 	conn.close()
 	return rv
