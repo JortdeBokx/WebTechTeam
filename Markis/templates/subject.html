@@ -35,7 +35,7 @@
       </tr>
     </thead>
       {% for folder in folders %}
-      <tr>
+      <tr onclick="location.href = '/subject/{{ subjectDataSet.subject_id }}/{{ folder.name }}';" >
         <td>
             {% if folder.hasContent %}
             <i class="material-icons" id="icon">folder</i>
