@@ -3,8 +3,7 @@
  <div class="home-information">
    <div class="top-bar-left">
      <span class="faculties">Faculties:</span>
-     <select class="custom-select">
-      <option selected>All</option>
+     <select class="custom-select" id="multivalued" multiple="multiple">
       {% for faculty in faculties %}
       <option value="{{faculty.faculty_id}}">{{faculty.faculty_name}}</option>
       {% endfor %}
