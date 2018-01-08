@@ -46,7 +46,7 @@ login_manager.login_message = "You need to be logged in to view this page!"
 @app.route('/')
 def home():
 	conn = engine.connect()
-	rv = conn.execute(text("SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id =s.subject_faculty ORDER BY s.subject_id ASC")).fetchall()
+	rv = conn.execute(text("SELECT s.subject_id, s.subject_name, f.faculty_name FROM subjects AS s LEFT JOIN faculties as f ON f.faculty_id = SUBSTR(subject_id, 1) ORDER BY s.subject_id ASC")).fetchall()
 	rv2 = conn.execute(text("SELECT * FROM faculties WHERE 1")).fetchall()
 	conn.close()
 	return render_template('home.html', subjects=rv, faculties=rv2)
