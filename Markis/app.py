@@ -69,7 +69,6 @@ def uploadFile():
 @app.route('/subject/<subjectid>',)
 #@login_required
 def subject(subjectid):
-	#TODO: if subject does not exist, return 404
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
 		return render_template('404.html', reason="nosubject"), 404
@@ -178,9 +177,11 @@ def page_not_found(e):
 @app.errorhandler(418)
 def page_not_found(e):
     return render_template('418.html'), 418
+
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html'), 500
+
 #############################################
 #			   Helper Functions 			#
 #############################################
