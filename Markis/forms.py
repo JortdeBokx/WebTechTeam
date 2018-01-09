@@ -18,8 +18,7 @@ class loginForm(Form):
 class uploadFileForm(Form):
 	subject = SelectField('Subject')
 	filetype = SelectField('File Type', choices=[('exams', 'Exams'), ('hw', 'Homework'), ('lit', 'Literature'), ('misc','Miscellanious'), ('sum','Summaries')])
-	exam1 = DateField('Released')
-	exam2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
-	homework1 = DateField('Made')
-	homework2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
+	opt1 = DateField('Released/Made')
+	opt2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
+	
 	
