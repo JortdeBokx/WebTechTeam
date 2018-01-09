@@ -1,6 +1,6 @@
  {% include 'includes/_head.html' %}
- <div class="starter-template">
-    <h1>Upload</h1>
+ <div class="upload-container">
+    <h1>Upload File</h1>
     {% from 'includes/_formhelper.html' import render_field %}
     <form method="POST" action="">
     	<div class="form-group">
@@ -23,11 +23,10 @@
 
     	<button type="submit" value="Register" class="btn btn-primary-red">Upload</button>
     </form>
-</div>
+	</div>
 {% include 'includes/_scripts.html' %}
+ <script src="{{url_for('static', filename='js/dropzone.js')}}"></script>
 <script>
     console.log('Opened');
     $("#uploadDropzone").dropzone({ url: "/uploadfile" });
 </script>
-
-
