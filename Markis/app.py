@@ -18,6 +18,7 @@ app = Flask(__name__, static_url_path='/static')
 
 UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put your upload folder here, used by drag&drop upload
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
+REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
 
 #############################################
 #				Databse Setup				#
@@ -80,12 +81,12 @@ def subject(subjectid):
 
 @app.route('/form/getUploadForm')
 def uploadFileGetForm():
-    form = uploadFileForm(request.form)
-    conn = engine.connect()
-    subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
-    conn.close()
-    form.subject.choices = [(g.subject_id, g.subject_id + ' - ' + g.subject_name) for g in subjects]
-    return render_template('uploadForm.html', form=form)
+	form = uploadFileForm(request.form)
+	conn = engine.connect()
+	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
+	conn.close()
+	form.subject.choices = [(g.subject_id, g.subject_id + ' - ' + g.subject_name) for g in subjects]
+	return render_template('uploadForm.html', form=form)
 
 
 @app.route('/subject/<subjectid>/<path:subfolder>',)
@@ -97,6 +98,7 @@ def subjectfiles(subjectid, subfolder):
 	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, subfolder)
 	if not os.path.exists(FolderPath):
 		checksubjectPath(subjectid)
+		#TODO: instead of not existing, show empty folderpage
 		return render_template('404.html', reason="nopath"), 404
 	foldersToShow = getFoldersToShow(subfolder, FolderPath)
 	filesToShow = getFilesToShow(subfolder, FolderPath)
@@ -240,9 +242,25 @@ def getSubjectData(subjectid):
 	conn.close()
 	return rv
 
+
+def makeSubjectFolder(subjectid):
+	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid)
+	os.makedirs(FolderPath)
+	for requiredFolder in REQUIRED_SUBJECT_SUBFOLDERS:
+		if requiredFolder not in os.listdir(FolderPath):
+			newPath = os.path.join(FolderPath, requiredFolder)
+			os.makedirs(newPath)
+
+
 def checksubjectPath(subjectid):
-	# TODO: check if subject path exists, make path if not
-	pass
+	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid)
+	if not os.path.exists(FolderPath):
+		makeSubjectFolder(subjectid)
+	for requiredFolder in REQUIRED_SUBJECT_SUBFOLDERS:
+		if requiredFolder not in os.listdir(FolderPath):
+			newPath = os.path.join(FolderPath, requiredFolder)
+			os.makedirs(newPath)
+
 
 
 def folderHasContent(path, subjectID):
@@ -256,23 +274,17 @@ def folderHasContent(path, subjectID):
 
 
 def getSubjectFolders(subjectID):
+	checksubjectPath(subjectID)
 	foldersToShow = []
-	examContent = folderHasContent("Exams", subjectID)
-	homeworkContent = folderHasContent("Homework", subjectID)
-	literatureContent = folderHasContent("Literature", subjectID)
-	miscContent = folderHasContent("Misc", subjectID)
-	summariesContent = folderHasContent("Summaries", subjectID)
-
-	exams = {'name': "Exams", 'hasContent': examContent}
-	homework = {'name': "Homework", 'hasContent': homeworkContent}
-	literature = {'name': "Literature", 'hasContent': literatureContent}
-	misc = {'name': "Misc", 'hasContent': miscContent}
-	summaries = {'name': "Summaries", 'hasContent': summariesContent}
-	foldersToShow.append(exams)
-	foldersToShow.append(homework)
-	foldersToShow.append(literature)
-	foldersToShow.append(misc)
-	foldersToShow.append(summaries)
+	PathToSubjects = os.path.join(app.config['FILE_BASE_DIR'], subjectID)
+	for subFolder in os.listdir(PathToSubjects):
+		SubFolderPath = os.path.join(PathToSubjects, subFolder)
+		if os.path.isdir(SubFolderPath):
+			info = {}
+			info['name'] = subFolder
+			info['hasContent'] = os.listdir(SubFolderPath) != []
+			foldersToShow.append(info)
+	#TODO: check if folders may be missing
 	return foldersToShow
 
 def getFoldersToShow(subfolder, FolderPath):
