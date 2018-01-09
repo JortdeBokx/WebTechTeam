@@ -32,6 +32,10 @@ button.btn.btn-primary-search {
 	color: black;
 }
 
+.title {
+	padding-bottom: 10px;
+}
+
 div.nav-item-border {
   width: 1px;
   height: 25px;
@@ -40,7 +44,11 @@ div.nav-item-border {
 }
 
 div.home-information {
-  height: 60px;
+  height:60px;
+}
+
+div.file-information {
+	height: 120px;
 }
 
 div.top-bar-left {
@@ -214,19 +222,7 @@ span.right {
     display: none;
   }
 
-  div.search-bar {
-    display: block;
-    width: 369px;
-    float: none;
-    margin: 20px auto;
-  }
 
-  div.top-bar-left {
-    display: block;
-    width: 369px;
-    float: none;
-    margin: 0 auto;
-  }
 
   div.home-information {
     height: 100px;
@@ -247,12 +243,8 @@ span.right {
     display: none;
   }
 
-  span.faculties {
-    display: none;
-  }
-
   div.top-bar-left {
-    width: 100%;
+    width: 80%;
   }
 
   div.search-bar {
@@ -266,6 +258,12 @@ span.right {
   select.custom-select {
     width: 99%;
   }
+}
+
+@media (min-width: 576px) {
+	.container {
+		width: 95%;
+	}
 }
 
 @media (max-width: 576px) {

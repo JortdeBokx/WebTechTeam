@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="home-information">
-  <div class="top-bar-left">
+<div class="home-information file-information">
+  <div class="title">
     <h2>{{ subjectDataSet.subject_id }} - {{ subjectDataSet.subject_name }} </h2>
  </div>
-</div>
-
  {% include 'includes/_breadcrumb.html' %}
  {% include 'includes/_searchbar.html' %}
+</div>
 
 <div class="content">
   <table class="table table-hover">
