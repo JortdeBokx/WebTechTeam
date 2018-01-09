@@ -37,7 +37,7 @@
 			</tr>
     {% endfor %}
   {% for file in files %}
-      <tr href = {{ file.path }}>
+      <tr href = "{{ file.path }}" data-file-name="{{ file.name }}" >
         <td><i class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
          <td>{{ file.upload_date }}</td>
          <td>{{ file.size }}</td>
