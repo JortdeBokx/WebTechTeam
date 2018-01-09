@@ -25,6 +25,7 @@
     </form>
 	</div>
 {% include 'includes/_scripts.html' %}
+ <script src="{{url_for('static', filename='js/dropzone.js')}}"></script>
 <script>
     console.log('Opened');
     $("#uploadDropzone").dropzone({ url: "/uploadfile" });

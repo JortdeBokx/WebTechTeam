@@ -101,11 +101,10 @@ def subjectfiles(subjectid, subfolder):
 		return render_template('404.html', reason="nosubject"), 404
 	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, subfolder)
 	if not os.path.exists(FolderPath):
-		checksubjectPath(subjectid)
-		#TODO: instead of not existing, show empty folderpage
-		return render_template('404.html', reason="nopath"), 404
-	foldersToShow = getFoldersToShow(subfolder, FolderPath)
-	filesToShow = getFilesToShow(subfolder, FolderPath)
+		if not checksubjectPath(subjectid):
+			return render_template('404.html', reason="nopath"), 404
+	foldersToShow = getFoldersToShow(FolderPath)
+	filesToShow = getFilesToShow(FolderPath, subfolder, subjectid)
 	return render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 
 
@@ -248,33 +247,31 @@ def getSubjectData(subjectid):
 
 
 def makeSubjectFolder(subjectid):
+	# return true if a new folder was made, false if not
+	created = False
 	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid)
 	os.makedirs(FolderPath)
 	for requiredFolder in REQUIRED_SUBJECT_SUBFOLDERS:
 		if requiredFolder not in os.listdir(FolderPath):
 			newPath = os.path.join(FolderPath, requiredFolder)
 			os.makedirs(newPath)
+			created = True
+	return created
 
 
 def checksubjectPath(subjectid):
+	#return true if a new folder was made, false if not
+	created = False
 	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid)
 	if not os.path.exists(FolderPath):
-		makeSubjectFolder(subjectid)
+		created = makeSubjectFolder(subjectid)
 	for requiredFolder in REQUIRED_SUBJECT_SUBFOLDERS:
 		if requiredFolder not in os.listdir(FolderPath):
 			newPath = os.path.join(FolderPath, requiredFolder)
+			created = True
 			os.makedirs(newPath)
 
-
-
-def folderHasContent(path, subjectID):
-	conn = engine.connect()
-	pattern = "%" +path+ "%"
-	s = text(
-		"SELECT file_ID FROM files WHERE path LIKE :p and subject_code = :s")
-	rv = conn.execute(s, p=pattern, s=subjectID).fetchall()
-	conn.close()
-	return rv != []
+	return created
 
 
 def getSubjectFolders(subjectID):
@@ -291,34 +288,42 @@ def getSubjectFolders(subjectID):
 	#TODO: check if folders may be missing
 	return foldersToShow
 
-def getFoldersToShow(subfolder, FolderPath):
+def getFoldersToShow(FolderPath):
 	foldersToShow = []
-	if subfolder == "Exams":
-		for subdir in os.listdir(FolderPath):
-			info = {}
-			info['name'] = subdir
-			info['hasContent'] = (os.listdir(os.path.join(FolderPath, subdir)) is not None)
+	for folder in os.listdir(FolderPath):
+		newPath = os.path.join(FolderPath, folder)
+		if os.path.isdir(newPath):
+			info={}
+			info['name'] = folder
+			info['hasContent'] = os.listdir(newPath) != []
 			foldersToShow.append(info)
-
-	elif subfolder == "Homework":
-		for subdir in os.listdir(FolderPath):
-			info = {}
-			info['name'] = subdir
-			info['hasContent'] = (os.listdir(os.path.join(FolderPath, subdir)) is not None)
-			foldersToShow.append(info)
-
-	elif subfolder == "Literature":
-		foldersToShow = []
-	elif subfolder == "Misc":
-		foldersToShow = []
-	elif subfolder == "Summaries":
-		foldersToShow = []
-	else:
-		foldersToShow = None
 	return foldersToShow
 
-def getFilesToShow(subfolder, FolderPath):
-	pass
+
+def FileExists(relativePath, subject, filename):
+	#returns file id, otherwise empty set []
+	conn = engine.connect()
+	pattern = "%" +relativePath+ "%"
+	s = text(
+		"SELECT file_ID FROM files WHERE path LIKE :p and subject_code = :s and name = :n")
+	rv = conn.execute(s, p=pattern, s=subject, n=filename).fetchone()
+	conn.close()
+	return rv[0]
+
+
+def getFilesToShow(FolderPath, relativePath, subject):
+	#TODO: list all files in direcotry and check if said file also exists in database, if not: log error and don't show file
+	files = []
+	for file in os.listdir(FolderPath):
+		newPath = os.path.join(FolderPath, file)
+		if not os.path.isdir(newPath):
+			fileID = FileExists(relativePath, subject, file)
+			if fileID != None:
+				conn = engine.connect()
+				s = text("SELECT * FROM files WHERE file_ID = :p")
+				rv = conn.execute(s, p=fileID).fetchall()
+				files.append(rv)
+	return files
 
 #############################################
 #               Data Objects 	        	#
