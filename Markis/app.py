@@ -342,7 +342,6 @@ def getSubjectFolders(subjectID):
 			info['name'] = subFolder
 			info['hasContent'] = os.listdir(SubFolderPath) != []
 			foldersToShow.append(info)
-	#TODO: check if folders may be missing
 	return foldersToShow
 
 def getFoldersToShow(FolderPath):
@@ -369,7 +368,6 @@ def FileExists(relativePath, subject, filename):
 
 
 def getFilesToShow(FolderPath, relativePath, subject):
-	#TODO: list all files in direcotry and check if said file also exists in database, if not: log error and don't show file
 	files = []
 	for file in os.listdir(FolderPath):
 		newPath = os.path.join(FolderPath, file)
