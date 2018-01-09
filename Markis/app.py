@@ -113,9 +113,8 @@ def subjectfiles(subjectid, subfolder):
 			res =  render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 		elif os.path.isfile(Path):
 			res = send_file(Path)
-			res.headers.add('Content-Disposition', 'attachment')
 		else:
-			res =  render_template('404.html', reason="nopath"), 404
+			res = render_template('404.html', reason="nopath"), 404
 	return res
 
 

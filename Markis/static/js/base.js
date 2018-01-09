@@ -122,8 +122,7 @@ $(document).ready(()=>{
             defaults = {
                 title: "",
                 closeButton: true,
-                scrollable: false,
-                id: "FilePreviewModal"
+                scrollable: false
             };
             var b = a.extend({}, defaults, b);
             var c = (b.scrollable === true) ? 'style="max-height: 780px;overflow-y: auto;"' : "";
@@ -131,21 +130,25 @@ $(document).ready(()=>{
             html += '<div class="modal-dialog modal-lg">';
             html += '<div class="modal-content">';
             html += '<div class="modal-header">';
-            html += '<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>';
             if (b.title.length > 0) {
                 html += '<h4 class="modal-title pull-left">' + b.title + "</h4>"
             }
+            html += '<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>';
             html += "</div>";
             html += '<div class="modal-body" ' + c + ">";
             html += b.message;
             html += "</div>";
             html += '<div class="modal-footer">';
+            if (b.id === "FilePreviewModal") {
+                html += '<a href = "' + b.downloadLink + '"  download><button type="button" class="btn btn-primary-red" >Download</button></a>'
+            }
+            if (b.id === "uploadModal") {
+                html += '<button type="button" class="btn btn-primary-red" id="uploadBtn">Upload</button>'
+            }
             if (b.closeButton === true) {
                 html += '<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>'
             }
-            ;if (b.id === "uploadModal") {
-                html += '<button type="button" class="btn btn-primary-red" id="uploadBtn">Upload</button>'
-            }
+
             html += "</div>";
             html += "</div>";
             html += "</div>";
@@ -160,28 +163,40 @@ $(document).ready(()=>{
 * Here is how you use it
 */
     $(function() {
-        $('.view-pdf').on('click', function() {
-            var pdf_link = $(this).attr('href');
-            var iframe = '<div class="iframe-container"><iframe src="' + pdf_link + '"></iframe></div>';
+        $('.preview_file').on('click', function() {
+            var link = $(this).attr('href');
+            var title = $(this).attr('data-file-name');
+            var fileType = title.split(".")[1];
+            var content;
+            switch (fileType){
+                case ".pdf":
+                case ".txt":
+                     content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
+                    break;
+                case ".jpg":
+                case ".gif":
+                case ".jpe":
+                case ".jpeg":
+                case ".png":
+                case ".svg":
+                case ".webp":
+                      content = '<div><img src="' + link + '" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
+                      break;
+                default:
+                      content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
+            }
+
             $.createModal({
-                title: 'PDF',
-                message: iframe,
+                title: title,
+                message: content,
                 closeButton: true,
                 scrollable: false,
+                id: 'FilePreviewModal',
+                downloadLink: link
             });
             return false;
-        });
-        $('.view-photo').on('click', function() {
-            var photo_link = $(this).attr('href');
-            var image = '<div><img src="' + photo_link + '" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
-            $.createModal({
-                title: 'Picture',
-                message: image,
-                closeButton: true,
-                scrollable: false,
             });
-            return false;
-        });
+
         $('.upload-file').on('click', function() {
             $.createModal({
                 title: 'Upload',
@@ -201,7 +216,3 @@ $(document).ready(()=>{
 
 }
 );
-
-/*
-    File Preview Modal
- */
