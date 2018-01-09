@@ -52,21 +52,25 @@ def home():
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
 
-@app.route('/uploadfile', methods=["GET", "POST"])
+@app.route('/uploadfile',  methods=["GET", "POST"])
 def uploadFile():
 	if request.method == "POST":
 		if 'file' not in request.files:
 			flash('No selected items')
-			return "Err"
+			return "No selected items"
 		file = request.files['file']
 		if file.filename == '':
 			flash('No file selected')
-			return "Err"
+			return "No file selected"
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 			return redirect(url_for('uploaded_file',
 												filename=filename))
+		else:
+			return "File not allowed"
+	else:
+		return "Only POST Methods allowed"
 
 @app.route('/subject/<subjectid>',)
 #@login_required
@@ -79,7 +83,7 @@ def subject(subjectid):
 		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
 
 
-@app.route('/form/getUploadForm')
+@app.route('/form/getUploadForm', methods=["GET", "POST"])
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
 	conn = engine.connect()
