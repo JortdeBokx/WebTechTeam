@@ -28,10 +28,6 @@ PATHS_IGNORE_BREADCRUMB = {'subject': SUBJECTS_PATH}
 #############################################
 
 engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
-app.config['MYSQL_HOST'] = 'cs-students.nl'
-app.config['MYSQL_USER'] = 'markis'
-app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
-app.config['MYSQL_DB'] = 'markis'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['FILE_BASE_DIR'] = os.path.join(app.root_path, "storage")

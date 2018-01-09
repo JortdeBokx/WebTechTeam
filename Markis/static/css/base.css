@@ -120,6 +120,9 @@ div.card-block {
   margin-bottom: 0.2rem;
 }
 
+.dropzone .dz-message {
+  margin: 0 0 !important;
+}
 
 #icon {
   position: relative;
