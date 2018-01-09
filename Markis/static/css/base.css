@@ -160,7 +160,6 @@ div.upload-container input.form-control {
 
 div#uploadDropzone {
 	border: 1px dashed black;
-	height: 25%;
 	border-radius: 0.5rem;
 	background-color: rgb(247, 245, 244);
 }
@@ -172,8 +171,6 @@ div#uploadDropzone {
 .dz-message span {
 	font-size: 1.3	rem;
 }
-
-
 
 .footer {
     position: fixed;
