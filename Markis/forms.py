@@ -21,4 +21,10 @@ class uploadFileForm(Form):
 	opt1 = DateField('Released/Made')
 	opt2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
 	
+class profileForm(Form):
+	firstname = StringField("First Name", [validators.Length(min=1, max=20)], render_kw={"placeholder": "First Name"})
+	lastname = StringField("Last Name", [validators.Length(min=1, max=20)], render_kw={"placeholder": "Last Name"})
+	email = StringField("E-mail", [validators.Email(message="Please enter a valid email address")], render_kw={"placeholder": "Email"})
+	username = StringField("Username", [validators.Length(min=3, max=35)], render_kw={"placeholder": "Username"})
+	password = PasswordField("Password", [], render_kw={"placeholder": "Password"})
 	

@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
-from forms import registerForm, loginForm, uploadFileForm
+from forms import registerForm, loginForm, uploadFileForm, profileForm
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -26,7 +26,7 @@ ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,ta
 #				Databse Setup				#
 #############################################
 
-engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis')
+engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
 app.config['MYSQL_HOST'] = 'cs-students.nl'
 app.config['MYSQL_USER'] = 'markis'
 app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
@@ -54,7 +54,7 @@ def home():
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
 
-@app.route('/uploadfile',  methods=["GET", "POST"])
+@app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
 	if request.method == "POST":
 		if 'file' not in request.files:
@@ -74,7 +74,7 @@ def uploadFile():
 	else:
 		return "Only POST Methods allowed"
 
-@app.route('/subject/<subjectid>',)
+@app.route('/subject/<subjectid>/',)
 #@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
@@ -117,10 +117,32 @@ def icon_fmt(filename):
 			i = icon
 	return i
 
-@app.route('/profile',)
+@app.route('/profile', methods=["GET", "POST"])
 #@login_required
 def profile():
-	return render_template('profile.html')
+	form = profileForm(request.form)
+	if request.method == "POST" and form.validate():
+		conn = engine.connect()
+		username = form.username.data
+		first_name = form.firstname.data
+		last_name = form.lastname.data
+		email = form.email.data
+		password = sha256_crypt.hash(form.password.data)
+		if form.password.data == '':
+			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, email=:e WHERE id=:i")
+		else:
+			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, password=:p, email=:e WHERE id=:i")
+		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=4)
+		conn.close()
+		return redirect(url_for('profile'), code=302)	
+	else:
+		conn = engine.connect()
+		s = text("SELECT * FROM users WHERE id=:i")
+		rv = conn.execute(s, i=4).fetchall()
+		conn.close()
+		data = rv[0]
+		form = profileForm(firstname=data['first_name'], lastname=data['last_name'], email=data['email'], username=data['username'])
+		return render_template('profile.html', form=form)
 
 @app.route('/favorites')
 #@login_required
@@ -137,7 +159,6 @@ def register():
 	form = registerForm(request.form)
 	if request.method == 'POST' and form.validate():
 		conn = engine.connect()
-
 
 		username = form.username.data
 		first_name = form.firstname.data
