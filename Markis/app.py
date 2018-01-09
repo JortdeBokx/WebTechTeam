@@ -297,7 +297,7 @@ def allowed_file(filename):
 def getSubjectData(subjectid):
 	facultyid = int(subjectid[0])
 	conn = engine.connect()
-	s = text("SELECT subject_id, subject_name, subject_description, faculty_name FROM subjects, faculties WHERE subject_id=:u and faculty_id = :i")
+	s = text("SELECT subject_id, subject_name, faculty_name FROM subjects, faculties WHERE subject_id=:u and faculty_id = :i")
 	rv = conn.execute(s, u=subjectid, i=facultyid).fetchone()
 	conn.close()
 	return rv
