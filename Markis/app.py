@@ -19,6 +19,8 @@ app = Flask(__name__, static_url_path='/static')
 UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put your upload folder here, used by drag&drop upload
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
+ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'insert_drive_file': 'pdf,txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
+
 
 #############################################
 #				Databse Setup				#
@@ -104,9 +106,16 @@ def subjectfiles(subjectid, subfolder):
 		if not checksubjectPath(subjectid):
 			return render_template('404.html', reason="nopath"), 404
 	foldersToShow = getFoldersToShow(FolderPath)
-	filesToShow = getFilesToShow(FolderPath, subfolder, subjectid)
+	filesToShow = getFilesToShow(FolderPath, subfolder, subjectid.upper())
 	return render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 
+@app.template_filter('file_icon')
+def icon_fmt(filename):
+	i = 'insert_drive_file'
+	for icon, exts in ICONS.items():
+		if filename.split('.')[-1] in exts:
+			i = icon
+	return i
 
 @app.route('/profile', methods=["GET", "POST"])
 #@login_required
@@ -341,9 +350,11 @@ def getFilesToShow(FolderPath, relativePath, subject):
 			fileID = FileExists(relativePath, subject, file)
 			if fileID != None:
 				conn = engine.connect()
-				s = text("SELECT * FROM files WHERE file_ID = :p")
-				rv = conn.execute(s, p=fileID).fetchall()
-				files.append(rv)
+				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
+				rv = conn.execute(s, p=fileID).fetchone()
+				d = dict(rv.items())
+				d['size'] =str( os.path.getsize(newPath)/1000) + " kB"
+				files.append(d)
 	return files
 
 #############################################
