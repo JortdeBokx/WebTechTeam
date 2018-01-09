@@ -24,7 +24,7 @@ REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summa
 #				Databse Setup				#
 #############################################
 
-engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis')
+engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
 app.config['MYSQL_HOST'] = 'cs-students.nl'
 app.config['MYSQL_USER'] = 'markis'
 app.config['MYSQL_PASSWORD'] = 'dlSvw7noOQbiExlU'
@@ -72,7 +72,7 @@ def uploadFile():
 	else:
 		return "Only POST Methods allowed"
 
-@app.route('/subject/<subjectid>',)
+@app.route('/subject/<subjectid>/',)
 #@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
