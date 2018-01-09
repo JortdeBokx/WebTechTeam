@@ -5,7 +5,7 @@
 import os
 from urllib.parse import urlparse, urljoin
 
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file
 from flask_login import LoginManager, login_user, logout_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
@@ -20,7 +20,7 @@ UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put you
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
 ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'insert_drive_file': 'pdf,txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
-
+SUBJECTS_PATH = "/subject"
 
 #############################################
 #				Databse Setup				#
@@ -74,7 +74,7 @@ def uploadFile():
 	else:
 		return "Only POST Methods allowed"
 
-@app.route('/subject/<subjectid>/',)
+@app.route(SUBJECTS_PATH +'/<subjectid>/',)
 #@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
@@ -95,20 +95,27 @@ def uploadFileGetForm():
 	return render_template('uploadForm.html', form=form)
 
 
-@app.route('/subject/<subjectid>/<path:subfolder>',)
+@app.route(SUBJECTS_PATH + '/<subjectid>/<path:subfolder>',)
 #@login_required
 def subjectfiles(subjectid, subfolder):
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
-		return render_template('404.html', reason="nosubject"), 404
-	FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, subfolder)
-	if not os.path.exists(FolderPath):
+		res =  render_template('404.html', reason="nosubject"), 404
+	Path = os.path.join(app.config['FILE_BASE_DIR'], subjectid, subfolder)
+	if not os.path.exists(Path):
 		if not checksubjectPath(subjectid):
-			return render_template('404.html', reason="nopath"), 404
-	foldersToShow = getFoldersToShow(FolderPath)
-	filesToShow = getFilesToShow(FolderPath, subfolder, subjectid.upper())
-	return render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
-
+			res = render_template('404.html', reason="nopath"), 404
+	else:
+		if os.path.isdir(Path):
+			foldersToShow = getFoldersToShow(Path)
+			filesToShow = getFilesToShow(Path, subfolder, subjectid.upper())
+			res =  render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
+		elif os.path.isfile(Path):
+			res = send_file(Path)
+			res.headers.add('Content-Disposition', 'attachment')
+		else:
+			res =  render_template('404.html', reason="nopath"), 404
+	return res
 @app.template_filter('file_icon')
 def icon_fmt(filename):
 	i = 'insert_drive_file'
@@ -350,10 +357,11 @@ def getFilesToShow(FolderPath, relativePath, subject):
 			fileID = FileExists(relativePath, subject, file)
 			if fileID != None:
 				conn = engine.connect()
-				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
+				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
-				d['size'] =str( os.path.getsize(newPath)/1000) + " kB"
+				d['size'] = str( os.path.getsize(newPath)/1000) + " kB"
+				d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				files.append(d)
 	return files
 
