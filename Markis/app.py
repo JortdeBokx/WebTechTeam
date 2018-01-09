@@ -19,7 +19,7 @@ app = Flask(__name__, static_url_path='/static')
 UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put your upload folder here, used by drag&drop upload
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
-ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'insert_drive_file': 'pdf,txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
+ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'picture_as_pdf': 'pdf', 'insert_drive_file': 'txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
 SUBJECTS_PATH = "/subject"
 PATHS_IGNORE_BREADCRUMB = {'subject': SUBJECTS_PATH}
 

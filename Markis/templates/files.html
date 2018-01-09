@@ -18,6 +18,7 @@
         <th>Uploaded By</th>
         <th>Favorite</th>
         <th>Votes</th>
+        <th>Download</th>
       </tr>
     </thead>
       {% for folder in folders %}
@@ -34,16 +35,18 @@
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
 			</tr>
     {% endfor %}
   {% for file in files %}
-      <tr class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}" >
-        <td><i class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
-         <td>{{ file.upload_date }}</td>
-         <td>{{ file.size }}</td>
-       <td>{{ file.uploader }}</td>
+      <tr>
+        <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}"><i class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
+         <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
+         <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
+       <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.uploader }}</td>
        <td>TODO</td>
        <td>{{ file.votes }}</td>
+       <td><a href = "{{ file.path }}"  download><i class="material-icons download_button">file_download</i></a></td>
       </tr>
     {% endfor %}
   </table>
