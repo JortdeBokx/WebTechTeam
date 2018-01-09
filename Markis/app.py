@@ -21,6 +21,7 @@ ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
 ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'insert_drive_file': 'pdf,txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
 SUBJECTS_PATH = "/subject"
+PATHS_IGNORE_BREADCRUMB = {'subject': SUBJECTS_PATH}
 
 #############################################
 #				Databse Setup				#
@@ -120,25 +121,8 @@ def subjectfiles(subjectid, subfolder):
 		else:
 			res =  render_template('404.html', reason="nopath"), 404
 	return res
-@app.template_filter('file_icon')
-def icon_fmt(filename):
-	i = 'insert_drive_file'
-	for icon, exts in ICONS.items():
-		if filename.split('.')[-1] in exts:
-			i = icon
-	return i
 
-@app.template_filter('breadcrumb')
-def getBreadcrumbPath(url):
-	r = {'home': '/'}
-	currpath = ''
-	urlList = url.split('/')
-	del urlList [0]
-	for section in urlList:
-		currpath = currpath + '/' + section
-		r[section] =  currpath
-	r.pop(SUBJECTS_PATH.split('/')[1])
-	return r
+
 
 @app.route('/profile', methods=["GET", "POST"])
 #@login_required
@@ -224,6 +208,30 @@ def login():
 	else:
 		return render_template('login.html', form=form)
 
+#############################################
+#			Template Filters				#
+#############################################
+
+@app.template_filter('file_icon')
+def icon_fmt(filename):
+	i = 'insert_drive_file'
+	for icon, exts in ICONS.items():
+		if filename.split('.')[-1] in exts:
+			i = icon
+	return i
+
+@app.template_filter('breadcrumb')
+def getBreadcrumbPath(url):
+	r = {'home': '/'}
+	currpath = ''
+	urlList = url.split('/')
+	del urlList [0]
+	for section in urlList:
+		currpath = currpath + '/' + section
+		r[section] =  currpath
+	for pathnames in PATHS_IGNORE_BREADCRUMB:
+		r.pop(pathnames)
+	return r
 
 #############################################
 #			Paths to static Files			#
