@@ -3,7 +3,7 @@
  <div class="upload-container">
     <h1>Upload File</h1>
     {% from 'includes/_formhelper.html' import render_field %}
-    <form method="POST" action="">
+    <form method="POST" action="" id="uploadForm">
     	<div class="form-group">
     		{{render_field(form.subject, class_="form-control")}}
     	</div>
@@ -21,13 +21,12 @@
                 <input name="file" type="file" multiple />
             </div>
         </div>
-
-    	<button type="submit" value="Register" class="btn btn-primary-red">Upload</button>
     </form>
 	</div>
 {% include 'includes/_scripts.html' %}
  <script src="{{url_for('static', filename='js/dropzone.js')}}"></script>
 <script>
-    console.log('Opened');
-    $("#uploadDropzone").dropzone({ url: "/uploadfile" });
+    $(document).ready(function() {
+        $("#uploadDropzone").dropzone({ url: "/uploadfile" });
+    });
 </script>
