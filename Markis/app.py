@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
-from forms import registerForm, loginForm, uploadFileForm
+from forms import registerForm, loginForm, uploadFileForm, profileForm
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -52,7 +52,7 @@ def home():
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
 
-@app.route('/uploadfile',  methods=["GET", "POST"])
+@app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
 	if request.method == "POST":
 		if 'file' not in request.files:
@@ -109,10 +109,32 @@ def subjectfiles(subjectid, subfolder):
 	return render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 
 
-@app.route('/profile',)
+@app.route('/profile', methods=["GET", "POST"])
 #@login_required
 def profile():
-	return render_template('profile.html')
+	form = profileForm(request.form)
+	if request.method == "POST" and form.validate():
+		conn = engine.connect()
+		username = form.username.data
+		first_name = form.firstname.data
+		last_name = form.lastname.data
+		email = form.email.data
+		password = sha256_crypt.hash(form.password.data)
+		if form.password.data == '':
+			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, email=:e WHERE id=:i")
+		else:
+			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, password=:p, email=:e WHERE id=:i")
+		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=4)
+		conn.close()
+		return redirect(url_for('profile'), code=302)	
+	else:
+		conn = engine.connect()
+		s = text("SELECT * FROM users WHERE id=:i")
+		rv = conn.execute(s, i=4).fetchall()
+		conn.close()
+		data = rv[0]
+		form = profileForm(firstname=data['first_name'], lastname=data['last_name'], email=data['email'], username=data['username'])
+		return render_template('profile.html', form=form)
 
 @app.route('/favorites')
 #@login_required
@@ -129,7 +151,6 @@ def register():
 	form = registerForm(request.form)
 	if request.method == 'POST' and form.validate():
 		conn = engine.connect()
-
 
 		username = form.username.data
 		first_name = form.firstname.data
