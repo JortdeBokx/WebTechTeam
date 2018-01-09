@@ -74,6 +74,10 @@ def uploadFile():
 	else:
 		return "Only POST Methods allowed"
 
+@app.route(SUBJECTS_PATH,)
+def subjectGoHome():
+	return redirect("/", code=302)
+
 @app.route(SUBJECTS_PATH +'/<subjectid>/',)
 #@login_required
 def subject(subjectid):
