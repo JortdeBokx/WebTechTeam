@@ -139,7 +139,7 @@ $(document).ready(()=>{
             html += b.message;
             html += "</div>";
             html += '<div class="modal-footer">';
-            if (b.id === "FilePreviewModal") {
+            if (b.id === "FilePreviewModal" || b.id === 'FilePreviewModalSmall') {
                 html += '<a href = "' + b.downloadLink + '"  download><button type="button" class="btn btn-primary-red" >Download</button></a>'
             }
             if (b.id === "uploadModal") {
@@ -169,21 +169,25 @@ $(document).ready(()=>{
             var fileType = title.split(".")[1];
             var content;
             switch (fileType){
-                case ".pdf":
-                case ".txt":
+                case "pdf":
+                case "txt":
                      content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
+                     id = 'FilePreviewModal';
                     break;
-                case ".jpg":
-                case ".gif":
-                case ".jpe":
-                case ".jpeg":
-                case ".png":
-                case ".svg":
-                case ".webp":
-                      content = '<div><img src="' + link + '" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
+                case "jpg":
+                case "gif":
+                case "jpe":
+                case "jpeg":
+                case "png":
+                case "svg":
+                case "webp":
+                      content = '<div><img src="' + link + '" style="max-width: 100%; max-height: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
+                      id = 'FilePreviewModalSmall';
                       break;
                 default:
+                    console.log(fileType);
                       content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
+                      id = 'FilePreviewModal';
             }
 
             $.createModal({
@@ -191,7 +195,7 @@ $(document).ready(()=>{
                 message: content,
                 closeButton: true,
                 scrollable: false,
-                id: 'FilePreviewModal',
+                id: id,
                 downloadLink: link
             });
             return false;

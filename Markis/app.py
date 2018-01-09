@@ -363,7 +363,10 @@ def FileExists(relativePath, subject, filename):
 		"SELECT file_ID FROM files WHERE path LIKE :p and subject_code = :s and name = :n")
 	rv = conn.execute(s, p=pattern, s=subject, n=filename).fetchone()
 	conn.close()
-	return rv[0]
+	if not rv:
+		return []
+	else:
+		return rv[0]
 
 
 def getFilesToShow(FolderPath, relativePath, subject):
@@ -372,7 +375,7 @@ def getFilesToShow(FolderPath, relativePath, subject):
 		newPath = os.path.join(FolderPath, file)
 		if not os.path.isdir(newPath):
 			fileID = FileExists(relativePath, subject, file)
-			if fileID != None:
+			if fileID:
 				conn = engine.connect()
 				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
