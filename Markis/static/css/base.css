@@ -167,12 +167,9 @@ div#uploadDropzone {
 	background-color: rgb(247, 245, 244);
 }
 
-.dz-message {
-	padding-top: 7%;
-}
 
 .dz-message span {
-	font-size: 1.3	rem;
+	font-size: 1.3rem;
 }
 
 .footer {
