@@ -6,23 +6,7 @@
  </div>
 </div>
 
-<div class="d-inline-block">
- <ol>
-     <li class="d-inline">
-         <a href="/">
-             <i class="material-icons" id="icon">home</i>
-             <span> ></span>
-         </a>
-     </li>
-     <li class="d-inline">
-         <a href="">
-             <i class="material-icons" id="icon">folder</i>
-             <span>{{subjectDataSet.subject_id}} ></span>
-         </a>
-     </li>
- </ol>
-</div>
-
+ {% include 'includes/_breadcrumb.html' %}
  {% include 'includes/_searchbar.html' %}
 
 <div class="content">
