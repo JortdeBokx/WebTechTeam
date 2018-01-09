@@ -128,6 +128,18 @@ def icon_fmt(filename):
 			i = icon
 	return i
 
+@app.template_filter('breadcrumb')
+def getBreadcrumbPath(url):
+	r = {'home': '/'}
+	currpath = ''
+	urlList = url.split('/')
+	del urlList [0]
+	for section in urlList:
+		currpath = currpath + '/' + section
+		r[section] =  currpath
+	r.pop(SUBJECTS_PATH.split('/')[1])
+	return r
+
 @app.route('/profile', methods=["GET", "POST"])
 #@login_required
 def profile():
