@@ -6,6 +6,14 @@ $(document).ready(() => {
     searchSubject();
   });
 
+      if ($('#uploadDropzone').length) {
+            var myDropzone = new Dropzone("#uploadDropzone", {
+          url: "/file/post"
+        });
+        $("#uploadDropzone").dropzone({ url: "/file/post" });
+            // other code here
+      }
+
     function searchSubject() {
     var input, filter, title, code, name, i;
     input = document.getElementById('search-subject');
@@ -113,6 +121,8 @@ $(document).ready(() => {
         	searchFile();
 				}
   });
+     
+
 
 /*
 * This is the plugin

@@ -21,6 +21,10 @@
         <div class="form-group">
             {{render_field(form.homework2, class_="form-control")}}
         </div>
+        <div id="uploadDropzone" class="fallback" class="dropzone">
+            <input name="file" type="file" multiple />
+        </div>
+
     	<button type="submit" value="Register" class="btn btn-primary-red">Upload</button>
     </form>
 </div>

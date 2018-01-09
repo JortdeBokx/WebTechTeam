@@ -1,4 +1,5 @@
-from wtforms import Form, StringField, PasswordField, BooleanField, SelectField, DateField, validators
+from wtforms import Form, StringField, PasswordField, BooleanField, SelectField, validators
+from wtforms.fields.html5 import DateField
 
 class registerForm(Form):
 	firstname = StringField("First Name", [validators.Length(min=1, max=20)], render_kw={"placeholder": "First Name"})
@@ -17,8 +18,8 @@ class loginForm(Form):
 class uploadFileForm(Form):
 	subject = SelectField('Subject')
 	filetype = SelectField('File Type', choices=[('exams', 'Exams'), ('hw', 'Homework'), ('lit', 'Literature'), ('misc','Miscellanious'), ('sum','Summaries')])
-	exam1 = DateField('Released', format='%Y-%m-%d')
+	exam1 = DateField('Released')
 	exam2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
-	homework1 = DateField('Made', format='%Y-%m-%d')
+	homework1 = DateField('Made')
 	homework2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
 	
