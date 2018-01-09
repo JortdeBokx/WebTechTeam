@@ -121,10 +121,9 @@ $(document).ready(()=>{
         a.createModal = function(b) {
             defaults = {
                 title: "",
-                message: "Modal created",
                 closeButton: true,
                 scrollable: false,
-                id: "myModal"
+                id: "FilePreviewModal"
             };
             var b = a.extend({}, defaults, b);
             var c = (b.scrollable === true) ? 'style="max-height: 780px;overflow-y: auto;"' : "";
@@ -132,9 +131,9 @@ $(document).ready(()=>{
             html += '<div class="modal-dialog modal-lg">';
             html += '<div class="modal-content">';
             html += '<div class="modal-header">';
-            html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>';
+            html += '<button type="button" class="close pull-right" data-dismiss="modal" aria-hidden="true">×</button>';
             if (b.title.length > 0) {
-                html += '<h4 class="modal-title">' + b.title + "</h4>"
+                html += '<h4 class="modal-title pull-left">' + b.title + "</h4>"
             }
             html += "</div>";
             html += '<div class="modal-body" ' + c + ">";
@@ -163,7 +162,7 @@ $(document).ready(()=>{
     $(function() {
         $('.view-pdf').on('click', function() {
             var pdf_link = $(this).attr('href');
-            var iframe = '<div class="iframe-container"><iframe src="' + pdf_link + '"></iframe></div>'
+            var iframe = '<div class="iframe-container"><iframe src="' + pdf_link + '"></iframe></div>';
             $.createModal({
                 title: 'PDF',
                 message: iframe,
@@ -174,7 +173,7 @@ $(document).ready(()=>{
         });
         $('.view-photo').on('click', function() {
             var photo_link = $(this).attr('href');
-            var image = '<div><img src="' + photo_link + '" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></img></div>'
+            var image = '<div><img src="' + photo_link + '" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
             $.createModal({
                 title: 'Picture',
                 message: image,
@@ -194,13 +193,15 @@ $(document).ready(()=>{
             return false;
         });
         $('#uploadModal').ready(function() {
-            console.log("kdnen")
             $('#uploadModal').on("click", "#uploadBtn", function() {
-                console.log("jbbjhbj")
                 $('#uploadForm').submit();
             });
         });
     });
 
 }
-)
+);
+
+/*
+    File Preview Modal
+ */
