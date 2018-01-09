@@ -380,7 +380,7 @@ def getFilesToShow(FolderPath, relativePath, subject):
 				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
-				d['size'] = str( os.path.getsize(newPath)/1000) + " kB"
+				d['size'] = str( round(os.path.getsize(newPath)/1000, 1)) + " kB"
 				d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				files.append(d)
 	return files
