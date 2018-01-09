@@ -222,7 +222,6 @@ def getBreadcrumbPath(url):
 	currpath = ''
 	urlList = url.split('/')
 	urlList.remove('')
-	print(urlList)
 	for section in urlList:
 		currpath = currpath + '/' + section
 		r[section] =  currpath
