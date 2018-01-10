@@ -1,5 +1,11 @@
-{% extends 'base.html' %}
-{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'includes/_head.html' %}
+<body class="base">
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+      <span class="navbar-brand">Markis</span>
+
+    </nav>
  <div class="starter-template">
     <h1>Register</h1>
     {% from 'includes/_formhelper.html' import render_field %}
@@ -25,5 +31,6 @@
     	<button type="submit" value="Register" class="btn btn-primary-red">Sign Up</button>
     </form>
 </div>
-
-{% endblock %}
+{% include 'includes/_footer.html' %}
+</body>
+</html>
