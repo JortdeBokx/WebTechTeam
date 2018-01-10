@@ -6,7 +6,7 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file
-from flask_login import LoginManager, login_user, logout_user, current_user
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -76,7 +76,7 @@ def subjectGoHome():
 	return redirect("/", code=302)
 
 @app.route(SUBJECTS_PATH +'/<subjectid>/',)
-#@login_required
+@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
 	if subjectDataSet == None:
@@ -87,6 +87,7 @@ def subject(subjectid):
 
 
 @app.route('/form/getUploadForm', methods=["GET", "POST"])
+@login_required
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
 	conn = engine.connect()
@@ -97,7 +98,7 @@ def uploadFileGetForm():
 
 
 @app.route(SUBJECTS_PATH + '/<subjectid>/<path:subfolder>',)
-#@login_required
+@login_required
 def subjectfiles(subjectid, subfolder):
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
@@ -120,7 +121,7 @@ def subjectfiles(subjectid, subfolder):
 
 
 @app.route('/profile', methods=["GET", "POST"])
-#@login_required
+@login_required
 def profile():
 	form = profileForm(request.form)
 	if request.method == "POST" and form.validate():
@@ -147,14 +148,14 @@ def profile():
 		return render_template('profile.html', form=form)
 
 @app.route('/favorites')
-#@login_required
+@login_required
 def favorites():
 	return render_template('favorites.html')
 
 @app.route("/logout")
 def logout():
 	logout_user()
-	return redirect("/login", code=302)
+	return redirect("/login?logout=true", code=302)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -386,7 +387,8 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 			fileID = FileExists(relativePath, subject, file)
 			if fileID:
 				conn = engine.connect()
-				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, IFNULL(SUM(vote), 0) AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
+				s = text(
+					"SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, IFNULL(SUM(vote), 0) AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
 				fileSize = round(os.path.getsize(newPath)/1000, 1)
