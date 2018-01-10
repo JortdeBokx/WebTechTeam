@@ -6,7 +6,7 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user, current_user
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -109,7 +109,7 @@ def subjectfiles(subjectid, subfolder):
 	else:
 		if os.path.isdir(Path):
 			foldersToShow = getFoldersToShow(Path)
-			filesToShow = getFilesToShow(Path, subfolder, subjectid.upper())
+			filesToShow = getFilesToShow(Path, subfolder, subjectid.upper(), current_user.get_id())
 			res =  render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 		elif os.path.isfile(Path):
 			res = send_file(Path)
@@ -368,8 +368,17 @@ def FileExists(relativePath, subject, filename):
 	else:
 		return rv[0]
 
+def getUserVote(fileid, userid):
+	# returns 1 or -1 for user vote on file, 0 if not voted
+	conn = engine.connect()
+	s = text("SELECT vote FROM user_file_vote WHERE user_ID = :u and file_ID = :f")
+	rv = conn.execute(s, u=userid, f=fileid).fetchone()
+	if rv == -1 or rv == 1:
+		return rv
+	else:
+		return 0
 
-def getFilesToShow(FolderPath, relativePath, subject):
+def getFilesToShow(FolderPath, relativePath, subject, userid):
 	files = []
 	for file in os.listdir(FolderPath):
 		newPath = os.path.join(FolderPath, file)
@@ -377,11 +386,14 @@ def getFilesToShow(FolderPath, relativePath, subject):
 			fileID = FileExists(relativePath, subject, file)
 			if fileID:
 				conn = engine.connect()
-				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, SUM(vote)  AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
+				s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, IFNULL(SUM(vote), 0) AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
-				d['size'] = str( round(os.path.getsize(newPath)/1000, 1)) + " kB"
+				fileSize = round(os.path.getsize(newPath)/1000, 1)
+				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
+				d['size'] = filesizestr
 				d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
+				d['user_vote'] = getUserVote(d['file_id'], userid)
 				files.append(d)
 	return files
 

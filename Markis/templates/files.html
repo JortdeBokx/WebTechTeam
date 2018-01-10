@@ -45,7 +45,7 @@
          <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
        <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.uploader }}</td>
        <td>TODO</td>
-       <td>{{ file.votes }}</td>
+       <td><a class="vote-up {% if file.user_vote == 1 %} active {% endif %}" title="This file is useful"><i class="material-icons" id="icon">keyboard_arrow_up</i></a> <span>{{ file.votes }} </span><a class="vote-down {% if file.user_vote == -1 %} active {% endif %}" title="This file is not useful"><i class="material-icons" id="icon">keyboard_arrow_down</i></a></td>
        <td><a href = "{{ file.path }}"  download><i id="icon" class="material-icons download_button">file_download</i></a></td>
       </tr>
     {% endfor %}
