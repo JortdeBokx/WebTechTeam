@@ -65,7 +65,7 @@ div.search-bar {
 	min-width: 21rem;
 }
 
-table tr {
+table td.preview_file {
 	cursor: pointer;
 }
 
@@ -100,6 +100,8 @@ div.card:hover {
 
 table a {
 	color: black;
+	text-align: center;
+	cursor: pointer;
 }
 
 .error_title {
@@ -194,9 +196,32 @@ div#uploadDropzone {
 
 }
 
-#voteUp {
-	position: relative;
+div.votes {
+	width: 50%;
+}
 
+div.votes a{
+	display: block;
+	text-align: center;
+	margin: -3px 0px -10px;
+}
+
+div.votes span {
+	display: block
+}
+
+span.file-votes {
+	position: relative;
+	text-align: center;
+}
+
+td.row-votes {
+	padding: 2px;
+}
+
+.fileIcons {
+	width: 80%;
+	margin: 4% auto 0;
 }
 
 .footer {

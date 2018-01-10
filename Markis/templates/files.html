@@ -12,12 +12,12 @@
   <table class="table table-hover">
     <thead>
       <tr>
+				<th></th>
         <th>Name</th>
         <th>Uploaded on</th>
         <th>Size</th>
         <th>Uploaded By</th>
         <th>Favorite</th>
-        <th>Votes</th>
         <th>Download</th>
       </tr>
     </thead>
@@ -40,13 +40,13 @@
     {% endfor %}
   {% for file in files %}
       <tr>
+				<td class="row-votes"><div class="votes"><a class="vote-up {% if file.user_vote == 1 %} active {% endif %}" title="This file is useful"><i class="material-icons">keyboard_arrow_up</i></a> <span class="file-votes">{{ file.votes }} </span> <a class="vote-down {% if file.user_vote == -1 %} active {% endif %}" title="This file is not useful"><i class="material-icons">keyboard_arrow_down</i></a></div></td>
         <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}"><i id="icon" class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
          <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
        <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.uploader }}</td>
-       <td>TODO</td>
-       <td><a class="vote-up {% if file.user_vote == 1 %} active {% endif %}" title="This file is useful"><i class="material-icons" id="icon">keyboard_arrow_up</i></a> <span>{{ file.votes }} </span><a class="vote-down {% if file.user_vote == -1 %} active {% endif %}" title="This file is not useful"><i class="material-icons" id="icon">keyboard_arrow_down</i></a></td>
-       <td><a href = "{{ file.path }}"  download><i id="voteUp" class="material-icons download_button">file_download</i></a></td>
+       <td><div class="fileIcons"><a title="Favorite"><i class="material-icons" style="font-size:25px;">{% if file.user_favorite == 1 %} favorite {% else %}favorite_border{% endif %}</i></a></div></td>
+       <td><div class="fileIcons"><a href = "{{ file.path }}"  download><i class="material-icons download_button" style="font-size:30px;">file_download</i></a></div></td>
       </tr>
     {% endfor %}
   </table>
