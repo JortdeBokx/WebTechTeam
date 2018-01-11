@@ -100,9 +100,29 @@ $(document).ready(()=>{
 		$('#favorites-button').on('click', function() {
 			$.ajax({
 				url: '/setfavorite',
-				data: $(this).closest("tr").attr('data-file-id'),
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
 				type: 'POST'
 			});
+		});
+
+		//votes buttons
+		$('.vote-up').on('click', function() {
+			$.ajax({
+                url: '/votefile',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({fileid: $(this).closest("tr").attr('data-file-id'), vote: 1}),
+                type: 'POST'
+            });
+		});
+
+		$('.vote-down').on('click', function() {
+			$.ajax({
+                url: '/votefile',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({fileid: 1,vote: -1}),
+                type: 'POST'
+            });
 		});
 
     //Search clear button
