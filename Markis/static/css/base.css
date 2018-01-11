@@ -1,9 +1,5 @@
-body.base {
-  padding-top: 5rem;
-}
-
 body {
-	padding-top: 1rem;
+  padding-top: 5rem;
 }
 
 .starter-template {
@@ -32,10 +28,6 @@ button.btn.btn-primary-search {
 	color: black;
 }
 
-.title {
-	padding-bottom: 10px;
-}
-
 div.nav-item-border {
   width: 1px;
   height: 25px;
@@ -44,11 +36,7 @@ div.nav-item-border {
 }
 
 div.home-information {
-  height:60px;
-}
-
-div.file-information {
-	height: 120px;
+  height: 60px;
 }
 
 div.top-bar-left {
@@ -61,23 +49,11 @@ div.search-bar {
   float: right;
 }
 
-.dropdown-menu {
-	min-width: 21rem;
-}
-
-table tr {
-	cursor: pointer;
-}
-
-table td.buttons, table td.row-votes {
-	cursor: default;
-}
-
 .clearable{
   background: #fff url(http://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;
 }
-.clearable.x  { background-position: right 10px center; } /* (jQ) Show icon */
+.clearable.x  { background-position: right 5px center; } /* (jQ) Show icon */
 .clearable.onX{ cursor: pointer; }              /* (jQ) hover cursor style */
 .clearable::-ms-clear {display: none; width:0; height:0;} /* Remove IE default X */
 
@@ -94,31 +70,12 @@ button:hover {
 }
 
 div.card {
-  box-shadow: 1px 3px 2px rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03);
+  box-shadow: 1px 3px 2px rgba(0,0,0,.03), 1px 2px 0 rgba(0,0,0,.03)
 }
 
 div.card:hover {
   background-color: #e7e3e3;
   cursor: pointer;
-}
-
-table a {
-	color: black;
-	text-align: center;
-	cursor: pointer;
-}
-
-.error_title {
-	text-align: center;
-}
-
-.sad-smiley {
-	margin: 50px auto;
-	width: 30%;
-}
-
-.sad-smiley img {
-	width: 100%;
 }
 
 div.card-block {
@@ -134,9 +91,6 @@ div.card-block {
   margin-bottom: 0.2rem;
 }
 
-.dropzone .dz-message {
-  margin: 0 0 !important;
-}
 
 #icon {
   position: relative;
@@ -161,83 +115,8 @@ div.starter-template {
   padding: 2rem 1.5rem;
 }
 
-div.starter-template.login-container {
-	width: 25%;
-}
-
 a.signup {
   margin-right: 12%;
-}
-
-div.upload-container {
-	width: 80%;
-	margin: 0 auto;
-	text-align: center;
-}
-
-div.upload-container input.form-control {
-	width: 100% !important;
-}
-
-div#uploadDropzone {
-	border: 1px dashed black;
-	border-radius: 0.5rem;
-	background-color: rgb(247, 245, 244);
-}
-
-
-.dz-message span {
-	font-size: 1.3rem;
-}
-
-#uploadForm.form-group {
-	padding-bottom: 4px;
-}
-
-#uploadForm p {
-	text-align: left;
-	margin-bottom: 2px;
-
-}
-
-div.votes {
-	width: 50%;
-}
-
-div.votes a{
-	display: block;
-	text-align: center;
-	margin: -3px 0px -10px;
-}
-
-div.votes span {
-	display: block
-}
-
-span.file-votes {
-	position: relative;
-	text-align: center;
-}
-
-td.row-votes {
-	padding: 2px;
-}
-
-.fileIcons {
-	width: 80%;
-	margin: 4% auto 0;
-}
-
-span.vote-up.chosen {
-	color: green;
-}
-
-span.vote-down.chosen {
-	color: red;
-}
-
-.hide {
-	display: none;
 }
 
 .footer {
@@ -269,16 +148,11 @@ span.right {
   position: absolute;
   right: 2%;
 }
-
 @media (min-width: 1200px) {
   .container {
       width: 80%;
       max-width: 100%;
     }
-
-	div.card-columns {
-		column-count: 4 !important;
-	}
 }
 
 @media (max-width: 992px) {
@@ -286,7 +160,19 @@ span.right {
     display: none;
   }
 
+  div.search-bar {
+    display: block;
+    width: 369px;
+    float: none;
+    margin: 20px auto;
+  }
 
+  div.top-bar-left {
+    display: block;
+    width: 369px;
+    float: none;
+    margin: 0 auto;
+  }
 
   div.home-information {
     height: 100px;
@@ -307,8 +193,12 @@ span.right {
     display: none;
   }
 
+  span.faculties {
+    display: none;
+  }
+
   div.top-bar-left {
-    width: 80%;
+    width: 100%;
   }
 
   div.search-bar {
@@ -322,12 +212,6 @@ span.right {
   select.custom-select {
     width: 99%;
   }
-}
-
-@media (min-width: 576px) {
-	.container {
-		width: 95%;
-	}
 }
 
 @media (max-width: 576px) {
@@ -352,6 +236,10 @@ span.right {
   }
 }
 
+.modal-content{
+  width=80%:
+}
+
 /* for pdf viewer iframe */
 .iframe-container {
 padding-bottom: 60%;
@@ -369,13 +257,26 @@ top: 0;
 left: 0;
 width: 100%;
 height: 100%;
-border: none;
 }
 
-#FilePreviewModal .modal-content {
-    height: 80vh;
+.error-message{
+  text-align: center;
 }
 
-#uploadModal .modal-content {
-	height: 72vh;
+.error_title{
+  text-align: center;
+}
+
+.sad-smiley{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 300px;
+  width: 300px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
