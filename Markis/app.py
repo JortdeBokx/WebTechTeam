@@ -5,7 +5,7 @@
 import os
 from urllib.parse import urlparse, urljoin
 
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file, json
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
@@ -162,20 +162,15 @@ def profile():
 		form = profileForm(firstname=data['first_name'], lastname=data['last_name'], email=data['email'], username=data['username'])
 		return render_template('profile.html', form=form)
 
+
+
+
 @app.route('/favorites')
-#@login_required
+@login_required
 def favorites():
-	conn = engine.connect()
-	s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, files.path as path FROM user_file_favorite AS fav RIGHT JOIN files ON fav.file_ID = files.file_ID WHERE user_id=:i")
-	rv = conn.execute(s, i=current_user.get_id()).fetchone()
-	d = dict(rv.items())
-	fileSize = round(os.path.getsize(newPath)/1000, 1)
-	filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
-	d['size'] = filesizestr
-	d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
-	files.append(d)
-	conn.close()
-	return render_template('favorites.html', favorites=rv)
+	userid = current_user.get_id()
+	favorites = getFavoriteFiles(userid)
+	return render_template('favorites.html', favorites=favorites)
 
 @app.route("/logout")
 def logout():
@@ -240,20 +235,38 @@ def login():
 @login_required
 def voteFile():
 	if request.method == 'POST':
-		userid = current_user.user_id
+		userid = current_user.get_id()
 		fileid = request.data['fileid']
 		newVote = request.data['vote']
 		if FileExistsByID(fileid):
 			currentVote = getFileVote(userid, fileid)
 			if currentVote == 0:
 				if newVote != 0:
-					InsertNewVote(userid, fileid, newVote)
+					result = InsertNewVote(userid, fileid, newVote)
+					if result == 1:
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						return abort(500, 'Database failed to insert file')
+				else:
+					return abort(400, 'Vote is same as current vote')
 			elif currentVote == -1:
 				if newVote != -1:
-					UpdateVote(userid, fileid, currentVote, newVote)
+					result = UpdateVote(userid, fileid, currentVote, newVote)
+					if result == 1:
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						return abort(500, 'Database failed to insert file')
+				else:
+					return abort(400, 'Vote is same as current vote')
 			elif currentVote == 1:
 				if newVote != 1:
-					UpdateVote(userid, fileid, currentVote, newVote)
+					result = UpdateVote(userid, fileid, currentVote, newVote)
+					if result == 1:
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						return abort(500, 'Database failed to insert file')
+				else:
+					return abort(400, 'Vote is same as current vote')
 
 	else:
 		return abort(400)
@@ -354,6 +367,22 @@ def getFileVote(userid, fileid):
 	conn.close()
 	return rv
 
+def InsertNewVote(userid, fileid, newVote):
+	conn = engine.connect()
+	s = text("INSERT INTO user_file_vote (user_ID, file_ID, vote) VALUES (:u, :f, :v)")
+	rv = conn.execute(s, u=userid, f=fileid, v=newVote)
+	conn.commit()
+	conn.close()
+	return rv
+
+def UpdateVote(userid, fileid, currentVote, newVote):
+	conn = engine.connect()
+	s = text("UPDATE")
+	rv = conn.execute(s, u=userid, f=fileid, v=newVote)
+	conn.commit()
+	conn.close()
+	return rv
+
 def is_safe_url(target):
 	ref_url = urlparse(request.host_url)
 	test_url = urlparse(urljoin(request.host_url, target))
@@ -426,7 +455,7 @@ def getFoldersToShow(FolderPath):
 	return foldersToShow
 
 
-def FileExists(relativePath, subject, filename):
+def FileExistsInDB(relativePath, subject, filename):
 	#returns file id, otherwise empty set []
 	conn = engine.connect()
 	pattern = "%" +relativePath+ "%"
@@ -465,7 +494,7 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 	for file in os.listdir(FolderPath):
 		newPath = os.path.join(FolderPath, file)
 		if not os.path.isdir(newPath):
-			fileID = FileExists(relativePath, subject, file)
+			fileID = FileExistsInDB(relativePath, subject, file)
 			if fileID:
 				conn = engine.connect()
 				s = text(
@@ -475,11 +504,37 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 				fileSize = round(os.path.getsize(newPath)/1000, 1)
 				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
 				d['size'] = filesizestr
-				d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
+				d['downloadpath'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				d['user_vote'] = getUserVote(d['file_id'], userid)
 				d['user_favorite'] = getUserFavorite(d['file_id'], userid)
 				files.append(d)
 	return files
+
+
+def FileExistsInFolderStrucure(subjectid, folderpath, filename):
+	PathToCheck = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath, filename)
+	return os.path.isfile(PathToCheck)
+
+def getFavoriteFiles(userid):
+	conn = engine.connect()
+	s = text(
+		"SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, files.path as path, files.subject_code as subject_code FROM user_file_favorite AS fav RIGHT JOIN files ON fav.file_ID = files.file_ID WHERE user_id=:i")
+	rv = conn.execute(s, i=userid).fetchall()
+	favFilesThatExist = []
+	for file in rv:
+		d = dict(file.items())
+		print(d)
+		if FileExistsInFolderStrucure(d['subject_code'], d['path'], d['name']):
+			newPath = os.path.join(app.config['FILE_BASE_DIR'], d['subject_code'], d['path'], d['name'])
+			fileSize = round(os.path.getsize(newPath) / 1000, 1)
+			filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(
+				round(os.path.getsize(newPath) / 1000000, 1)) + "MB"
+			d['size'] = filesizestr
+			d['downloadpath'] = SUBJECTS_PATH + "/" + d['subject_code'] + "/" + d['path'] + "/" + d['name']
+			favFilesThatExist.append(d)
+	conn.close()
+	return favFilesThatExist
+
 
 #############################################
 #               Data Objects 	        	#
