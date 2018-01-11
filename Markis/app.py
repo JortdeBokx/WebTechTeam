@@ -232,44 +232,46 @@ def login():
 
 
 @app.route('/votefile', methods=['POST'])
-@login_required
 def voteFile():
-	if request.method == 'POST':
-		userid = current_user.get_id()
-		fileid = request.data['fileid']
-		newVote = request.data['vote']
-		if FileExistsByID(fileid):
-			currentVote = getFileVote(userid, fileid)
-			if currentVote == 0:
-				if newVote != 0:
-					result = InsertNewVote(userid, fileid, newVote)
-					if result == 1:
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+	if current_user.is_authenticated and current_user.is_active:
+		if request.method == 'POST':
+			userid = current_user.get_id()
+			fileid = request.data['fileid']
+			newVote = request.data['vote']
+			if FileExistsByID(fileid):
+				currentVote = getFileVote(userid, fileid)
+				if currentVote == 0:
+					if newVote != 0:
+						result = InsertNewVote(userid, fileid, newVote)
+						if result == 1:
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return abort(500, 'Database failed to insert file')
 					else:
-						return abort(500, 'Database failed to insert file')
-				else:
-					return abort(400, 'Vote is same as current vote')
-			elif currentVote == -1:
-				if newVote != -1:
-					result = UpdateVote(userid, fileid, currentVote, newVote)
-					if result == 1:
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						return abort(400, 'Vote is same as current vote')
+				elif currentVote == -1:
+					if newVote != -1:
+						result = UpdateVote(userid, fileid, currentVote, newVote)
+						if result == 1:
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return abort(500, 'Database failed to insert file')
 					else:
-						return abort(500, 'Database failed to insert file')
-				else:
-					return abort(400, 'Vote is same as current vote')
-			elif currentVote == 1:
-				if newVote != 1:
-					result = UpdateVote(userid, fileid, currentVote, newVote)
-					if result == 1:
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						return abort(400, 'Vote is same as current vote')
+				elif currentVote == 1:
+					if newVote != 1:
+						result = UpdateVote(userid, fileid, currentVote, newVote)
+						if result == 1:
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return abort(500, 'Database failed to insert file')
 					else:
-						return abort(500, 'Database failed to insert file')
-				else:
-					return abort(400, 'Vote is same as current vote')
+						return abort(400, 'Vote is same as current vote')
 
+		else:
+			return abort(400)
 	else:
-		return abort(400)
+		return abort(403)
 
 #############################################
 #			Template Filters				#
@@ -377,8 +379,8 @@ def InsertNewVote(userid, fileid, newVote):
 
 def UpdateVote(userid, fileid, currentVote, newVote):
 	conn = engine.connect()
-	s = text("UPDATE")
-	rv = conn.execute(s, u=userid, f=fileid, v=newVote)
+	s = text("UPDATE user_file_vote SET vote = :v WHERE user_ID = :u and file_ID = :f and vote = :c")
+	rv = conn.execute(s, u=userid, f=fileid, v=newVote, c = currentVote)
 	conn.commit()
 	conn.close()
 	return rv
