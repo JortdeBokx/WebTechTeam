@@ -114,8 +114,40 @@ $(document).ready(()=>{
         }
     });
 
+
+
+		//The upload form code
 				$('#filetype').children().first().prop({disabled:true, hidden:true});
 				$('#subject').children().first().prop({disabled:true, hidden:true});
+				$('#opt2').children().first().prop({disabled:true, hidden:true});
+
+				$('#subject').change(function(){
+					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+						$('#opt1').removeClass('hide');
+					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+						$('#opt1').addClass('hide');
+						$('#opt2').addClass('hide');
+						$('#uploadDropzone').removeClass('hide');
+					}
+				});
+
+				$('#filetype').change(function(){
+					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+						$('#opt1').removeClass('hide');
+					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+						$('#opt1').addClass('hide');
+						$('#opt2').addClass('hide');
+						$('#uploadDropzone').removeClass('hide');
+					}
+				});
+
+				$('#opt1').change(function() {
+					$('#opt2').removeClass('hide');
+				});
+
+				$('#opt2').change(function() {
+					$('#uploadDropzone').removeClass('hide');
+				});
 
     /*
 * This is the plugin

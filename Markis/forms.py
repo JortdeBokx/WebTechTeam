@@ -19,7 +19,7 @@ class uploadFileForm(Form):
 	subject = SelectField('Subject')
 	filetype = SelectField('File Type', choices=[('category', 'Category'), ('exams', 'Exams'), ('hw', 'Homework'), ('lit', 'Literature'), ('misc','Miscellanious'), ('sum','Summaries')])
 	opt1 = DateField('Released/Made')
-	opt2 = SelectField('Upload Type', choices=[('ans', 'Answers'), ('ques', 'Questions')])
+	opt2 = SelectField('Upload Type', choices=[('type', 'Type'), ('ans', 'Answers'), ('ques', 'Questions')])
 
 class profileForm(Form):
 	firstname = StringField("First Name", [validators.Length(min=1, max=20)], render_kw={"placeholder": "First Name"})

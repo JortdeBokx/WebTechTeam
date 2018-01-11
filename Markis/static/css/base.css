@@ -232,7 +232,7 @@ span.vote-down.chosen {
 	color: red;
 }
 
-div.form-group.year, div.form-group.type, div.form-group.dropzone {
+.hide {
 	display: none;
 }
 
@@ -373,5 +373,5 @@ border: none;
 }
 
 #uploadModal .modal-content {
-	height: 88vh;
+	height: 72vh;
 }
