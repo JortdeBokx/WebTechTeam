@@ -45,6 +45,7 @@ login_manager.login_message = "You need to be logged in to view this page!"
 #############################################
 
 @app.route('/')
+@login_required
 def home():
 	if not current_user.is_active:
 		return redirect(url_for('login'))
