@@ -44,8 +44,9 @@ login_manager.login_message = "You need to be logged in to view this page!"
 #############################################
 
 @app.route('/')
-@login_required
 def home():
+	if not current_user.is_active:
+		return redirect(url_for('login'))
 	conn = engine.connect()
 	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
 	faculties = conn.execute(text("SELECT * FROM faculties")).fetchall()
