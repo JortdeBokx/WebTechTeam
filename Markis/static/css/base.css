@@ -386,13 +386,13 @@ border: none;
   text-align: center;
 }
 
-.sad-smiley{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  height: 300px;
-  width: 300px;
-
+.sad-smiley {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    width: 300px;
+}
 img {
   display: block;
   max-width: 100%;
