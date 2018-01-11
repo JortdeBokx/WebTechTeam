@@ -76,7 +76,7 @@ def subjectGoHome():
 	return redirect("/", code=302)
 
 @app.route(SUBJECTS_PATH +'/<subjectid>/',)
-@login_required
+#@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
 	if subjectDataSet == None:
@@ -87,18 +87,20 @@ def subject(subjectid):
 
 
 @app.route('/form/getUploadForm', methods=["GET", "POST"])
-@login_required
+#@login_required
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
 	conn = engine.connect()
 	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
 	conn.close()
-	form.subject.choices = [(g.subject_id, g.subject_id + ' - ' + g.subject_name) for g in subjects]
+	form.subject.choices = [('course', 'Course')]
+	for g in subjects:
+		form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
 	return render_template('uploadForm.html', form=form)
 
 
 @app.route(SUBJECTS_PATH + '/<subjectid>/<path:subfolder>',)
-@login_required
+#@login_required
 def subjectfiles(subjectid, subfolder):
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
@@ -137,7 +139,7 @@ def profile():
 			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, password=:p, email=:e WHERE id=:i")
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=4)
 		conn.close()
-		return redirect(url_for('profile'), code=302)	
+		return redirect(url_for('profile'), code=302)
 	else:
 		conn = engine.connect()
 		s = text("SELECT * FROM users WHERE id=:i")
@@ -148,7 +150,7 @@ def profile():
 		return render_template('profile.html', form=form)
 
 @app.route('/favorites')
-@login_required
+#@login_required
 def favorites():
 	return render_template('favorites.html')
 

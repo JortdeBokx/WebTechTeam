@@ -224,6 +224,18 @@ td.row-votes {
 	margin: 4% auto 0;
 }
 
+span.vote-up.chosen {
+	color: green;
+}
+
+span.vote-down.chosen {
+	color: red;
+}
+
+div.form-group.year, div.form-group.type, div.form-group.dropzone {
+	display: none;
+}
+
 .footer {
     position: fixed;
     bottom: 0;
@@ -259,6 +271,10 @@ span.right {
       width: 80%;
       max-width: 100%;
     }
+
+	div.card-columns {
+		column-count: 4 !important;
+	}
 }
 
 @media (max-width: 992px) {
@@ -352,6 +368,10 @@ height: 100%;
 border: none;
 }
 
-#FilePreviewModal .modal-content, #uploadModal .modal-content {
+#FilePreviewModal .modal-content {
     height: 80vh;
+}
+
+#uploadModal .modal-content {
+	height: 88vh;
 }

@@ -114,6 +114,9 @@ $(document).ready(()=>{
         }
     });
 
+				$('#filetype').children().first().prop({disabled:true, hidden:true});
+				$('#subject').children().first().prop({disabled:true, hidden:true});
+
     /*
 * This is the plugin
 */
