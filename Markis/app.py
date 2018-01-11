@@ -5,7 +5,8 @@
 import os
 from urllib.parse import urlparse, urljoin
 
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file, json
+from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file, \
+	json, make_response
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
@@ -191,7 +192,6 @@ def register():
 		s = text("INSERT INTO users (first_name, last_name, username, password, email) VALUES (:f, :l, :u, :p, :e)")
 		# TODO: check if email is unique
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, p=password, e=email)
-		conn.connect()
 		conn.close()
 
 		flash("You are now successfully registered", 'success')
@@ -236,37 +236,33 @@ def voteFile():
 	if current_user.is_authenticated and current_user.is_active:
 		if request.method == 'POST':
 			userid = current_user.get_id()
-			fileid = request.data['fileid']
-			newVote = request.data['vote']
+			fileid = request.json['fileid']
+			newVote = request.json['vote']
 			if FileExistsByID(fileid):
 				currentVote = getFileVote(userid, fileid)
 				if currentVote == 0:
 					if newVote != 0:
-						result = InsertNewVote(userid, fileid, newVote)
-						if result == 1:
-							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-						else:
-							return abort(500, 'Database failed to insert file')
+						InsertNewVote(userid, fileid, newVote)
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 					else:
-						return abort(400, 'Vote is same as current vote')
+						return make_response('Vote is same as current vote', 400)
 				elif currentVote == -1:
 					if newVote != -1:
-						result = UpdateVote(userid, fileid, currentVote, newVote)
-						if result == 1:
-							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-						else:
-							return abort(500, 'Database failed to insert file')
+						UpdateVote(userid, fileid, currentVote, newVote)
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
 					else:
-						return abort(400, 'Vote is same as current vote')
+						return make_response('Vote is same as current vote', 400)
 				elif currentVote == 1:
 					if newVote != 1:
-						result = UpdateVote(userid, fileid, currentVote, newVote)
-						if result == 1:
-							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-						else:
-							return abort(500, 'Database failed to insert file')
+						UpdateVote(userid, fileid, currentVote, newVote)
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 					else:
-						return abort(400, 'Vote is same as current vote')
+						return make_response('Vote is same as current vote', 400)
+				else:
+					print(currentVote)
+					print(userid)
+					return make_response('Current vote cannot be found', 500)
 
 		else:
 			return abort(400)
@@ -364,16 +360,17 @@ def FileExistsByID(fileid):
 def getFileVote(userid, fileid):
 	conn = engine.connect()
 	s = text(
-		"SELECT IFNULL(vote, 0) FROM user_file_vote WHERE file_ID=:f and user_ID = :u")
+		"SELECT IFNULL(vote, 0) AS vote FROM user_file_vote WHERE file_ID=:f and user_ID = :u")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
+	d = dict(rv.items())
 	conn.close()
-	return rv
+	return d['vote']
 
 def InsertNewVote(userid, fileid, newVote):
 	conn = engine.connect()
-	s = text("INSERT INTO user_file_vote (user_ID, file_ID, vote) VALUES (:u, :f, :v)")
+	s = text("INSERT INTO user_file_vote (user_ID, file_ID, vote) VALUES (:u, :f, 1)")
 	rv = conn.execute(s, u=userid, f=fileid, v=newVote)
-	conn.commit()
+	print(rv)
 	conn.close()
 	return rv
 
@@ -381,7 +378,6 @@ def UpdateVote(userid, fileid, currentVote, newVote):
 	conn = engine.connect()
 	s = text("UPDATE user_file_vote SET vote = :v WHERE user_ID = :u and file_ID = :f and vote = :c")
 	rv = conn.execute(s, u=userid, f=fileid, v=newVote, c = currentVote)
-	conn.commit()
 	conn.close()
 	return rv
 
