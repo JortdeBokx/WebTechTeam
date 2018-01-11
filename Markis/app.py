@@ -123,12 +123,21 @@ def subjectfiles(subjectid, subfolder):
 			res = render_template('404.html', reason="nopath"), 404
 	return res
 
-
+@app.route('/setfavorite', methods=["POST"])
+def setFavorite():
+	if request.method == "POST":
+		data = request.data.split(',')
+		file_id = data[0]
+		user_id = data[1]
+		conn = engine.connect()
+		s = text("INSERT INTO user_file_favorite SET (user_ID, file_ID) VALUES (:u, :f)")
+		rv = conn.execute(s, u=user_id, f=file_id)
+		conn.close()
 
 @app.route('/profile', methods=["GET", "POST"])
 @login_required
 def profile():
-	uid = current_user.user_id
+	uid = current_user.get_id()
 	form = profileForm(request.form)
 	if request.method == "POST" and form.validate():
 		conn = engine.connect()
@@ -156,7 +165,11 @@ def profile():
 @app.route('/favorites')
 #@login_required
 def favorites():
-	return render_template('favorites.html')
+	conn = engine.connect()
+	s = text("SELECT files.* FROM user_file_favorite AS fav RIGHT JOIN files ON fav.file_ID = files.file_ID WHERE user_id=:i")
+	rv = conn.execute(s, i=current_user.get_id()).fetchall()
+	conn.close()
+	return render_template('favorites.html', favorites=rv)
 
 @app.route("/logout")
 def logout():
@@ -393,7 +406,6 @@ def getUserFavorite(fileid, userid):
 	conn = engine.connect()
 	s = text("SELECT * FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
-	print(rv)
 	if rv != None:
 		return 1
 	else:
