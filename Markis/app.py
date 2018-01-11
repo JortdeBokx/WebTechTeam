@@ -525,7 +525,6 @@ def getFavoriteFiles(userid):
 	favFilesThatExist = []
 	for file in rv:
 		d = dict(file.items())
-		print(d)
 		if FileExistsInFolderStrucure(d['subject_code'], d['path'], d['name']):
 			newPath = os.path.join(app.config['FILE_BASE_DIR'], d['subject_code'], d['path'], d['name'])
 			fileSize = round(os.path.getsize(newPath) / 1000, 1)
