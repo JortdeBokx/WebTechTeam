@@ -44,7 +44,7 @@
     {% endfor %}
   {% for file in files %}
       <tr data-file-id = {{ file.file_id }}>
-				<td class="row-votes"><div class="votes"><a class="vote-up {% if file.user_vote == 1 %} chosen {% endif %} chosen" title="This file is useful"><i class="material-icons">keyboard_arrow_up</i></a> <span class="file-votes">{{ file.votes }} </span> <a class="vote-down {% if file.user_vote == -1 %} chosen {% endif %} chosen" title="This file is not useful"><i class="material-icons">keyboard_arrow_down</i></a></div></td>
+				<td class="row-votes"><div class="votes"><a class="vote-up {% if file.user_vote == 1 %} chosen {% endif %}" title="This file is useful"><i class="material-icons" style="font-size:30px;">keyboard_arrow_up</i></a> <span class="file-votes">{{ file.votes }} </span> <a class="vote-down {% if file.user_vote == -1 %} chosen {% endif %}" title="This file is not useful"><i class="material-icons" style="font-size:30px;">keyboard_arrow_down</i></a></div></td>
         <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}"><i id="icon" class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>

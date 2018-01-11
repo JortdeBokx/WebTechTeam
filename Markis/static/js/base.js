@@ -120,7 +120,7 @@ $(document).ready(()=>{
 			$.ajax({
                 url: '/votefile',
                 contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({fileid: 1,vote: -1}),
+                data: JSON.stringify({fileid: $(this).closest("tr").attr('data-file-id'), vote: -1}),
                 type: 'POST'
             });
 		});
