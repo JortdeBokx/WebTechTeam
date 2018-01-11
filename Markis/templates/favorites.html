@@ -27,7 +27,7 @@
 				<td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}"><i id="icon" class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
-          <td><div class="fileIcons"><a href = "/subject/{{file.subject_code}}/{{ file.downloadpath }}/{{file.name}}"  download><i class="material-icons download_button" style="font-size:30px;">file_download</i></a></div></td>
+          <td><div class="fileIcons"><a href = "{{ file.downloadpath }}"  download><i class="material-icons download_button" style="font-size:30px;">file_download</i></a></div></td>
           <td><div class="fileIcons"><a href><i class="material-icons" style="font-size:26px;">delete</i></div></td>
       </tr>
     {% endfor %}
