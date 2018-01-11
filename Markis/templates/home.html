@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
  <div class="home-information">
+   <div class="title">
+     <h2>Courses</h2>
+  </div>
    <div class="top-bar-left my-2 my-lg-0">
      <span class="faculties">Faculties:</span>
      <select class="custom-select" id="multivalued" multiple="multiple">
@@ -16,8 +19,8 @@
     </form>
   </div>
  </div>
- <hr />
- <div class="content">
+ <div class="content lower">
+   <hr />
    <div class="card-columns">
      {% for subject in subjects %}
      <a href="/subject/{{subject.subject_id}}" alt="{{subject.subject_name}}">
