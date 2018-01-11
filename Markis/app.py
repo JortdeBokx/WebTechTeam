@@ -127,6 +127,7 @@ def subjectfiles(subjectid, subfolder):
 @app.route('/profile', methods=["GET", "POST"])
 @login_required
 def profile():
+	uid = current_user.user_id
 	form = profileForm(request.form)
 	if request.method == "POST" and form.validate():
 		conn = engine.connect()
@@ -139,13 +140,13 @@ def profile():
 			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, email=:e WHERE id=:i")
 		else:
 			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, password=:p, email=:e WHERE id=:i")
-		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=4)
+		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=uid)
 		conn.close()
 		return redirect(url_for('profile'), code=302)
 	else:
 		conn = engine.connect()
 		s = text("SELECT * FROM users WHERE id=:i")
-		rv = conn.execute(s, i=4).fetchall()
+		rv = conn.execute(s, i=uid).fetchall()
 		conn.close()
 		data = rv[0]
 		form = profileForm(firstname=data['first_name'], lastname=data['last_name'], email=data['email'], username=data['username'])
