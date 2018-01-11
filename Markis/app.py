@@ -388,6 +388,18 @@ def getUserVote(fileid, userid):
 	else:
 		return 0
 
+def getUserFavorite(fileid, userid):
+	# returns 1 or -1 for user vote on file, 0 if not voted
+	conn = engine.connect()
+	s = text("SELECT * FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
+	rv = conn.execute(s, u=userid, f=fileid).fetchone()
+	print(rv)
+	if rv != None:
+		return 1
+	else:
+		return 0
+
+
 def getFilesToShow(FolderPath, relativePath, subject, userid):
 	files = []
 	for file in os.listdir(FolderPath):
@@ -405,6 +417,7 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 				d['size'] = filesizestr
 				d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				d['user_vote'] = getUserVote(d['file_id'], userid)
+				d['user_favorite'] = getUserFavorite(d['file_id'], userid)
 				files.append(d)
 	return files
 
