@@ -6,7 +6,7 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -44,6 +44,7 @@ login_manager.login_message = "You need to be logged in to view this page!"
 #############################################
 
 @app.route('/')
+@login_required
 def home():
 	conn = engine.connect()
 	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
@@ -72,6 +73,7 @@ def uploadFile():
 		return "Only POST Methods allowed"
 
 @app.route(SUBJECTS_PATH,)
+@login_required
 def subjectGoHome():
 	return redirect("/", code=302)
 
@@ -157,22 +159,26 @@ def favorites():
 @app.route("/logout")
 def logout():
 	logout_user()
-	return redirect("/login?logout=true", code=302)
+	flash("You are now successfully logged out", 'success')
+	return redirect("/login", code=302)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
 	form = registerForm(request.form)
 	if request.method == 'POST' and form.validate():
 		conn = engine.connect()
-
 		username = form.username.data
 		first_name = form.firstname.data
 		last_name = form.lastname.data
 		email = form.email.data
-		password = sha256_crypt.hash(form.password.data)
+		password = sha256_crypt.encrypt(str(form.password.data))
 		s = text("INSERT INTO users (first_name, last_name, username, password, email) VALUES (:f, :l, :u, :p, :e)")
+		# TODO: check if email is unique
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, p=password, e=email)
+		conn.connect()
 		conn.close()
+
+		flash("You are now successfully registered", 'success')
 		if str(rv):
 			return redirect(url_for('login'))
 	else:
@@ -182,21 +188,20 @@ def register():
 def login():
 	form = loginForm(request.form)
 	if request.method == 'POST' and form.validate():
-
 		# Get the password Hash from  the DB where username
 		conn = engine.connect()
 		s = text("SELECT id, password FROM users WHERE username=:u")
-		rv = conn.execute(s, u= str(form.username.data) ).fetchall()
+		rv = conn.execute(s, u= str(form.username.data) ).fetchone()
 		conn.close()
-		#return str(rv[0]['password'])
-		if sha256_crypt.verify(form.password.data, str(rv[0]['password'])):
-			user = User(rv[0]['id'])
-			user.authenticate(form.username.data)
-			login_user(user)
+		if rv:
+			if sha256_crypt.verify(str(form.password.data), str(rv['password'])):
+				user = User(rv['id'])
+				user.authenticate(rv['id'])
+				login_user(user)
+			else:
+				return render_template('login.html', error='Password incorrect', form=form)
 		else:
-			return "Wrong password"
-
-		flash('Logged in successfully.')
+			return render_template('login.html', error='Username not found', form=form)
 
 		next = request.args.get('next')
 		if not is_safe_url(next):
@@ -284,6 +289,8 @@ def page_not_found(e):
 
 @login_manager.user_loader
 def load_user(userid):
+	print(userid)
+	print(User(userid))
 	return User(userid)
 
 def is_safe_url(target):
@@ -405,36 +412,42 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 #               Data Objects 	        	#
 #############################################
 
-class User:
+class User(UserMixin):
 
-	def __init__(self, uid):
-		self.is_authenticated = False
-		self.is_active = False
-		self.is_anonymous = True
-		self.username = None
+	def __init__(self, uid, active=True):
+		conn = engine.connect()
+		#self.is_authenticated = False
+		#self.is_active = False
+		#self.is_anonymous = True
 		self.user_id = uid
-
-	def __repr__(self):
-		return "%d/%s" % (self.user_id, self.username)
+		rv = conn.execute(text('SELECT * FROM users WHERE id= :u'), u = uid).fetchone()
+		self.first_name = rv['first_name']
+		self.last_name = rv['last_name']
+		self.username= rv['username']
+		self.email = rv['email']
+		self.password = rv['password']
+		self.active = active
+		conn.close()
 
 	def get_id(self):
-		conn = engine.connect()
-		s = text("SELECT id FROM users WHERE username=:u")
-		rv = conn.execute(s, u=self.username).fetchall()
-		conn.close()
-		return str(rv[0]['id'])
+		return self.user_id
 
-	def authenticate(self, username):
+	def is_active(self):
+		# Here you should write whatever the code is
+		# that checks the database if your user is active
+		return self.active
+
+	def is_anonymous(self):
+		return False
+
+	def is_authenticated(self):
+		return True
+
+	def authenticate(self, uid):
 		self.is_authenticated = True
 		self.is_active = True
 		self.is_anonymous = False
-		self.username = username
-
-	def setUsername(self, username):
-		self.username = username
-
-	def get(user_id):
-		return self
+		self.user_id = uid
 
 	def returnUsername(self):
 		return self.username

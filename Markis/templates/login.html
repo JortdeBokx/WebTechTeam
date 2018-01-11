@@ -8,6 +8,7 @@
     </nav>
 <div class="starter-template login-container">
   <h1>Log in</h1>
+    {% include 'includes/_messages.html' %}
     {% from 'includes/_formhelper.html' import render_field %}
     <form method="POST" action="">
     	<div class="form-group">
@@ -30,5 +31,6 @@
     </form>
   </div>
 {% include 'includes/_footer.html' %}
+{% include 'includes/_scripts.html' %}
 </body>
 </html>
