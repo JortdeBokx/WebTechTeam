@@ -65,8 +65,12 @@ div.search-bar {
 	min-width: 21rem;
 }
 
-table td.preview_file {
+table tr {
 	cursor: pointer;
+}
+
+table td.buttons, table td.row-votes {
+	cursor: default;
 }
 
 .clearable{
