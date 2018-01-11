@@ -289,8 +289,6 @@ def page_not_found(e):
 
 @login_manager.user_loader
 def load_user(userid):
-	print(userid)
-	print(User(userid))
 	return User(userid)
 
 def is_safe_url(target):
