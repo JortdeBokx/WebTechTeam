@@ -166,8 +166,14 @@ def profile():
 #@login_required
 def favorites():
 	conn = engine.connect()
-	s = text("SELECT files.* FROM user_file_favorite AS fav RIGHT JOIN files ON fav.file_ID = files.file_ID WHERE user_id=:i")
-	rv = conn.execute(s, i=current_user.get_id()).fetchall()
+	s = text("SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, files.path as path FROM user_file_favorite AS fav RIGHT JOIN files ON fav.file_ID = files.file_ID WHERE user_id=:i")
+	rv = conn.execute(s, i=current_user.get_id()).fetchone()
+	d = dict(rv.items())
+	fileSize = round(os.path.getsize(newPath)/1000, 1)
+	filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
+	d['size'] = filesizestr
+	d['path'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
+	files.append(d)
 	conn.close()
 	return render_template('favorites.html', favorites=rv)
 

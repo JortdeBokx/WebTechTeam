@@ -96,6 +96,15 @@ $(document).ready(()=>{
         }
     }
 
+		//favorites buttons
+		$('#favorites-button').on('click', function() {
+			$.ajax({
+				url: '/setfavorite',
+				data: $(this).closest("tr").attr('data-file-id'),
+				type: 'POST'
+			});
+		});
+
     //Search clear button
     function tog(v) {
         return v ? 'addClass' : 'removeClass';
