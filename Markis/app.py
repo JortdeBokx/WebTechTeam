@@ -226,6 +226,32 @@ def login():
 	else:
 		return render_template('login.html', form=form)
 
+
+
+
+
+@app.route('/votefile', methods=['POST'])
+@login_required
+def voteFile():
+	if request.method == 'POST':
+		userid = current_user.user_id
+		fileid = request.data['fileid']
+		newVote = request.data['vote']
+		if FileExistsByID(fileid):
+			currentVote = getFileVote(userid, fileid)
+			if currentVote == 0:
+				if newVote != 0:
+					InsertNewVote(userid, fileid, newVote)
+			elif currentVote == -1:
+				if newVote != -1:
+					UpdateVote(userid, fileid, currentVote, newVote)
+			elif currentVote == 1:
+				if newVote != 1:
+					UpdateVote(userid, fileid, currentVote, newVote)
+
+	else:
+		return abort(400)
+
 #############################################
 #			Template Filters				#
 #############################################
@@ -305,6 +331,22 @@ def page_not_found(e):
 @login_manager.user_loader
 def load_user(userid):
 	return User(userid)
+
+def FileExistsByID(fileid):
+	conn = engine.connect()
+	s = text(
+		"SELECT * FROM files WHERE file_ID=:u")
+	rv = conn.execute(s, u=fileid).fetchone()
+	conn.close()
+	return rv != []
+
+def getFileVote(userid, fileid):
+	conn = engine.connect()
+	s = text(
+		"SELECT IFNULL(vote, 0) FROM user_file_vote WHERE file_ID=:f and user_ID = :u")
+	rv = conn.execute(s, u=userid, f=fileid).fetchone()
+	conn.close()
+	return rv
 
 def is_safe_url(target):
 	ref_url = urlparse(request.host_url)
