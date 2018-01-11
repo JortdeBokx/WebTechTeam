@@ -45,7 +45,7 @@
          <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
        <td class = "preview_file" href = "{{ file.path }}" data-file-name = "{{ file.name }}">{{ file.uploader }}</td>
-       <td class="buttons"><div class="fileIcons"><a title="Favorite"><i class="material-icons" style="font-size:25px; color:#850028;">{% if file.user_favorite == 1 %} favorite {% else %}favorite_border{% endif %}</i></a></div></td>
+       <td class="buttons"><div class="fileIcons"><a title="Favorite" id="favorites-button"><i class="material-icons" style="font-size:25px; color:#850028;">{% if file.user_favorite == 1 %} favorite {% else %}favorite_border{% endif %}</i></a></div></td>
        <td class="buttons"><div class="fileIcons"><a href = "{{ file.path }}"  download><i class="material-icons download_button" style="font-size:30px; color:#0460bd;">file_download</i></a></div></td>
       </tr>
     {% endfor %}
