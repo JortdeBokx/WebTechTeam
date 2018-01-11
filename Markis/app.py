@@ -472,10 +472,7 @@ def getUserVote(fileid, userid):
 	conn = engine.connect()
 	s = text("SELECT vote FROM user_file_vote WHERE user_ID = :u and file_ID = :f")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
-	if rv == -1 or rv == 1:
-		return rv
-	else:
-		return 0
+	return rv
 
 def getUserFavorite(fileid, userid):
 	# returns 1 or -1 for user vote on file, 0 if not voted
