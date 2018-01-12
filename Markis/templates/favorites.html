@@ -22,6 +22,9 @@
         <th>Remove<th>
       </tr>
     </thead>
+  {% if favorites == [] %}
+            <tr><td colspan="7" class="table-warning" style="text-align: center;">You have not favorites</td></tr>
+  {% else %}
       {% for file in favorites %}
       <tr>
 				<td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}"><i id="icon" class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
@@ -31,6 +34,7 @@
           <td><div class="fileIcons"><a href><i class="material-icons" style="font-size:26px;">delete</i></div></td>
       </tr>
     {% endfor %}
+  {% endif %}
   </table>
 </div>
 <hr />
