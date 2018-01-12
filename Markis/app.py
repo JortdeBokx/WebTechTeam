@@ -50,7 +50,6 @@ admin_permission = Permission(RoleNeed('admin'))
 
 @app.route('/')
 def home():
-	print(current_user.isAdmin )
 	if not current_user.is_active:
 		return redirect(url_for('login'))
 	conn = engine.connect()
@@ -91,7 +90,7 @@ def subjectGoHome():
 	return redirect("/", code=302)
 
 @app.route(SUBJECTS_PATH +'/<subjectid>/',)
-#@login_required
+@login_required
 def subject(subjectid):
 	subjectDataSet = getSubjectData(subjectid.upper())
 	if subjectDataSet == None:
@@ -115,7 +114,7 @@ def uploadFileGetForm():
 
 
 @app.route(SUBJECTS_PATH + '/<subjectid>/<path:subfolder>',)
-#@login_required
+@login_required
 def subjectfiles(subjectid, subfolder):
 	subjectDataSet = getSubjectData(subjectid)
 	if subjectDataSet == None:
