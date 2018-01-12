@@ -119,7 +119,7 @@ $(document).ready(()=>{
                 vote = 1;
                 $(this).addClass('chosen');
 
-                if($(this).parent().children('.vote-down').hasClass('çhosen')){
+                if($(this).parent().children('.vote-down').hasClass('chosen')){
                     CurrVotes = CurrVotes + 2;
                     $(this).parent().children('.vote-down').removeClass('chosen');
                 }else{
@@ -131,20 +131,22 @@ $(document).ready(()=>{
                     url: '/votefile',
                     contentType: 'application/json;charset=UTF-8',
                     data: JSON.stringify({fileid: parseInt($(this).closest("tr").attr('data-file-id')), vote: vote}),
-                    type: 'POST'
+                    type: 'POST',
+                  complete: function(xhr, textStatus) {
+                }
                 });
 		    $(this).parent().children('.file-votes').html(CurrVotes)
 		});
 
 		$('.vote-down').on('click', function() {
 		    var vote;
-		    var CurrVotes = parseInt($(this).parent().children('.file-votes').text());
+		    var CurrVotes = parseInt( $(this).parent().children('.file-votes').text() );
 		    if( $(this).hasClass('chosen')){
                 vote = 0;
                 $(this).removeClass('chosen');
                 CurrVotes = CurrVotes + 1;
             }else {
-                vote = 1;
+                vote = -1;
                 $(this).addClass('chosen');
                 if($(this).parent().children('.vote-up').hasClass('chosen')){
                     CurrVotes = CurrVotes - 2;
@@ -158,8 +160,12 @@ $(document).ready(()=>{
                 url: '/votefile',
                 contentType: 'application/json;charset=UTF-8',
                 data: JSON.stringify({fileid: parseInt($(this).closest("tr").attr('data-file-id')), vote: vote}),
-                type: 'POST'
+                type: 'POST',
+                complete: function(xhr, textStatus) {
+                    //console.log(xhr.responseText); should you wish to print a server response
+                }
             });
+
 		    $(this).parent().children('.file-votes').html(CurrVotes)
 		});
 

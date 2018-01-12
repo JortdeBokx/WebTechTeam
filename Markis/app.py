@@ -305,7 +305,7 @@ def voteFile():
 			else:
 				return make_response('Data types incorrect', 400)
 		else:
-			return abort(400)
+			return make_response('Only POST requests accepted', 400)
 	else:
 		return abort(403)
 
