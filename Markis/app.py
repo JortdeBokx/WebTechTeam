@@ -6,8 +6,10 @@ import os
 from urllib.parse import urlparse, urljoin
 
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file, \
-	json, make_response
+	json, make_response, current_app, session
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
+from flask_principal import Principal, Permission, RoleNeed, identity_changed, Identity, AnonymousIdentity, \
+	identity_loaded, UserNeed
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
@@ -40,12 +42,15 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.login_message = "You need to be logged in to view this page!"
 
+principals = Principal(app)
+admin_permission = Permission(RoleNeed('admin'))
 #############################################
 #				App routes					#
 #############################################
 
 @app.route('/')
 def home():
+	print(current_user.isAdmin )
 	if not current_user.is_active:
 		return redirect(url_for('login'))
 	conn = engine.connect()
@@ -53,6 +58,12 @@ def home():
 	faculties = conn.execute(text("SELECT * FROM faculties")).fetchall()
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
+
+@app.route('/admin')
+@login_required
+@admin_permission.require(http_exception=403)
+def do_admin_index():
+	return 'Only if you are an admin'
 
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
@@ -215,6 +226,14 @@ def favorites():
 @app.route("/logout")
 def logout():
 	logout_user()
+
+	# Remove session keys set by Flask-Principal
+	for key in ('identity.name', 'identity.auth_type'):
+		session.pop(key, None)
+
+	# Tell Flask-Principal the user is anonymous
+	identity_changed.send(current_app._get_current_object(),
+						  identity=AnonymousIdentity())
 	flash("You are now successfully logged out", 'success')
 	return redirect("/login", code=302)
 
@@ -253,6 +272,8 @@ def login():
 				user = User(rv['id'])
 				user.authenticate(rv['id'])
 				login_user(user, remember=form.keepLoggedIn.data)
+				identity_changed.send(current_app._get_current_object(),
+									  identity=Identity(user.user_id))
 			else:
 				return render_template('login.html', error='Password incorrect', form=form)
 		else:
@@ -394,6 +415,18 @@ def page_not_found(e):
 @login_manager.user_loader
 def load_user(userid):
 	return User(userid)
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+	# Set the identity user object
+	identity.user = current_user
+
+	# Add the UserNeed to the identity
+	if hasattr(current_user, 'user_id'):
+		identity.provides.add(UserNeed(current_user.get_id()))
+		if current_user.isAdmin == 1 :
+			identity.provides.add(RoleNeed('admin'))
+
 
 def FileExistsByID(fileid):
 	conn = engine.connect()
@@ -605,11 +638,15 @@ class User(UserMixin):
 		self.username= rv['username']
 		self.email = rv['email']
 		self.password = rv['password']
+		self.isAdmin = rv['is_admin']
 		self.active = active
 		conn.close()
 
 	def get_id(self):
 		return self.user_id
+
+	def get_admin(self):
+		return self.isAdmin
 
 	def is_active(self):
 		# Here you should write whatever the code is
