@@ -109,31 +109,58 @@ $(document).ready(()=>{
 		//votes buttons
 		$('.vote-up').on('click', function() {
 		    var vote;
+		    var CurrVotes = parseInt($(this).parent().children('.file-votes').text());
 		    if( $(this).hasClass('chosen')){
                 vote = 0;
-                $(this).removeClass('chosen')
-                //todo: update nrof votes variable
+                $(this).removeClass('chosen');
+                CurrVotes = CurrVotes - 1
+
             }else {
                 vote = 1;
                 $(this).addClass('chosen');
-                //todo: update nrof votes variable
-                $(this).parent().children('.vote-down').removeClass('chosen');
+
+                if($(this).parent().children('.vote-down').hasClass('çhosen')){
+                    CurrVotes = CurrVotes + 2;
+                    $(this).parent().children('.vote-down').removeClass('chosen');
+                }else{
+                    CurrVotes = CurrVotes + 1;
+                }
+
             }
               $.ajax({
                     url: '/votefile',
                     contentType: 'application/json;charset=UTF-8',
-                    data: JSON.stringify({fileid: $(this).closest("tr").data('data-file-id'), vote: vote}),
+                    data: JSON.stringify({fileid: parseInt($(this).closest("tr").attr('data-file-id')), vote: vote}),
                     type: 'POST'
                 });
+		    $(this).parent().children('.file-votes').html(CurrVotes)
 		});
 
 		$('.vote-down').on('click', function() {
+		    var vote;
+		    var CurrVotes = parseInt($(this).parent().children('.file-votes').text());
+		    if( $(this).hasClass('chosen')){
+                vote = 0;
+                $(this).removeClass('chosen');
+                CurrVotes = CurrVotes + 1;
+            }else {
+                vote = 1;
+                $(this).addClass('chosen');
+                if($(this).parent().children('.vote-up').hasClass('chosen')){
+                    CurrVotes = CurrVotes - 2;
+                    $(this).parent().children('.vote-up').removeClass('chosen');
+                }else{
+                    CurrVotes = CurrVotes - 1;
+                }
+
+            }
 			$.ajax({
                 url: '/votefile',
                 contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({fileid: $(this).closest("tr").data('data-file-id'), vote: -1}),
+                data: JSON.stringify({fileid: parseInt($(this).closest("tr").attr('data-file-id')), vote: vote}),
                 type: 'POST'
             });
+		    $(this).parent().children('.file-votes').html(CurrVotes)
 		});
 
     //Search clear button

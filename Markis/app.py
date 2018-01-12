@@ -281,15 +281,20 @@ def voteFile():
 						else:
 							return make_response('Vote is same as current vote', 400)
 					elif currentVote == -1:
-						if newVote != -1:
+						if newVote == 1:
 							UpdateVote(userid, fileid, currentVote, newVote)
 							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
+						elif newVote == 0:
+							RemoveVote(userid, fileid)
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 						else:
 							return make_response('Vote is same as current vote', 400)
 					elif currentVote == 1:
-						if newVote != 1:
+						if newVote == -1:
 							UpdateVote(userid, fileid, currentVote, newVote)
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						elif newVote == 0:
+							RemoveVote(userid, fileid)
 							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 						else:
 							return make_response('Vote is same as current vote', 400)
@@ -415,6 +420,13 @@ def UpdateVote(userid, fileid, currentVote, newVote):
 	conn = engine.connect()
 	s = text("UPDATE user_file_vote SET vote = :v WHERE user_ID = :u and file_ID = :f and vote = :c")
 	rv = conn.execute(s, u=userid, f=fileid, v=newVote, c = currentVote)
+	conn.close()
+	return rv
+
+def RemoveVote(userid, fileid):
+	conn = engine.connect()
+	s = text("DELETE FROM user_file_vote WHERE user_ID = :u and file_ID = :f")
+	rv = conn.execute(s, u=userid, f=fileid)
 	conn.close()
 	return rv
 
