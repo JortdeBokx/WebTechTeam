@@ -163,25 +163,46 @@ def setFavorite():
 
 @app.route('/removefavorite', methods=["POST"])
 def removeFavorite():
-	if request.method == "POST":
-		if current_user.is_authenticated and current_user.is_active:
-			if request.method == 'POST':
-				userid = current_user.get_id()
-				fileid = request.json['fileid']
-				if fileid is not None or type(fileid) is not int:
-					if FileExistsByID(fileid):
-						conn = engine.connect()
-						s = text("DELETE FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
-						rv = conn.execute(s, u=userid, f=fileid)
-						conn.close()
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-					else:
-						return make_response('File does not exist', 400)
+	if current_user.is_authenticated and current_user.is_active:
+		if request.method == 'POST':
+			userid = current_user.get_id()
+			fileid = request.json['fileid']
+			if fileid is not None and type(fileid) is int:
+				if FileExistsByID(fileid):
+					conn = engine.connect()
+					s = text("DELETE FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
+					rv = conn.execute(s, u=userid, f=fileid)
+					conn.close()
+					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
-					return make_response('Invalid FileID', 400)
-		else:
-			return abort(403)
+					return make_response('File does not exist', 400)
+			else:
+				return make_response('Invalid FileID', 400)
+	else:
+		return abort(403)
 
+
+
+
+@app.route('/removefile', methods=["POST"])
+def removeFile():
+	if current_user.is_authenticated and current_user.is_active and current_user.hasRole('admin'):
+		if request.method == 'POST':
+			fileid = request.json['fileid']
+			if fileid is not None and type(fileid) is int:
+				if FileExistsByID(fileid):
+					conn = engine.connect()
+					s = text("DELETE FROM files WHERE file_ID = :f")
+					rv = conn.execute(s, f=fileid)
+					conn.close()
+					removeFileFromDisk(fileid)
+					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+				else:
+					return make_response('File does not exist', 400)
+			else:
+				return make_response('Invalid FileID', 400)
+	else:
+		return abort(403)
 
 
 @app.route('/profile', methods=["GET", "POST"])
@@ -236,9 +257,11 @@ def logout():
 	flash("You are now successfully logged out", 'success')
 	return redirect("/login", code=302)
 
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	form = registerForm(request.form)
+	form = registerForm(request.form, engine)
 	if request.method == 'POST' and form.validate():
 		conn = engine.connect()
 		username = form.username.data
@@ -246,8 +269,13 @@ def register():
 		last_name = form.lastname.data
 		email = form.email.data
 		password = sha256_crypt.encrypt(str(form.password.data))
+		p = text("SELECT id FROM users WHERE email = :e")
+		mailcheck = conn.execute(p, e=email).fetchone()
+		print(mailcheck)
+		if mailcheck:
+			form.email.errors.append('An account with that email already exists')
+
 		s = text("INSERT INTO users (first_name, last_name, username, password, email) VALUES (:f, :l, :u, :p, :e)")
-		# TODO: check if email is unique
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, p=password, e=email)
 		conn.close()
 
@@ -486,6 +514,25 @@ def getSubjectData(subjectid):
 	conn.close()
 	return rv
 
+
+def removeFileFromDisk(fileid):
+	conn = engine.connect()
+	s = text(
+		"SELECT path, name, subject_code FROM files WHERE file_ID = :i")
+	rv = conn.execute(s, i=fileid).fetchone()
+	conn.close()
+	folderpath = rv['path']
+	filename = rv['name']
+	subjectid = rv['subject_code']
+	if FileExistsInFolderStrucure(subjectid, folderpath, filename):
+		FilePath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath, filename)
+		os.remove(FilePath)
+		FolderPath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath)
+		try:
+			os.removedirs(FolderPath)
+			makeSubjectFolder(subjectid)
+		except:
+			pass
 
 def makeSubjectFolder(subjectid):
 	# return true if a new folder was made, false if not
