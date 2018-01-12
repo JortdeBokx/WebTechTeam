@@ -45,7 +45,6 @@ login_manager.login_message = "You need to be logged in to view this page!"
 #############################################
 
 @app.route('/')
-@login_required
 def home():
 	if not current_user.is_active:
 		return redirect(url_for('login'))
@@ -128,13 +127,46 @@ def subjectfiles(subjectid, subfolder):
 @app.route('/setfavorite', methods=["POST"])
 def setFavorite():
 	if request.method == "POST":
-		data = request.data.split(',')
-		file_id = data[0]
-		user_id = data[1]
-		conn = engine.connect()
-		s = text("INSERT INTO user_file_favorite SET (user_ID, file_ID) VALUES (:u, :f)")
-		rv = conn.execute(s, u=user_id, f=file_id)
-		conn.close()
+		if current_user.is_authenticated and current_user.is_active:
+			if request.method == 'POST':
+				userid = current_user.get_id()
+				fileid = request.json['fileid']
+				if fileid is not None or type(fileid) is not int:
+					if FileExistsByID(fileid):
+						conn = engine.connect()
+						s = text("INSERT INTO user_file_favorite (user_ID, file_ID) VALUES (:u, :f)")
+						rv = conn.execute(s, u=userid, f=fileid)
+						conn.close()
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						return make_response('File does not exist', 400)
+				else:
+					return make_response('Invalid FileID', 400)
+		else:
+			return abort(403)
+
+@app.route('/removefavorite', methods=["POST"])
+def removeFavorite():
+	if request.method == "POST":
+		if current_user.is_authenticated and current_user.is_active:
+			if request.method == 'POST':
+				userid = current_user.get_id()
+				fileid = request.json['fileid']
+				if fileid is not None or type(fileid) is not int:
+					if FileExistsByID(fileid):
+						conn = engine.connect()
+						s = text("DELETE FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
+						rv = conn.execute(s, u=userid, f=fileid)
+						conn.close()
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						return make_response('File does not exist', 400)
+				else:
+					return make_response('Invalid FileID', 400)
+		else:
+			return abort(403)
+
+
 
 @app.route('/profile', methods=["GET", "POST"])
 @login_required
@@ -363,15 +395,17 @@ def getFileVote(userid, fileid):
 	s = text(
 		"SELECT IFNULL(vote, 0) AS vote FROM user_file_vote WHERE file_ID=:f and user_ID = :u")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
-	d = dict(rv.items())
 	conn.close()
-	return d['vote']
+	if not rv:
+		return 0
+	else:
+		return dict(rv.items())['vote']
+
 
 def InsertNewVote(userid, fileid, newVote):
 	conn = engine.connect()
 	s = text("INSERT INTO user_file_vote (user_ID, file_ID, vote) VALUES (:u, :f, 1)")
 	rv = conn.execute(s, u=userid, f=fileid, v=newVote)
-	print(rv)
 	conn.close()
 	return rv
 
@@ -470,16 +504,18 @@ def FileExistsInDB(relativePath, subject, filename):
 def getUserVote(fileid, userid):
 	# returns 1 or -1 for user vote on file, 0 if not voted
 	conn = engine.connect()
-	s = text("SELECT vote FROM user_file_vote WHERE user_ID = :u and file_ID = :f")
+	s = text("SELECT IFNULL(vote,0) as vote FROM user_file_vote WHERE user_ID = :u and file_ID = :f")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
-	return rv
+	if not rv:
+		return 0
+	else:
+		return dict(rv.items())['vote']
 
 def getUserFavorite(fileid, userid):
-	# returns 1 or -1 for user vote on file, 0 if not voted
 	conn = engine.connect()
 	s = text("SELECT * FROM user_file_favorite WHERE user_ID = :u and file_ID = :f")
 	rv = conn.execute(s, u=userid, f=fileid).fetchone()
-	if rv != None:
+	if rv:
 		return 1
 	else:
 		return 0

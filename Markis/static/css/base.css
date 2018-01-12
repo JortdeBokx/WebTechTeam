@@ -406,3 +406,11 @@ img {
 #uploadModal .modal-content {
 	height: 72vh;
 }
+
+.vote-up.chosen {
+    color: #008c0b !important;
+}
+
+.vote-down.chosen{
+    color: #ce0000 !important;
+}
