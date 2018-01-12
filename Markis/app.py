@@ -271,32 +271,34 @@ def voteFile():
 			userid = current_user.get_id()
 			fileid = request.json['fileid']
 			newVote = request.json['vote']
-			if FileExistsByID(fileid):
-				currentVote = getFileVote(userid, fileid)
-				if currentVote == 0:
-					if newVote != 0:
-						InsertNewVote(userid, fileid, newVote)
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-					else:
-						return make_response('Vote is same as current vote', 400)
-				elif currentVote == -1:
-					if newVote != -1:
-						UpdateVote(userid, fileid, currentVote, newVote)
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+			if type(userid) == int and  type(fileid) == int and  type(newVote) == int :
+				if FileExistsByID(fileid):
+					currentVote = getFileVote(userid, fileid)
+					if currentVote == 0:
+						if newVote != 0:
+							InsertNewVote(userid, fileid, newVote)
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return make_response('Vote is same as current vote', 400)
+					elif currentVote == -1:
+						if newVote != -1:
+							UpdateVote(userid, fileid, currentVote, newVote)
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
+						else:
+							return make_response('Vote is same as current vote', 400)
+					elif currentVote == 1:
+						if newVote != 1:
+							UpdateVote(userid, fileid, currentVote, newVote)
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return make_response('Vote is same as current vote', 400)
 					else:
-						return make_response('Vote is same as current vote', 400)
-				elif currentVote == 1:
-					if newVote != 1:
-						UpdateVote(userid, fileid, currentVote, newVote)
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-					else:
-						return make_response('Vote is same as current vote', 400)
-				else:
-					print(currentVote)
-					print(userid)
-					return make_response('Current vote cannot be found', 500)
-
+						print(currentVote)
+						print(userid)
+						return make_response('Current vote cannot be found', 500)
+			else:
+				return make_response('Data types incorrect', 400)
 		else:
 			return abort(400)
 	else:

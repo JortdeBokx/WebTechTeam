@@ -108,19 +108,30 @@ $(document).ready(()=>{
 
 		//votes buttons
 		$('.vote-up').on('click', function() {
-			$.ajax({
-                url: '/votefile',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({fileid: $(this).closest("tr").attr('data-file-id'), vote: 1}),
-                type: 'POST'
-            });
+		    var vote;
+		    if( $(this).hasClass('chosen')){
+                vote = 0;
+                $(this).removeClass('chosen')
+                //todo: update nrof votes variable
+            }else {
+                vote = 1;
+                $(this).addClass('chosen');
+                //todo: update nrof votes variable
+                $(this).parent().children('.vote-down').removeClass('chosen');
+            }
+              $.ajax({
+                    url: '/votefile',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({fileid: $(this).closest("tr").data('data-file-id'), vote: vote}),
+                    type: 'POST'
+                });
 		});
 
 		$('.vote-down').on('click', function() {
 			$.ajax({
                 url: '/votefile',
                 contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({fileid: $(this).closest("tr").attr('data-file-id'), vote: -1}),
+                data: JSON.stringify({fileid: $(this).closest("tr").data('data-file-id'), vote: -1}),
                 type: 'POST'
             });
 		});
