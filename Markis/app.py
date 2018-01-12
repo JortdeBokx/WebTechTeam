@@ -252,7 +252,7 @@ def login():
 			if sha256_crypt.verify(str(form.password.data), str(rv['password'])):
 				user = User(rv['id'])
 				user.authenticate(rv['id'])
-				login_user(user)
+				login_user(user, remember=form.keepLoggedIn.data)
 			else:
 				return render_template('login.html', error='Password incorrect', form=form)
 		else:
