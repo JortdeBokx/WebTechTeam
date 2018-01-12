@@ -130,11 +130,17 @@ def setFavorite():
 		if current_user.is_authenticated and current_user.is_active:
 			if request.method == 'POST':
 				userid = current_user.get_id()
-				fileid = request.json['fileid']
+				fileid = int(request.json['fileid'])
 				if fileid is not None or type(fileid) is not int:
 					if FileExistsByID(fileid):
 						conn = engine.connect()
-						s = text("INSERT INTO user_file_favorite (user_ID, file_ID) VALUES (:u, :f)")
+						s = text("SELECT COUNT(*) FROM user_file_favorite WHERE user_ID=:u AND file_ID=:f")
+						rv = conn.execute(s, u=userid, f=fileid).fetchone()
+						exists = dict(rv.items())['COUNT(*)']
+						if exists:
+							s = text("DELETE FROM user_file_favorite WHERE user_ID=:u AND file_ID=:f")
+						else:
+							s = text("INSERT INTO user_file_favorite (user_ID, file_ID) VALUES (:u, :f)")
 						rv = conn.execute(s, u=userid, f=fileid)
 						conn.close()
 						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
