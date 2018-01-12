@@ -97,12 +97,23 @@ $(document).ready(()=>{
     }
 
 		//favorites buttons
-		$('#favorites-button').on('click', function() {
+		$('.favorites-button').on('click', function(event) {
 			$.ajax({
 				url: '/setfavorite',
 				contentType: 'application/json;charset=UTF-8',
 				data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
-				type: 'POST'
+				type: 'POST',
+                success: function(data){
+                    if(event.target.innerText == 'favorite') {
+                        event.target.innerHTML = 'favorite_border';
+                    }
+                    else if(event.target.innerText == 'favorite_border') {
+                        event.target.innerHTML = 'favorite';
+                    }
+                },
+                error: function(){
+                    console.log("Error");
+                }
 			});
 		});
 
