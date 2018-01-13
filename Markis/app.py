@@ -183,7 +183,7 @@ def removeFavorite():
 	if current_user.is_authenticated and current_user.is_active:
 		if request.method == 'POST':
 			userid = current_user.get_id()
-			fileid = request.json['fileid']
+			fileid = int(request.json['fileid'])
 			if fileid is not None and type(fileid) is int:
 				if FileExistsByID(fileid):
 					conn = engine.connect()
@@ -205,7 +205,7 @@ def removeFavorite():
 def removeFile():
 	if current_user.is_authenticated and current_user.is_active and current_user.hasRole('admin'):
 		if request.method == 'POST':
-			fileid = request.json['fileid']
+			fileid = int(request.json['fileid'])
 			if fileid is not None and type(fileid) is int:
 				if FileExistsByID(fileid):
 					conn = engine.connect()
@@ -288,7 +288,6 @@ def register():
 		password = sha256_crypt.encrypt(str(form.password.data))
 		p = text("SELECT id FROM users WHERE email = :e")
 		mailcheck = conn.execute(p, e=email).fetchone()
-		print(mailcheck)
 		if mailcheck:
 			form.email.errors.append('An account with that email already exists')
 
@@ -370,8 +369,6 @@ def voteFile():
 						else:
 							return make_response('Vote is same as current vote', 400)
 					else:
-						print(currentVote)
-						print(userid)
 						return make_response('Current vote cannot be found', 500)
 			else:
 				return make_response('Data types incorrect', 400)
