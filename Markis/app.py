@@ -67,7 +67,7 @@ def do_admin_index():
 	conn = engine.connect()
 	s = text("SHOW TABLES")
 	rv = conn.execute(s).fetchall()
-
+	
 	for table in rv:
 		s = text("SELECT * FROM " + table[0])
 		rv2 = conn.execute(s).fetchall()
@@ -121,29 +121,44 @@ def uploadFileGetForm():
 		"SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
 	conn.close()
 	form.subject.choices = [('course', 'Course')]
-	yearToShow = getYearsAvailable()
-	form.opt1.choices = yearToShow
-	form.opt1.default = yearToShow[-1][0]
 	for g in subjects:
 		form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
-	form.process()
-
+	yearToShow = getYearsAvailable()
+	form.opt1.choices = yearToShow
 	if request.method == "GET":
+		form.opt1.default = yearToShow[-1][0]
+		form.process()
 		return render_template('uploadForm.html', form=form)
 	elif request.method == "POST":
-		print(form.subject.data)
-		if form.validate():
-			uploaderid = current_user.get_id()
-			subjectid = form.subject.data
-			category = form.filetype.data
-			opt1 = form.opt1.data
-			opt2 = form.opt2.data
-			print(opt1)
-			print(opt2)
-			file = request.files["file"]
-			filename = secure_filename(file.filename)
-			if file.filename == '':
-				flash('No file selected')
+		uploaderid = current_user.get_id()
+		subjectid = form.subject.data
+		category = form.filetype.data
+		opt1 = form.opt1.data
+		opt2 = form.opt2.data
+
+		file = request.files["file"]
+		filename = secure_filename(file.filename)
+		if filename == '':
+			flash('No file selected')
+
+		save_path = app.config['FILE_BASE_DIR']
+		if subjectid and category:
+			save_path = os.path.join(save_path, subjectid, category)
+			databasePath = category
+			if category == "exams" or category == "homework":
+				if opt1 and opt2:
+					YearPeriod = opt1 + "-" + str(int(opt1) + 1)
+					save_path = os.path.join(save_path,YearPeriod)
+					databasePath = os.path.join(databasePath, YearPeriod)
+
+				else:
+					pass
+					#todo: make error message appear
+
+			else:
+				pass
+				#todo: make error appear
+
 	else:
 		return abort(405)
 
@@ -677,7 +692,7 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
 				fileSize = round(os.path.getsize(newPath)/1000, 1)
-				filesizestr = str(fileSize) + "kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
+				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + " MB"
 				d['size'] = filesizestr
 				d['downloadpath'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				d['user_vote'] = getUserVote(d['file_id'], userid)
@@ -701,8 +716,8 @@ def getFavoriteFiles(userid):
 		if FileExistsInFolderStrucure(d['subject_code'], d['path'], d['name']):
 			newPath = os.path.join(app.config['FILE_BASE_DIR'], d['subject_code'], d['path'], d['name'])
 			fileSize = round(os.path.getsize(newPath) / 1000, 1)
-			filesizestr = str(fileSize) + "kB" if fileSize <= 1000 else str(
-				round(os.path.getsize(newPath) / 1000000, 1)) + "MB"
+			filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(
+				round(os.path.getsize(newPath) / 1000000, 1)) + " MB"
 			d['size'] = filesizestr
 			d['downloadpath'] = SUBJECTS_PATH + "/" + d['subject_code'] + "/" + d['path'] + "/" + d['name']
 			favFilesThatExist.append(d)

@@ -1,6 +1,7 @@
 from sqlalchemy import text
 from wtforms import Form, StringField, PasswordField, BooleanField, SelectField, validators, ValidationError
 
+
 class registerForm(Form):
 
 	def validate_email(self, field):  # here is where the magic is
@@ -33,11 +34,10 @@ class loginForm(Form):
 
 
 class uploadFileForm(Form):
-	subject = SelectField('Subject')
-	filetype = SelectField('File Type', choices=[('category', 'Category'), ('exams', 'Exams'), ('hw', 'Homework'), ('lit', 'Literature'), ('misc','Miscellanious'), ('sum','Summaries')])
-	opt1 = SelectField('Released/Made')
-	opt2 = SelectField('Upload Type', choices=[('type', 'Type'), ('ans', 'Answers'), ('ques', 'Questions')])
-
+	subject = SelectField('Subject', )
+	filetype = SelectField('File Type', choices=[('category', 'Category'), ('exams', 'Exams'), ('homework', 'Homework'), ('literature', 'Literature'), ('misc','Miscellanious'), ('summaries','Summaries')])
+	opt1 = SelectField('Released/Made',)
+	opt2 = SelectField('Upload Type', choices=[('type', 'Type'), ('answers', 'Answers'), ('questions', 'Questions')])
 
 class profileForm(Form):
 	firstname = StringField("First Name", [validators.Length(min=1, max=20)], render_kw={"placeholder": "First Name"})
