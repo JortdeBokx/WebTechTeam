@@ -12,8 +12,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user, log
 from flask_principal import Principal, Permission, RoleNeed, identity_changed, Identity, AnonymousIdentity, \
 	identity_loaded, UserNeed
 from passlib.hash import sha256_crypt
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.ext.automap import automap_base
+from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
@@ -117,30 +116,36 @@ def subject(subjectid):
 @login_required
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
+	conn = engine.connect()
+	subjects = conn.execute(text(
+		"SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
+	conn.close()
+	form.subject.choices = [('course', 'Course')]
+	yearToShow = getYearsAvailable()
+	form.opt1.choices = yearToShow
+	form.opt1.default = yearToShow[-1][0]
+	for g in subjects:
+		form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
+	form.process()
+
 	if request.method == "GET":
-		conn = engine.connect()
-		subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
-		conn.close()
-		form.subject.choices = [('course', 'Course')]
-		yearToShow = getYearsAvailable()
-		form.opt1.choices = yearToShow
-		form.opt1.default = yearToShow[-1][0]
-		for g in subjects:
-			form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
-		form.process()
 		return render_template('uploadForm.html', form=form)
-	elif request.method == "POST" and form.validate():
-		uploaderid = current_user.get_id()
-		subjectid = form.subject.data
-		category = form.filetype.data
-		opt1 = form.opt1.data
-		opt2 = form.opt2.data
-		print(opt1)
-		print(opt2)
-		file = request.files["file"]
-		filename = secure_filename(file.filename)
-		if file.filename == '':
-			flash('No file selected')
+	elif request.method == "POST":
+		print(form.subject.data)
+		if form.validate():
+			uploaderid = current_user.get_id()
+			subjectid = form.subject.data
+			category = form.filetype.data
+			opt1 = form.opt1.data
+			opt2 = form.opt2.data
+			print(opt1)
+			print(opt2)
+			file = request.files["file"]
+			filename = secure_filename(file.filename)
+			if file.filename == '':
+				flash('No file selected')
+	else:
+		return abort(405)
 
 
 
