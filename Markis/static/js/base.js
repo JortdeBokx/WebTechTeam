@@ -433,10 +433,10 @@ $(document).ready(()=>{
         $('#opt2').children().first().prop({disabled: true, hidden: true});
 
         $('#subject').on('change', function () {
-            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "homework")) {
                 $('#opt1').removeClass('hide');
                 $('#opt2').removeClass('hide');
-            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "homework" && $('#filetype').val() != undefined) {
                 $('#opt1').addClass('hide');
                 $('#opt2').addClass('hide');
                 $('#uploadBtn').removeClass('disabled');
@@ -445,10 +445,10 @@ $(document).ready(()=>{
         });
 
         $('#filetype').on('change', function () {
-            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "homework")) {
                 $('#opt1').removeClass('hide');
                 $('#opt2').removeClass('hide');
-            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "homework" && $('#filetype').val() != undefined) {
                 $('#opt1').addClass('hide');
                 $('#opt2').addClass('hide');
                 $('#uploadBtn').removeClass('disabled');
