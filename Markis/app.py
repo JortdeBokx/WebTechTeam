@@ -68,7 +68,7 @@ def do_admin_index():
 	conn = engine.connect()
 	s = text("SHOW TABLES")
 	rv = conn.execute(s).fetchall()
-	
+
 	for table in rv:
 		s = text("SELECT * FROM " + table[0])
 		rv2 = conn.execute(s).fetchall()
@@ -672,7 +672,7 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
 				fileSize = round(os.path.getsize(newPath)/1000, 1)
-				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
+				filesizestr = str(fileSize) + "kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + "MB"
 				d['size'] = filesizestr
 				d['downloadpath'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				d['user_vote'] = getUserVote(d['file_id'], userid)
