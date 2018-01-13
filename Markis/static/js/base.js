@@ -32,11 +32,16 @@ $(document).ready(()=>{
         input = document.getElementById('search-files');
         filter = input.value.toUpperCase();
         tr = document.getElementsByTagName("tr");
-        //Search through cards for the input
+        //Search through table for the input
         for (i = 0; i < tr.length; i++) {
-            name = tr[i].getElementsByTagName("td")[0];
-            if (name) {
-                if (name.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            name1 = tr[i].getElementsByTagName("td")[0];
+						if (tr[i].getElementsByTagName('td')[1] != undefined) {
+							name2 = tr[i].getElementsByTagName("td")[1];
+						} else {
+							name2 = name1;
+						}
+            if (name1 || name2) {
+                if ((name1.innerHTML.toUpperCase().indexOf(filter) > -1) || (name2.innerHTML.toUpperCase().indexOf(filter) > -1)) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";
