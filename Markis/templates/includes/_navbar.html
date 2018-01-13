@@ -22,7 +22,7 @@
 
 
          {% if current_user.is_authenticated %}
-
+             {% if current_user.isAdmin %}
           <li class="nav-item">
             <a class="nav-link upload-file" id="file-upload" href="/admin" >Manage Server</a>
           </li>
