@@ -333,6 +333,7 @@ $(document).ready(()=>{
 				$('#subject').change(function(){
 					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
 						$('#opt1').removeClass('hide');
+						$('#opt2').removeClass('hide');
 					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
 						$('#opt1').addClass('hide');
 						$('#opt2').addClass('hide');
@@ -343,15 +344,12 @@ $(document).ready(()=>{
 				$('#filetype').change(function(){
 					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
 						$('#opt1').removeClass('hide');
+						$('#opt2').removeClass('hide');
 					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
 						$('#opt1').addClass('hide');
 						$('#opt2').addClass('hide');
 						$('#uploadDropzone').removeClass('hide');
 					}
-				});
-
-				$('#opt1').change(function() {
-					$('#opt2').removeClass('hide');
 				});
 
 				$('#opt2').change(function() {

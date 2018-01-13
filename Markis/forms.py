@@ -1,7 +1,5 @@
 from sqlalchemy import text
 from wtforms import Form, StringField, PasswordField, BooleanField, SelectField, validators, ValidationError
-from wtforms.fields.html5 import DateField
-
 
 class registerForm(Form):
 
@@ -31,10 +29,13 @@ class loginForm(Form):
 	username = StringField("Username", [validators.Length(min=3, max=35)], render_kw={"placeholder": "Username"})
 	password = PasswordField("Password", [validators.Length(min=8, max=64)], render_kw={"placeholder": "Password"})
 	keepLoggedIn = BooleanField("")
+
+
+
 class uploadFileForm(Form):
 	subject = SelectField('Subject')
 	filetype = SelectField('File Type', choices=[('category', 'Category'), ('exams', 'Exams'), ('hw', 'Homework'), ('lit', 'Literature'), ('misc','Miscellanious'), ('sum','Summaries')])
-	opt1 = DateField('Released/Made')
+	opt1 = SelectField('Released/Made')
 	opt2 = SelectField('Upload Type', choices=[('type', 'Type'), ('ans', 'Answers'), ('ques', 'Questions')])
 
 class profileForm(Form):
@@ -45,3 +46,6 @@ class profileForm(Form):
 	password = PasswordField("Password", [], render_kw={"placeholder": "Password"})
 
 from app import engine
+
+
+
