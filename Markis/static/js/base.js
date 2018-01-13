@@ -118,7 +118,7 @@ $(document).ready(()=>{
 	      /* Check if the two rows should switch place,
 	      based on the direction, asc or desc: */
 				var tdname = rows[0].getElementsByTagName("th")[n].innerHTML.slice(0,4);
-				if (tdname == "Vote" || tdname == "Size") {
+				if (tdname == "Vote") {
 					x = x.innerHTML.toLowerCase();
 					y = y.innerHTML.toLowerCase();
 					x = x.replace(/[^0-9\.]+/g, "");
@@ -138,6 +138,36 @@ $(document).ready(()=>{
 		          break;
 		        }
 		      }
+				} else if (tdname == "Size") {
+					x = x.innerHTML.toLowerCase();
+					y = y.innerHTML.toLowerCase();
+					var type1 = x.replace(/[0-9\.]/g, '');
+					var type2 = y.replace(/[0-9\.]/g, '');
+					console.log(type1);
+					x = x.replace(/[^0-9\.]+/g, "");
+					y = y.replace(/[^0-9\.]+/g, "");
+					x = parseInt(x);
+					y = parseInt(y);
+					if (dir == "asc") {
+						if (type1 == "mb" && type2 == "kb") {
+							shouldSwitch= true;
+		          break;
+						} else if (x > y && type1 == type2) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      } else if (dir == "desc") {
+						if (type1 == "kb" && type2 == "mb") {
+							shouldSwitch= true;
+		          break;
+						} else if (x < y && type1 == type2) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      }
+
 				} else if (tdname == "Uplo"){
 					var year1 = x.innerHTML.toLowerCase().slice(0,4);
 					var year2 = y.innerHTML.toLowerCase().slice(0,4);
