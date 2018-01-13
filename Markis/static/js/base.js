@@ -141,8 +141,8 @@ $(document).ready(()=>{
 				} else if (tdname == "Size") {
 					x = x.innerHTML.toLowerCase();
 					y = y.innerHTML.toLowerCase();
-					var type1 = x.replace(/[0-9\.\/s]/g, '');
-					var type2 = y.replace(/[0-9\.\/s]/g, '');
+					var type1 = x.replace(/[^a-zA-Z]+/g, '');
+					var type2 = y.replace(/[^a-zA-Z]+/g, '');
 					console.log(type1);
 					x = x.replace(/[^0-9\.]+/g, "");
 					y = y.replace(/[^0-9\.]+/g, "");
