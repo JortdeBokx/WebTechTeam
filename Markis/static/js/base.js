@@ -324,10 +324,25 @@ $(document).ready(()=>{
             searchFile();
         }
     });
+                //The upload form code
+                var dragHandler = function(evt){
+                    evt.preventDefault();
+                };
+
+                var dropHandler = function(evt){
+                    evt.preventDefault();
+                    var files = evt.originalEvent.dataTransfer.files;
+                    console.log(files[0]);
+                };
+
+                var dropHandlerSet = {
+                    'dragover': dragHandler,
+                    'drop': dropHandler
+                };
+
+                $(".droparea").on(dropHandlerSet);
 
 
-
-		//The upload form code
 				$('#filetype').children().first().prop({disabled:true, hidden:true});
 				$('#subject').children().first().prop({disabled:true, hidden:true});
 				$('#opt2').children().first().prop({disabled:true, hidden:true});
@@ -358,9 +373,6 @@ $(document).ready(()=>{
 					$('#uploadDropzone').removeClass('hide');
 				});
 
-    /*
-* This is the plugin
-*/
     $(function(a) {
         a.createModal = function(b) {
             defaults = {
@@ -387,7 +399,7 @@ $(document).ready(()=>{
                 html += '<a href = "' + b.downloadLink + '"  download><button type="button" class="btn btn-primary-red" >Download</button></a>'
             }
             if (b.id === "uploadModal") {
-                html += '<button type="button" class="btn btn-primary-red" id="uploadBtn">Upload</button>'
+                html += '<button type="submit" class="btn btn-primary-red" id="uploadBtn" href="/form/getUploadForm">Upload</button>'
             }
             if (b.closeButton === true) {
                 html += '<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>'
@@ -403,9 +415,7 @@ $(document).ready(()=>{
             })
         }
     });
-    /*
-* Here is how you use it
-*/
+
     $(function() {
         $('.preview_file').on('click', function() {
             var link = $(this).attr('href');
@@ -448,11 +458,14 @@ $(document).ready(()=>{
         $('.upload-file').on('click', function() {
             $.createModal({
                 title: 'Upload',
-                message: '<div class="iframe-container"><iframe src="/form/getUploadForm"></iframe></div>',
+                message: '<div class="uploadModaldiv"></div>',
                 closeButton: true,
                 scrollable: false,
                 id: 'uploadModal',
             });
+          $('.uploadModaldiv').load('/form/getuploadform', function(response, status, xhr) {
+
+          });
             return false;
         });
         $('#uploadModal').ready(function() {
