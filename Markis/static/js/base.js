@@ -1,10 +1,11 @@
 $(document).ready(()=>{
     var activeCards = new Array(document.getElementsByClassName('card').length);
     selectSetup();
-		$('.0').addClass('asc');
-		$('.0').find('.up').css("display", "inline-block");
+		$('#0').addClass('asc');
+		$('#0').find('.up').css("display", "inline-block");
 		if (document.getElementsByClassName('sortTable').length > 0) {
 			sortTable(0);
+			$('body').css("min-width", "1024px");
 		}
 
     $('#search-subject').on('keyup', function() {
@@ -57,8 +58,9 @@ $(document).ready(()=>{
 
 	//sort table function
 	$('.sortTable').on('click', function() {
-		for (var x = 0; x < 5; x++) {
-			if ($(this).hasClass(x)) {
+		for (var x = 0; x < document.getElementsByClassName("sortTable").length; x++) {
+			var id = "#" + x;
+			if ($(this).is(id)) {
 				sortTable(x);
 			}
 		}
@@ -88,7 +90,7 @@ $(document).ready(()=>{
 	  var  rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
 	  switching = true;
 	  // Set the sorting direction to ascending:
-		if (n==0 || n==3) {
+		if (n==0) {
 			dir = "desc";
 		} else {
 	  	dir = "asc";
