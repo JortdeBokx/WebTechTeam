@@ -1,9 +1,9 @@
- {% include 'includes/_head.html' %}
- <link rel="stylesheet" href="http://www.dropzonejs.com/css/dropzone.css" />
  <div class="upload-container">
     <h1>Upload File</h1>
+     {% include 'includes/_messages.html' %}
     {% from 'includes/_formhelper.html' import render_field %}
-    <form method="POST" action="" id="uploadForm">
+
+    <form method="POST" action="/form/getuploadform" id="uploadForm">
     	<div class="form-group">
     		{{render_field(form.subject, class_="form-control")}}
     	</div>
@@ -18,15 +18,8 @@
         </div>
         <div id="uploadDropzone" class="form-group dropzone hide">
             <div class="fallback">
-                <input name="file" type="file" multiple />
+                <div class="droparea">Drag files here or click to upload</div>
             </div>
         </div>
     </form>
 	</div>
-{% include 'includes/_scripts.html' %}
- <script src="{{url_for('static', filename='js/dropzone.js')}}"></script>
-<script>
-    $(document).ready(function() {
-        $("#uploadDropzone").dropzone({ url: "/uploadfile" });
-    });
-</script>

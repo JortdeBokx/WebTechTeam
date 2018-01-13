@@ -111,8 +111,20 @@ table tr {
 	cursor: pointer;
 }
 
-table td.buttons, table td.row-votes {
+table td.buttons, table td.row-votes, table th {
 	cursor: default;
+}
+
+i.up {
+	display: none;
+}
+
+i.down {
+	display: none;
+}
+
+table th.sortTable {
+	cursor: pointer;
 }
 
 .clearable{
@@ -185,6 +197,11 @@ div.card-block {
   top: 4px;
 }
 
+#arrow {
+	position: relative;
+	top: 6px;
+}
+
 form {
   margin: 25px auto;
 }
@@ -215,6 +232,7 @@ div.upload-container {
 	width: 80%;
 	margin: 0 auto;
 	text-align: center;
+    line-height: 100px;
 }
 
 div.upload-container input.form-control {
@@ -225,6 +243,8 @@ div#uploadDropzone {
 	border: 1px dashed black;
 	border-radius: 0.5rem;
 	background-color: rgb(247, 245, 244);
+    width: 100%;
+    min-height: 100px;
 }
 
 
@@ -239,11 +259,20 @@ div#uploadDropzone {
 #uploadForm p {
 	text-align: left;
 	margin-bottom: 2px;
+}
 
+div.form-group p {
+    text-align: left;
+    width: 275px;
+    margin: 0 auto 2px;
 }
 
 div.votes {
-	width: 100%;
+	width: 90px;
+}
+
+td.date {
+	width: 145px;
 }
 
 div.votes a{
@@ -263,6 +292,8 @@ span.file-votes {
 
 td.row-votes {
 	padding: 2px;
+	width: 30px;
+	margin: 0 auto;
 }
 
 .fileIcons {
@@ -328,7 +359,20 @@ span.right {
     display: none;
   }
 
+	div.dropdown-menu {
+		background-color: #850028;
+		border: none;
+		box-shadow: none !important;
+	}
 
+	div.dropdown-menu a {
+		color: rgba(255,255,255,.5);
+	}
+
+	div.dropdown-menu a:hover {
+		background-color: #850028;
+		color: rgba(255,255,255,0.8);
+	}
 
   div.home-information {
     height: 100px;
@@ -357,7 +401,7 @@ span.right {
     width: 100%;
   }
 
-  input.form-control {
+  input.form-control, .form-group p {
     width: 100% !important;
   }
 
