@@ -91,11 +91,6 @@ table th.sortTable {
 	cursor: pointer;
 }
 
-table th.sortTable#0 {
-	width: 60px !important;
-	background-color: red;
-}
-
 .clearable{
   background: #fff url(https://i.stack.imgur.com/mJotv.gif) no-repeat right -10px center;
   transition: background 0.4s;
@@ -228,8 +223,12 @@ div#uploadDropzone {
 #uploadForm p {
 	text-align: left;
 	margin-bottom: 2px;
-
 }
+
+div.form-group p {
+	text-align: left;
+	width: 275px;
+	margin: 0 auto 2px;
 
 div.votes {
 	width: 90px;
@@ -323,7 +322,20 @@ span.right {
     display: none;
   }
 
+	div.dropdown-menu {
+		background-color: #850028;
+		border: none;
+		box-shadow: none !important;
+	}
 
+	div.dropdown-menu a {
+		color: rgba(255,255,255,.5);
+	}
+
+	div.dropdown-menu a:hover {
+		background-color: #850028;
+		color: rgba(255,255,255,0.8);
+	}
 
   div.home-information {
     height: 100px;
@@ -352,7 +364,7 @@ span.right {
     width: 100%;
   }
 
-  input.form-control {
+  input.form-control, .form-group p {
     width: 100% !important;
   }
 

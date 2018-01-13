@@ -1,10 +1,11 @@
 $(document).ready(()=>{
     var activeCards = new Array(document.getElementsByClassName('card').length);
     selectSetup();
-		$('.0').addClass('asc');
-		$('.0').find('.up').css("display", "inline-block");
+		$('#0').addClass('asc');
+		$('#0').find('.up').css("display", "inline-block");
 		if (document.getElementsByClassName('sortTable').length > 0) {
 			sortTable(0);
+			$('body').css("min-width", "1024px");
 		}
 
     $('#search-subject').on('keyup', function() {
@@ -57,8 +58,9 @@ $(document).ready(()=>{
 
 	//sort table function
 	$('.sortTable').on('click', function() {
-		for (var x = 0; x < 5; x++) {
-			if ($(this).hasClass(x)) {
+		for (var x = 0; x < document.getElementsByClassName("sortTable").length; x++) {
+			var id = "#" + x;
+			if ($(this).is(id)) {
 				sortTable(x);
 			}
 		}
@@ -88,7 +90,7 @@ $(document).ready(()=>{
 	  var  rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
 	  switching = true;
 	  // Set the sorting direction to ascending:
-		if (n==0 || n==3) {
+		if (n==0) {
 			dir = "desc";
 		} else {
 	  	dir = "asc";
@@ -100,6 +102,8 @@ $(document).ready(()=>{
 	    switching = false;
 	    rows = document.getElementsByTagName("tr");
 			if (rows[1].getElementsByTagName("td")[0].innerHTML == "") {
+				break;
+			} else if (rows.length < 3) {
 				break;
 			}
 	    /* Loop through all table rows (except the
@@ -113,7 +117,8 @@ $(document).ready(()=>{
 	      y = rows[i + 1].getElementsByTagName("TD")[n];
 	      /* Check if the two rows should switch place,
 	      based on the direction, asc or desc: */
-				if (n == 3 || n== 0) {
+				var tdname = rows[0].getElementsByTagName("th")[n].innerHTML.slice(0,4);
+				if (tdname == "Vote" || tdname == "Size") {
 					x = x.innerHTML.toLowerCase();
 					y = y.innerHTML.toLowerCase();
 					x = x.replace(/[^0-9\.]+/g, "");
@@ -132,6 +137,38 @@ $(document).ready(()=>{
 		          shouldSwitch= true;
 		          break;
 		        }
+		      }
+				} else if (tdname == "Uplo"){
+					var year1 = x.innerHTML.toLowerCase().slice(0,4);
+					var year2 = y.innerHTML.toLowerCase().slice(0,4);
+					var month1 = x.innerHTML.toLowerCase().slice(5,7);
+					var month2 = y.innerHTML.toLowerCase().slice(5,7);
+					var day1 = x.innerHTML.toLowerCase().slice(8,10);
+					var day2 = y.innerHTML.toLowerCase().slice(8,10);
+					if (dir == "asc") {
+		        if (year1 > year2) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        } else if (month1 > month2) {
+							shouldSwitch= true;
+		          break;
+						} else if (day1 > day2) {
+							shouldSwitch= true;
+		          break;
+						}
+		      } else if (dir == "desc") {
+						if (year1 < year2) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        } else if (month1 < month2) {
+							shouldSwitch= true;
+		          break;
+						} else if (day1 < day2) {
+							shouldSwitch= true;
+		          break;
+						}
 		      }
 				} else {
 		      if (dir == "asc") {
@@ -236,6 +273,23 @@ $(document).ready(()=>{
                         event.target.innerHTML = 'favorite';
                     }
                 },
+                error: function(){
+                    console.log("Error");
+                }
+			});
+		});
+
+
+		$('.remove-favorite').on('click', function(event) {
+			console.log($(this).closest("tr").attr('data-file-id'));
+			$.ajax({
+				url: '/removefavorite',
+				contentType: 'application/json;charset=UTF-8',
+				data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
+				type: 'POST',
+								success: function(data){
+										document.getElementsByClassName("table").deleterow($(this).closest("tr").attr('data-file-id'));
+								},
                 error: function(){
                     console.log("Error");
                 }
