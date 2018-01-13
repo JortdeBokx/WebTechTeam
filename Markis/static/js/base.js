@@ -281,19 +281,20 @@ $(document).ready(()=>{
 
 
 		$('.remove-favorite').on('click', function(event) {
-			console.log($(this).closest("tr").attr('data-file-id'));
+			var currentrow = $(this).parents('tr');
 			$.ajax({
 				url: '/removefavorite',
 				contentType: 'application/json;charset=UTF-8',
 				data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
 				type: 'POST',
-								success: function(data){
-										document.getElementsByClassName("table").deleterow($(this).closest("tr").attr('data-file-id'));
+								complete: function(xhr, textStatus){
+									currentrow.remove();
 								},
                 error: function(){
                     console.log("Error");
                 }
 			});
+			return false;
 		});
 
 		//votes buttons
