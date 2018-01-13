@@ -1,6 +1,11 @@
 $(document).ready(()=>{
     var activeCards = new Array(document.getElementsByClassName('card').length);
     selectSetup();
+		$('.0').addClass('asc');
+		$('.0').find('.up').css("display", "inline-block");
+		if (document.getElementsByClassName('sortTable').length > 0) {
+			sortTable(0);
+		}
 
     $('#search-subject').on('keyup', function() {
         searchSubject();
@@ -49,6 +54,121 @@ $(document).ready(()=>{
             }
         }
     }
+
+	//sort table function
+	$('.sortTable').on('click', function() {
+		for (var x = 0; x < 5; x++) {
+			if ($(this).hasClass(x)) {
+				sortTable(x);
+			}
+		}
+		if ($(this).hasClass("asc")) {
+			$(this).removeClass("asc");
+			$(this).addClass("desc");
+			$(this).find('.up').css("display", "none");
+			$(this).find('.down').css("display", "inline-block");
+		} else if ($(this).hasClass("desc")) {
+			$(this).removeClass("desc");
+			$(this).addClass("asc");
+			$(this).find('.down').css("display", "none");
+			$(this).find('.up').css("display", "inline-block");
+		} else {
+			$(this).addClass("asc");
+			$(this).find('.up').css("display", "inline-block");
+			$(this).find('.down').css("display", "none");
+		}
+		$(this).siblings().removeClass("asc");
+		$(this).siblings().removeClass("desc");
+		$(this).siblings().find('.up').css("display", "none");
+		$(this).siblings().find('.down').css("display", "none");
+
+	});
+
+	function sortTable(n) {
+	  var  rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+	  switching = true;
+	  // Set the sorting direction to ascending:
+		if (n==0 || n==3) {
+			dir = "desc";
+		} else {
+	  	dir = "asc";
+		}
+	  /* Make a loop that will continue until
+	  no switching has been done: */
+	  while (switching) {
+	    // Start by saying: no switching is done:
+	    switching = false;
+	    rows = document.getElementsByTagName("tr");
+			if (rows[1].getElementsByTagName("td")[0].innerHTML == "") {
+				break;
+			}
+	    /* Loop through all table rows (except the
+	    first, which contains table headers): */
+	    for (i = 1; i < (rows.length - 1); i++) {
+	      // Start by saying there should be no switching:
+	      shouldSwitch = false;
+	      /* Get the two elements you want to compare,
+	      one from current row and one from the next: */
+	      x = rows[i].getElementsByTagName("TD")[n];
+	      y = rows[i + 1].getElementsByTagName("TD")[n];
+	      /* Check if the two rows should switch place,
+	      based on the direction, asc or desc: */
+				if (n == 3 || n== 0) {
+					x = x.innerHTML.toLowerCase();
+					y = y.innerHTML.toLowerCase();
+					x = x.replace(/[^0-9\.]+/g, "");
+					y = y.replace(/[^0-9\.]+/g, "");
+					x = parseInt(x);
+					y = parseInt(y);
+					if (dir == "asc") {
+		        if (x > y) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      } else if (dir == "desc") {
+		        if (x < y) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      }
+				} else {
+		      if (dir == "asc") {
+		        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      } else if (dir == "desc") {
+		        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+		          // If so, mark as a switch and break the loop:
+		          shouldSwitch= true;
+		          break;
+		        }
+		      }
+				}
+	    }
+	    if (shouldSwitch) {
+	      /* If a switch has been marked, make the switch
+	      and mark that a switch has been done: */
+	      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+	      switching = true;
+	      // Each time a switch is done, increase this count by 1:
+	      switchcount ++;
+	    } else {
+	      /* If no switching has been done AND the direction is "asc",
+	      set the direction to "desc" and run the while loop again. */
+	      if (switchcount == 0 && dir == "asc") {
+	        dir = "desc";
+	        switching = true;
+	      } else if (switchcount == 0 && dir == "desc") {
+	        dir = "asc";
+	        switching = true;
+				}
+	    }
+	  }
+	}
 
     var options = [];
     $('#multivalued').multiselect({

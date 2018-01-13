@@ -75,8 +75,25 @@ table tr {
 	cursor: pointer;
 }
 
-table td.buttons, table td.row-votes {
+table td.buttons, table td.row-votes, table th {
 	cursor: default;
+}
+
+i.up {
+	display: none;
+}
+
+i.down {
+	display: none;
+}
+
+table th.sortTable {
+	cursor: pointer;
+}
+
+table th.sortTable.0 {
+	width: 60px !important;
+	background-color: red;
 }
 
 .clearable{
@@ -149,6 +166,11 @@ div.card-block {
   top: 4px;
 }
 
+#arrow {
+	position: relative;
+	top: 6px;
+}
+
 form {
   margin: 25px auto;
 }
@@ -207,7 +229,11 @@ div#uploadDropzone {
 }
 
 div.votes {
-	width: 100%;
+	width: 90px;
+}
+
+td.date {
+	width: 145px;
 }
 
 div.votes a{
@@ -227,6 +253,8 @@ span.file-votes {
 
 td.row-votes {
 	padding: 2px;
+	width: 30px;
+	margin: 0 auto;
 }
 
 .fileIcons {

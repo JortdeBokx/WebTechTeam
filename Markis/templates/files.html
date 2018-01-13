@@ -12,11 +12,11 @@
   <table class="table table-hover">
     <thead>
       <tr>
-				<th></th>
-        <th>Name</th>
-        <th>Uploaded on</th>
-        <th>Size</th>
-        <th>Uploaded By</th>
+				<th class="sortTable 0">Votes<i id="arrow" class="material-icons down">arrow_drop_down</i><i id="arrow" class="material-icons up">arrow_drop_up</i> </th>
+        <th class="sortTable 1">Name<i id="arrow" class="material-icons down">arrow_drop_down</i><i id="arrow" class="material-icons up">arrow_drop_up</i></th>
+        <th class="sortTable 2">Uploaded on<i id="arrow" class="material-icons down">arrow_drop_down</i><i id="arrow" class="material-icons up">arrow_drop_up</i></th>
+        <th class="sortTable 3">Size<i id="arrow" class="material-icons down">arrow_drop_down</i><i id="arrow" class="material-icons up">arrow_drop_up</i></th>
+        <th class="sortTable 4">Uploaded By<i id="arrow" class="material-icons down">arrow_drop_down</i><i id="arrow" class="material-icons up">arrow_drop_up</i></th>
         <th>Favorite</th>
         <th>Download</th>
           {% if current_user.isAdmin %}
@@ -52,7 +52,7 @@
       <tr data-file-id = {{ file.file_id }}>
 				<td class="row-votes"><div class="votes"><a class="vote-up {% if file.user_vote == 1 %} chosen {% endif %}" title="This file is useful"><i class="material-icons" style="font-size:30px;">keyboard_arrow_up</i></a> <span class="file-votes">{{ file.votes }} </span> <a class="vote-down {% if file.user_vote == -1 %} chosen {% endif %}" title="This file is not useful"><i class="material-icons" style="font-size:30px;">keyboard_arrow_down</i></a></div></td>
         <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}"><i id="icon" class="material-icons">{{file.name | file_icon }}</i> {{ file.name }}</td>
-         <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
+         <td class = "preview_file date" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
        <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.uploader }}</td>
        <td class="buttons"><div class="fileIcons"><a title="Favorite" class= "favorites-button" id="favorites-button"><i id = "icon" class="material-icons" style="font-size:25px; color:#850028;">{% if file.user_favorite == 1 %} favorite {% else %}favorite_border{% endif %}</i></a></div></td>
