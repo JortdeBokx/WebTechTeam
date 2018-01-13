@@ -23,7 +23,7 @@
       </tr>
     </thead>
   {% if favorites == [] %}
-            <tr><td colspan="7" class="table-warning" style="text-align: center;">You have not favorites</td></tr>
+            <tr><td colspan="7" class="table-warning" style="text-align: center;">You have no favorites</td></tr>
   {% else %}
       {% for file in favorites %}
       <tr data-file-id = {{ file.file_id }}>

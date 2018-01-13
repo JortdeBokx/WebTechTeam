@@ -12,7 +12,8 @@ from flask_login import LoginManager, login_user, logout_user, current_user, log
 from flask_principal import Principal, Permission, RoleNeed, identity_changed, Identity, AnonymousIdentity, \
 	identity_loaded, UserNeed
 from passlib.hash import sha256_crypt
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
@@ -43,6 +44,7 @@ login_manager.login_message = "You need to be logged in to view this page!"
 
 principals = Principal(app)
 admin_permission = Permission(RoleNeed('admin'))
+
 #############################################
 #				App routes					#
 #############################################
@@ -58,11 +60,23 @@ def home():
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
 
-@app.route('/admin')
-@login_required
+@app.route('/admin/')
 @admin_permission.require(http_exception=403)
+@login_required
 def do_admin_index():
-	return 'Only if you are an admin'
+	data = []
+	conn = engine.connect()
+	s = text("SHOW TABLES")
+	rv = conn.execute(s).fetchall()
+	
+	for table in rv:
+		s = text("SELECT * FROM " + table[0])
+		rv2 = conn.execute(s).fetchall()
+		data.append(table[0])
+		data.append(rv2)
+	conn.close()
+	print("D= " + str(data))
+	return render_template('admin.html', tables=rv, data=data)
 
 #@app.route('/uploadfile', methods=["GET", "POST"])
 #def uploadFile():
