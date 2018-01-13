@@ -20,7 +20,15 @@
         </ul>
         <ul class="navbar-nav ml-auto">
 
+
          {% if current_user.is_authenticated %}
+
+          <li class="nav-item">
+            <a class="nav-link upload-file" id="file-upload" href="/admin" >Manage Server</a>
+          </li>
+               <div class="nav-item-border"></div>
+
+          {% endif %}
 				 <li class="nav-item dropdown">
 					 <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						 Welcome, {{ current_user.username }}!
