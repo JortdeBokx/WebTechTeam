@@ -322,54 +322,60 @@ $(document).ready(()=>{
             searchFile();
         }
     });
-                //The upload form code
-                var dragHandler = function(evt){
-                    evt.preventDefault();
-                };
 
-                var dropHandler = function(evt){
-                    evt.preventDefault();
-                    var files = evt.originalEvent.dataTransfer.files;
-                    console.log(files[0]);
-                };
+    function initUploadFormHandlers() {
+        //The upload form code
+        var dragHandler = function (evt) {
+            evt.preventDefault();
+        };
 
-                var dropHandlerSet = {
-                    'dragover': dragHandler,
-                    'drop': dropHandler
-                };
+        var dropHandler = function (evt) {
+            evt.preventDefault();
+            var files = evt.originalEvent.dataTransfer.files;
+            console.log(files[0]);
+        };
 
-                $(".droparea").on(dropHandlerSet);
+        var dropHandlerSet = {
+            'dragover': dragHandler,
+            'drop': dropHandler
+        };
+
+        $(".droparea").on(dropHandlerSet);
 
 
-				$('#filetype').children().first().prop({disabled:true, hidden:true});
-				$('#subject').children().first().prop({disabled:true, hidden:true});
-				$('#opt2').children().first().prop({disabled:true, hidden:true});
+        $('#filetype').children().first().prop({disabled: true, hidden: true});
+        $('#subject').children().first().prop({disabled: true, hidden: true});
+        $('#opt2').children().first().prop({disabled: true, hidden: true});
 
-				$('#subject').change(function(){
-					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
-						$('#opt1').removeClass('hide');
-						$('#opt2').removeClass('hide');
-					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
-						$('#opt1').addClass('hide');
-						$('#opt2').addClass('hide');
-						$('#uploadDropzone').removeClass('hide');
-					}
-				});
+        $('#subject').on('change', function () {
+            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+                $('#opt1').removeClass('hide');
+                $('#opt2').removeClass('hide');
+            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+                $('#opt1').addClass('hide');
+                $('#opt2').addClass('hide');
+                $('#uploadBtn').removeClass('disabled');
+                $('#uploadDropzone').removeClass('hide');
+            }
+        });
 
-				$('#filetype').change(function(){
-					if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
-						$('#opt1').removeClass('hide');
-						$('#opt2').removeClass('hide');
-					} else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
-						$('#opt1').addClass('hide');
-						$('#opt2').addClass('hide');
-						$('#uploadDropzone').removeClass('hide');
-					}
-				});
+        $('#filetype').on('change', function () {
+            if ($('#subject').val() != undefined && ($('#filetype').val() == "exams" || $('#filetype').val() == "hw")) {
+                $('#opt1').removeClass('hide');
+                $('#opt2').removeClass('hide');
+            } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "hw" && $('#filetype').val() != undefined) {
+                $('#opt1').addClass('hide');
+                $('#opt2').addClass('hide');
+                $('#uploadBtn').removeClass('disabled');
+                $('#uploadDropzone').removeClass('hide');
+            }
+        });
 
-				$('#opt2').change(function() {
-					$('#uploadDropzone').removeClass('hide');
-				});
+        $('#opt2').change(function () {
+            $('#uploadDropzone').removeClass('hide');
+            $('#uploadBtn').removeClass('disabled');
+        });
+    }
 
     $(function(a) {
         a.createModal = function(b) {
@@ -397,7 +403,7 @@ $(document).ready(()=>{
                 html += '<a href = "' + b.downloadLink + '"  download><button type="button" class="btn btn-primary-red" >Download</button></a>'
             }
             if (b.id === "uploadModal") {
-                html += '<button type="submit" class="btn btn-primary-red" id="uploadBtn" href="/form/getUploadForm">Upload</button>'
+                html += '<button type="button" class="btn btn-primary-red disabled" id="uploadBtn">Upload</button>'
             }
             if (b.closeButton === true) {
                 html += '<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>'
@@ -461,16 +467,16 @@ $(document).ready(()=>{
                 scrollable: false,
                 id: 'uploadModal',
             });
-          $('.uploadModaldiv').load('/form/getuploadform', function(response, status, xhr) {
 
+          $('.uploadModaldiv').load('/form/getuploadform', function(response, status, xhr) {
+                initUploadFormHandlers();
+                $('#uploadModal').on("click", "#uploadBtn", function() {
+                    $('#uploadForm').submit();
+                });
           });
             return false;
         });
-        $('#uploadModal').ready(function() {
-            $('#uploadModal').on("click", "#uploadBtn", function() {
-                $('#uploadForm').submit();
-            });
-        });
+
     });
 
 }

@@ -91,7 +91,7 @@ table th.sortTable {
 	cursor: pointer;
 }
 
-table th.sortTable.0 {
+table th.sortTable#0 {
 	width: 60px !important;
 	background-color: red;
 }
@@ -201,6 +201,7 @@ div.upload-container {
 	width: 80%;
 	margin: 0 auto;
 	text-align: center;
+    line-height: 100px;
 }
 
 div.upload-container input.form-control {
@@ -211,6 +212,8 @@ div#uploadDropzone {
 	border: 1px dashed black;
 	border-radius: 0.5rem;
 	background-color: rgb(247, 245, 244);
+    width: 100%;
+    min-height: 100px;
 }
 
 

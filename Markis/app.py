@@ -64,24 +64,24 @@ def home():
 def do_admin_index():
 	return 'Only if you are an admin'
 
-@app.route('/uploadfile', methods=["GET", "POST"])
-def uploadFile():
-	if request.method == "POST":
-		file = request.files['file']
-		print(file)
-		if file.filename == '':
-			flash('No file selected')
-			return make_response('No file selected', 400)
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#@app.route('/uploadfile', methods=["GET", "POST"])
+#def uploadFile():
+#	if request.method == "POST":
+#		file = request.files['file']
+#		if file.filename == '':
+#			flash('No file selected')
+#			return make_response('No file selected', 400)
+#		if file and allowed_file(file.filename):
+#			filename = secure_filename(file.filename)
+#			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#
+#			return redirect(url_for('uploaded_file',
+#												filename=filename))
+#		else:
+#			return make_response('File not allowed', 400)
+#	else:
+#		return make_response('Only POST messages allowed', 400)
 
-			return redirect(url_for('uploaded_file',
-												filename=filename))
-		else:
-			return make_response('File not allowed', 400)
-	else:
-		return make_response('Only POST messages allowed', 400)
 
 @app.route(SUBJECTS_PATH,)
 @login_required
@@ -99,21 +99,35 @@ def subject(subjectid):
 		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
 
 
-@app.route('/form/getUploadForm', methods=["GET", "POST"])
+@app.route('/form/getuploadform', methods=["GET", "POST"])
 @login_required
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
-	conn = engine.connect()
-	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
-	conn.close()
-	form.subject.choices = [('course', 'Course')]
-	yearToShow = getYearsAvailable()
-	form.opt1.choices = yearToShow
-	form.opt1.default = yearToShow[-1][0]
-	for g in subjects:
-		form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
-	form.process()
-	return render_template('uploadForm.html', form=form)
+	if request.method == "GET":
+		conn = engine.connect()
+		subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
+		conn.close()
+		form.subject.choices = [('course', 'Course')]
+		yearToShow = getYearsAvailable()
+		form.opt1.choices = yearToShow
+		form.opt1.default = yearToShow[-1][0]
+		for g in subjects:
+			form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
+		form.process()
+		return render_template('uploadForm.html', form=form)
+	elif request.method == "POST" and form.validate():
+		uploaderid = current_user.get_id()
+		subjectid = form.subject.data
+		category = form.filetype.data
+		opt1 = form.opt1.data
+		opt2 = form.opt2.data
+		print(opt1)
+		print(opt2)
+		file = request.files["file"]
+		filename = secure_filename(file.filename)
+		if file.filename == '':
+			flash('No file selected')
+
 
 
 @app.route(SUBJECTS_PATH + '/<subjectid>/<path:subfolder>',)
