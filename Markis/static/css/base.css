@@ -265,6 +265,14 @@ td.row-votes {
 	margin: 4% auto 0;
 }
 
+button.close {
+	float:none;
+	padding-left: 10%;
+	font-size: 2rem;
+	color: #850028;
+	opacity: 1;
+}
+
 span.vote-up.chosen {
 	color: green;
 }
