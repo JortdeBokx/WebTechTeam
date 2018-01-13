@@ -2,6 +2,7 @@
 #				Imports 					#
 #############################################
 
+import datetime
 import os
 from urllib.parse import urlparse, urljoin
 
@@ -19,20 +20,18 @@ from forms import registerForm, loginForm, uploadFileForm, profileForm
 
 app = Flask(__name__, static_url_path='/static')
 
-UPLOAD_FOLDER = "C:/Users/s164376/Documents/WebTechTeam/Markis/uploads" #Put your upload folder here, used by drag&drop upload
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
 ICONS = {'music_note': 'm4a,mp3,oga,ogg,webma,wav', 'archive': '7z,zip,rar,gz,tar', 'photo': 'ico,jpe,jpeg,jpg,png,svg,webp', 'gif':'gif', 'picture_as_pdf': 'pdf', 'insert_drive_file': 'txt', 'local_movies': '3g2,3gp,3gp2,3gpp,mov,qt,mp4,m4v,ogv,webm', 'code': 'atom,plist,bat,bash,c,cmd,coffee,css,hml,js,json,java,less,markdown,md,php,pl,py,rb,rss,sass,scpt,swift,scss,sh,xml,yml',  'web': 'htm,html,mhtm,mhtml,xhtm,xhtml'}
 SUBJECTS_PATH = "/subject"
 PATHS_IGNORE_BREADCRUMB = {'subject': SUBJECTS_PATH}
-
+INITIAL_YEAR= 2010
 #############################################
 #				Databse Setup				#
 #############################################
 
 engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['FILE_BASE_DIR'] = os.path.join(app.root_path, "storage")
 app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
 
@@ -47,6 +46,7 @@ admin_permission = Permission(RoleNeed('admin'))
 #############################################
 #				App routes					#
 #############################################
+
 
 @app.route('/')
 def home():
@@ -67,22 +67,21 @@ def do_admin_index():
 @app.route('/uploadfile', methods=["GET", "POST"])
 def uploadFile():
 	if request.method == "POST":
-		if 'file' not in request.files:
-			flash('No selected items')
-			return "No selected items"
 		file = request.files['file']
+		print(file)
 		if file.filename == '':
 			flash('No file selected')
-			return "No file selected"
+			return make_response('No file selected', 400)
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
 			return redirect(url_for('uploaded_file',
 												filename=filename))
 		else:
-			return "File not allowed"
+			return make_response('File not allowed', 400)
 	else:
-		return "Only POST Methods allowed"
+		return make_response('Only POST messages allowed', 400)
 
 @app.route(SUBJECTS_PATH,)
 @login_required
@@ -101,15 +100,19 @@ def subject(subjectid):
 
 
 @app.route('/form/getUploadForm', methods=["GET", "POST"])
-#@login_required
+@login_required
 def uploadFileGetForm():
 	form = uploadFileForm(request.form)
 	conn = engine.connect()
 	subjects = conn.execute(text("SELECT subject_id, subject_name, faculty_name FROM subjects LEFT JOIN faculties ON faculty_id = SUBSTR(subject_id, 1) ORDER BY subject_id ASC")).fetchall()
 	conn.close()
 	form.subject.choices = [('course', 'Course')]
+	yearToShow = getYearsAvailable()
+	form.opt1.choices = yearToShow
+	form.opt1.default = yearToShow[-1][0]
 	for g in subjects:
 		form.subject.choices.append((g.subject_id, g.subject_id + ' - ' + g.subject_name))
+	form.process()
 	return render_template('uploadForm.html', form=form)
 
 
@@ -514,6 +517,17 @@ def getSubjectData(subjectid):
 	conn.close()
 	return rv
 
+def getYearsAvailable():
+	initialPeriod = str(INITIAL_YEAR) + " - " + str(INITIAL_YEAR + 1) + " (and earlier)"
+	years = [(INITIAL_YEAR, initialPeriod)]
+	now = datetime.datetime.now()
+	currentYear = now.year
+	if now.month < 8:
+		currentYear -= 1  # if between jan and august, make sure currentYear is first year of year period
+	for year in range(INITIAL_YEAR + 1, currentYear + 1):
+		yearPeriod = str(year) + " - " + str(year + 1)
+		years.append((year, yearPeriod))
+	return years
 
 def removeFileFromDisk(fileid):
 	conn = engine.connect()

@@ -2,7 +2,9 @@
  <link rel="stylesheet" href="http://www.dropzonejs.com/css/dropzone.css" />
  <div class="upload-container">
     <h1>Upload File</h1>
+     {% include 'includes/_messages.html' %}
     {% from 'includes/_formhelper.html' import render_field %}
+
     <form method="POST" action="" id="uploadForm">
     	<div class="form-group">
     		{{render_field(form.subject, class_="form-control")}}
