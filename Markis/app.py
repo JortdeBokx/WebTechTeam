@@ -701,7 +701,7 @@ def getFavoriteFiles(userid):
 		if FileExistsInFolderStrucure(d['subject_code'], d['path'], d['name']):
 			newPath = os.path.join(app.config['FILE_BASE_DIR'], d['subject_code'], d['path'], d['name'])
 			fileSize = round(os.path.getsize(newPath) / 1000, 1)
-			filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(
+			filesizestr = str(fileSize) + "kB" if fileSize <= 1000 else str(
 				round(os.path.getsize(newPath) / 1000000, 1)) + "MB"
 			d['size'] = filesizestr
 			d['downloadpath'] = SUBJECTS_PATH + "/" + d['subject_code'] + "/" + d['path'] + "/" + d['name']
