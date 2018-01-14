@@ -149,18 +149,23 @@ def uploadFileGetForm():
 							return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
 
 					#todo: check if file already exists
-					potentialFile = os.path.join(save_path, filename)
-					iteration = 0
-					while os.path.isfile(potentialFile):
-						filename = filename + str(iteration)
-						iteration += 1
-						potentialFile = os.path.join(save_path, filename)
-					result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
-					if result:
-						file.save(os.path.join(save_path, filename))
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					id = FileExistsInDB(databasePath, subjectid, filename)
+					if id:
+						return json.dumps("A file with that name already exists in that location"), 400, {
+							'ContentType': 'application/json'}
 					else:
-						return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
+						potentialFile = os.path.join(save_path, filename)
+						iteration = 0
+						while os.path.isfile(potentialFile):
+							filename = filename + str(iteration)
+							iteration += 1
+							potentialFile = os.path.join(save_path, filename)
+						result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
+						if result:
+							file.save(os.path.join(save_path, filename))
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
 				else:
 					return json.dumps("No subject or category selected"), 400, {'ContentType': 'application/json'}
 
