@@ -477,10 +477,10 @@ $(document).ready(()=>{
                         contentType: false,
                         data: formData,
                         success: function(xhr, textStatus) {
-                            }else if(xhr.status = 200){
+                            if(xhr.status = 200){
                                 //TODO: close modal
                             }
-                        },
+                        }
                         error: function(xhr, textStatus, errorThrown) {
                              console.log(errorThrown);
                              console.log(textStatus);

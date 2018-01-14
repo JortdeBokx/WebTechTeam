@@ -68,7 +68,7 @@ def do_admin_index():
 	conn = engine.connect()
 	s = text("SHOW TABLES")
 	rv = conn.execute(s).fetchall()
-	
+
 	for table in rv:
 		s = text("SELECT * FROM " + table[0])
 		rv2 = conn.execute(s).fetchall()
@@ -804,8 +804,4 @@ class User(UserMixin):
 #############################################
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-	app.run(debug=True, host= '192.168.178.16')
-=======
 	app.run(debug=True)
->>>>>>> 16979b8450feb2ff522886594a47550090b0f8d7
