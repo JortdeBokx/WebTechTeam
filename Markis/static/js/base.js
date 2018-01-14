@@ -479,6 +479,7 @@ $(document).ready(()=>{
                         success: function(xhr, textStatus) {
                             if(xhr.status = 200){
                                 //TODO: close modal
+                                console.log("close me")
                             }
                         },
                         error: function(xhr, textStatus, errorThrown) {

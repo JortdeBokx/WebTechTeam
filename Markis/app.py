@@ -64,19 +64,8 @@ def home():
 @admin_permission.require(http_exception=403)
 @login_required
 def do_admin_index():
-	data = []
-	conn = engine.connect()
-	s = text("SHOW TABLES")
-	rv = conn.execute(s).fetchall()
 
-	for table in rv:
-		s = text("SELECT * FROM " + table[0])
-		rv2 = conn.execute(s).fetchall()
-		data.append(table[0])
-		data.append(rv2)
-	conn.close()
-	print("D= " + str(data))
-	return render_template('admin.html', tables=rv, data=data)
+	return render_template('admin.html')
 
 
 @app.route(SUBJECTS_PATH,)
