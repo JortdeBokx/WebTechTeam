@@ -68,7 +68,7 @@ def do_admin_index():
 	conn = engine.connect()
 	s = text("SHOW TABLES")
 	rv = conn.execute(s).fetchall()
-	
+
 	for table in rv:
 		s = text("SELECT * FROM " + table[0])
 		rv2 = conn.execute(s).fetchall()
