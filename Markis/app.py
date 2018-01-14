@@ -14,6 +14,7 @@ from flask_principal import Principal, Permission, RoleNeed, identity_changed, I
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
+from werkzeug.utils import secure_filename
 
 from forms import registerForm, loginForm, uploadFileForm, profileForm
 
@@ -76,24 +77,6 @@ def do_admin_index():
 	print("D= " + str(data))
 	return render_template('admin.html', tables=rv, data=data)
 
-#@app.route('/uploadfile', methods=["GET", "POST"])
-#def uploadFile():
-#	if request.method == "POST":
-#		file = request.files['file']
-#		if file.filename == '':
-#			flash('No file selected')
-#			return make_response('No file selected', 400)
-#		if file and allowed_file(file.filename):
-#			filename = secure_filename(file.filename)
-#			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#
-#			return redirect(url_for('uploaded_file',
-#												filename=filename))
-#		else:
-#			return make_response('File not allowed', 400)
-#	else:
-#		return make_response('Only POST messages allowed', 400)
-
 
 @app.route(SUBJECTS_PATH,)
 @login_required
@@ -109,6 +92,9 @@ def subject(subjectid):
 	else:
 		foldersToShow = getSubjectFolders(subjectid)
 		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
+
+
+
 
 
 @app.route('/form/getuploadform', methods=["GET", "POST"])
@@ -136,8 +122,7 @@ def uploadFileGetForm():
 		opt1 = form.opt1.data
 		opt2 = form.opt2.data
 		file = request.files["file"]
-		#filename = secure_filename(file.filename)
-		filename = ''
+		filename = secure_filename(file.filename)
 		if not file or filename == '':
 			return json.dumps("No File attached"), 400, {'ContentType': 'application/json'}
 		else:
@@ -151,22 +136,23 @@ def uploadFileGetForm():
 						YearPeriod = opt1 + "-" + str(int(opt1) + 1)
 						save_path = os.path.join(save_path,YearPeriod,opt2)
 						databasePath = os.path.join(databasePath, YearPeriod,opt2)
-						potentialFile = os.path.join(save_path, filename)
-						iteration = 0
-						while os.path.isfile(potentialFile):
-							filename = filename + str(iteration)
-							iteration += 1
-							potentialFile = os.path.join(save_path, filename)
-						CommitFileToDB(filename, databasePath, uploaderid, subjectid)
-						file.save(save_path)
-						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 					else:
-						pass
-						#todo: make error message appear
+						return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
 
+				potentialFile = os.path.join(save_path, filename)
+				iteration = 0
+				while os.path.isfile(potentialFile):
+					filename = filename + str(iteration)
+					iteration += 1
+					potentialFile = os.path.join(save_path, filename)
+				result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
+				if result:
+					file.save(save_path)
+					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
-					pass
-					#todo: make error appear
+					return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
+			else:
+				return json.dumps("No subject or category selected"), 400, {'ContentType': 'application/json'}
 
 	else:
 		return abort(405)
@@ -207,6 +193,7 @@ def setFavorite():
 						s = text("SELECT COUNT(*) FROM user_file_favorite WHERE user_ID=:u AND file_ID=:f")
 						rv = conn.execute(s, u=userid, f=fileid).fetchone()
 						exists = dict(rv.items())['COUNT(*)']
+						#TODO: check if database insert/delete actually worked, don't just assume it did
 						if exists:
 							s = text("DELETE FROM user_file_favorite WHERE user_ID=:u AND file_ID=:f")
 						else:
@@ -732,6 +719,12 @@ def getFavoriteFiles(userid):
 	conn.close()
 	return favFilesThatExist
 
+def CommitFileToDB(filename, databasePath, uploaderid, subjectid):
+	conn = engine.connect()
+	s = text("INSERT INTO files (name, path, uploader_ID, subject_code) VALUES (:n, :p, :u, :s)")
+	rv = conn.execute(s, n=filename, p = databasePath, u=uploaderid, s = subjectid)
+	conn.close()
+	return rv
 
 #############################################
 #               Data Objects 	        	#
