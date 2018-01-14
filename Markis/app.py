@@ -33,6 +33,7 @@ INITIAL_YEAR= 2010
 engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['FILE_BASE_DIR'] = os.path.join(app.root_path, "storage")
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024 # Max size: 32MB
 app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
 
 
@@ -67,7 +68,7 @@ def do_admin_index():
 	conn = engine.connect()
 	s = text("SHOW TABLES")
 	rv = conn.execute(s).fetchall()
-
+	
 	for table in rv:
 		s = text("SELECT * FROM " + table[0])
 		rv2 = conn.execute(s).fetchall()
@@ -126,33 +127,47 @@ def uploadFileGetForm():
 		if not file or filename == '':
 			return json.dumps("No File attached"), 400, {'ContentType': 'application/json'}
 		else:
-
-			save_path = app.config['FILE_BASE_DIR']
-			if subjectid and category:
-				save_path = os.path.join(save_path, subjectid, category)
-				databasePath = category
-				if category == "exams" or category == "homework":
-					if opt1 and opt2!="type":
-						YearPeriod = opt1 + "-" + str(int(opt1) + 1)
-						save_path = os.path.join(save_path,YearPeriod,opt2)
-						databasePath = os.path.join(databasePath, YearPeriod,opt2)
-					else:
-						return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
-
-				potentialFile = os.path.join(save_path, filename)
-				iteration = 0
-				while os.path.isfile(potentialFile):
-					filename = filename + str(iteration)
-					iteration += 1
-					potentialFile = os.path.join(save_path, filename)
-				result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
-				if result:
-					file.save(os.path.join(save_path, filename))
-					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-				else:
-					return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
+			if not subjectExists(subjectid):
+				return json.dumps("Subject does not exist"), 400, {'ContentType': 'application/json'}
 			else:
-				return json.dumps("No subject or category selected"), 400, {'ContentType': 'application/json'}
+				checksubjectPath(subjectid)
+				save_path = app.config['FILE_BASE_DIR']
+				if subjectid and category:
+					save_path = os.path.join(save_path, subjectid, category)
+					databasePath = category
+					if category == "exams" or category == "homework":
+						if opt1 and opt2!="type":
+							YearPeriod = opt1 + "-" + str(int(opt1) + 1)
+							if opt2 == "answers" and category == "exams":
+								save_path = os.path.join(save_path, YearPeriod)
+							else:
+								save_path = os.path.join(save_path, YearPeriod, opt2)
+							if not os.path.isdir(save_path):
+								os.makedirs(save_path)
+							databasePath = os.path.join(databasePath, YearPeriod,opt2)
+						else:
+							return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
+
+					#todo: check if file already exists
+					id = FileExistsInDB(databasePath, subjectid, filename)
+					if id:
+						return json.dumps("A file with that name already exists in that location"), 400, {
+							'ContentType': 'application/json'}
+					else:
+						potentialFile = os.path.join(save_path, filename)
+						iteration = 0
+						while os.path.isfile(potentialFile):
+							filename = filename + str(iteration)
+							iteration += 1
+							potentialFile = os.path.join(save_path, filename)
+						result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
+						if result:
+							file.save(os.path.join(save_path, filename))
+							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+						else:
+							return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
+				else:
+					return json.dumps("No subject or category selected"), 400, {'ContentType': 'application/json'}
 
 	else:
 		return abort(405)
@@ -336,7 +351,7 @@ def login():
 	if request.method == 'POST' and form.validate():
 		# Get the password Hash from  the DB where username
 		conn = engine.connect()
-		s = text("SELECT id, password FROM users WHERE username=:u")
+		s = text("SELECT id, password FROM users WHERE username=:u or email = :u")
 		rv = conn.execute(s, u= str(form.username.data).lower() ).fetchone()
 		conn.close()
 		if rv:
@@ -478,6 +493,9 @@ def page_not_found(e):
 def page_not_found(e):
 	return render_template('500.html'), 500
 
+@app.errorhandler(413)
+def error413(e):
+	return json.dumps("File exeeds " + str(app.config['MAX_CONTENT_LENGTH']/1024/1024) + " Megabytes"), 413, {'ContentType': 'application/json'}
 #############################################
 #			   Helper Functions 			#
 #############################################
@@ -686,8 +704,8 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 					"SELECT files.file_id, files.name, DATE(files.upload_date) AS upload_date, IFNULL(SUM(vote), 0) AS votes, users.username AS uploader, files.path as path FROM files INNER JOIN user_file_vote ON files.file_ID = user_file_vote.file_ID INNER JOIN users ON files.uploader_ID = users.id WHERE files.file_ID = :p;")
 				rv = conn.execute(s, p=fileID).fetchone()
 				d = dict(rv.items())
-				fileSize = round(os.path.getsize(newPath)/1000, 1)
-				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1000000, 1)) + " MB"
+				fileSize = round(os.path.getsize(newPath)/1024, 1)
+				filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(round(os.path.getsize(newPath)/1024 / 1024, 1)) + " MB"
 				d['size'] = filesizestr
 				d['downloadpath'] = SUBJECTS_PATH + "/" + subject + "/" + d['path'] + "/" + d['name']
 				d['user_vote'] = getUserVote(d['file_id'], userid)
@@ -710,9 +728,9 @@ def getFavoriteFiles(userid):
 		d = dict(file.items())
 		if FileExistsInFolderStrucure(d['subject_code'], d['path'], d['name']):
 			newPath = os.path.join(app.config['FILE_BASE_DIR'], d['subject_code'], d['path'], d['name'])
-			fileSize = round(os.path.getsize(newPath) / 1000, 1)
+			fileSize = round(os.path.getsize(newPath) / 1024, 1)
 			filesizestr = str(fileSize) + " kB" if fileSize <= 1000 else str(
-				round(os.path.getsize(newPath) / 1000000, 1)) + " MB"
+				round(os.path.getsize(newPath) / 1024 / 1024, 1)) + " MB"
 			d['size'] = filesizestr
 			d['downloadpath'] = SUBJECTS_PATH + "/" + d['subject_code'] + "/" + d['path'] + "/" + d['name']
 			favFilesThatExist.append(d)
@@ -721,11 +739,18 @@ def getFavoriteFiles(userid):
 
 def CommitFileToDB(filename, databasePath, uploaderid, subjectid):
 	conn = engine.connect()
-	s = text("INSERT INTO files (name, path, uploader_ID, subject_code) VALUES (:n, :p, :u, :s)")
-	rv = conn.execute(s, n=filename, p = databasePath, u=uploaderid, s = subjectid)
+	s = text("INSERT INTO files (name, path, uploader_ID, subject_code) VALUES (:n, :p, :u, :i)")
+	rv = conn.execute(s, n=filename, p = databasePath, u=uploaderid, i = subjectid)
 	conn.close()
 	return rv
 
+
+def subjectExists(subjectid):
+	conn = engine.connect()
+	s = text("SELECT subject_id FROM subjects WHERE subject_id = :i")
+	rv = conn.execute(s, i=subjectid).fetchone()
+	conn.close()
+	return rv != []
 #############################################
 #               Data Objects 	        	#
 #############################################
@@ -779,4 +804,8 @@ class User(UserMixin):
 #############################################
 
 if __name__ == '__main__':
+<<<<<<< HEAD
 	app.run(debug=True, host= '192.168.178.16')
+=======
+	app.run(debug=True)
+>>>>>>> 16979b8450feb2ff522886594a47550090b0f8d7
