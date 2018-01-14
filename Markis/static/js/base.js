@@ -483,7 +483,7 @@ $(document).ready(()=>{
                    console.log(errorThrown);
                    console.log(textStatus);
                    console.log(xhr);
-                   var alertText = "<strong>Warning</strong>" + xhr.responseText;
+                   var alertText = "<strong>Warning</strong> " + xhr.responseText;
                     if(xhr.status === 400){
                        $('.alert').removeClass("hidden");
                        $("#alert-text").html(alertText);
@@ -601,9 +601,8 @@ $(document).ready(()=>{
                       id = 'FilePreviewModalSmall';
                       break;
                 default:
-                    console.log(fileType);
-                      content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
-                      id = 'FilePreviewModal';
+                      content = '<div class="iframe-container">File preview not available for this file type</div>';
+                      id = 'FilePreviewModalSmall';
             }
 
             $.createModal({
