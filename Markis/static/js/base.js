@@ -477,8 +477,6 @@ $(document).ready(()=>{
                         contentType: false,
                         data: formData,
                         complete: function(xhr, textStatus) {
-                            console.log(textStatus);
-                            console.log(xhr);
                             if(xhr.status = 400){
                                 //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
                                 //TODO: show error message with xhr.responseText
