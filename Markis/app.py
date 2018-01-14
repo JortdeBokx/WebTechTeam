@@ -240,11 +240,11 @@ def removeFile():
 			fileid = int(request.json['fileid'])
 			if fileid is not None and type(fileid) is int:
 				if FileExistsByID(fileid):
-					removeFileFromDisk(fileid)
 					conn = engine.connect()
 					s = text("DELETE FROM files WHERE file_ID = :f")
 					rv = conn.execute(s, f=fileid)
 					conn.close()
+					removeFileFromDisk(fileid)
 					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
 					return make_response('File does not exist', 400)
