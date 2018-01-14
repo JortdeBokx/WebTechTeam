@@ -309,6 +309,21 @@ $(document).ready(()=>{
 			});
 		});
 
+        $('.delete-button').on('click', function(event) {
+            $.ajax({
+                url: '/removefile',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
+                type: 'POST',
+                success: function(data){
+                    $(this).closest("tr").remove();
+                    console.log("Removed");
+                },
+                error: function(){
+                    console.log("Error");
+                }
+            });
+        });
 
 		$('.remove-favorite').on('click', function(event) {
 			var currentrow = $(this).parents('tr');
