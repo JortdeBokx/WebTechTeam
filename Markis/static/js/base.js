@@ -479,14 +479,21 @@ $(document).ready(()=>{
                             if(xhr.status = 400){
                                 //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
                                 //TODO: show error message with xhr.responseText
-                            }else if(xhr.status = 500){
+                            }else if(xhr.status = 500) {
 
                                 //TODO: show error message with xhr.responseText
-
+                            }else if(xhr.status = 413){
+                                console.log(xhr)
+                                //TODO: show error file too large (max = xhr.responseText)
                             }else if(xhr.status = 200){
                                 //TODO: close modal
                             }
-                        }
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                             console.log(errorThrown);
+                             console.log(textStatus);
+                             console.log(XMLHttpRequest);
+                          }
                     });
 
 
