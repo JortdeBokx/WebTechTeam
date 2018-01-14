@@ -14,7 +14,6 @@ from flask_principal import Principal, Permission, RoleNeed, identity_changed, I
 from passlib.hash import sha256_crypt
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-from werkzeug.utils import secure_filename
 
 from forms import registerForm, loginForm, uploadFileForm, profileForm
 
@@ -129,35 +128,45 @@ def uploadFileGetForm():
 		form.opt1.default = yearToShow[-1][0]
 		form.process()
 		return render_template('uploadForm.html', form=form)
+
 	elif request.method == "POST":
 		uploaderid = current_user.get_id()
 		subjectid = form.subject.data
 		category = form.filetype.data
 		opt1 = form.opt1.data
 		opt2 = form.opt2.data
-
 		file = request.files["file"]
-		filename = secure_filename(file.filename)
-		if filename == '':
-			flash('No file selected')
+		#filename = secure_filename(file.filename)
+		filename = ''
+		if not file or filename == '':
+			return json.dumps("No File attached"), 400, {'ContentType': 'application/json'}
+		else:
 
-		save_path = app.config['FILE_BASE_DIR']
-		if subjectid and category:
-			save_path = os.path.join(save_path, subjectid, category)
-			databasePath = category
-			if category == "exams" or category == "homework":
-				if opt1 and opt2:
-					YearPeriod = opt1 + "-" + str(int(opt1) + 1)
-					save_path = os.path.join(save_path,YearPeriod)
-					databasePath = os.path.join(databasePath, YearPeriod)
+			save_path = app.config['FILE_BASE_DIR']
+			if subjectid and category:
+				save_path = os.path.join(save_path, subjectid, category)
+				databasePath = category
+				if category == "exams" or category == "homework":
+					if opt1 and opt2!="type":
+						YearPeriod = opt1 + "-" + str(int(opt1) + 1)
+						save_path = os.path.join(save_path,YearPeriod,opt2)
+						databasePath = os.path.join(databasePath, YearPeriod,opt2)
+						potentialFile = os.path.join(save_path, filename)
+						iteration = 0
+						while os.path.isfile(potentialFile):
+							filename = filename + str(iteration)
+							iteration += 1
+							potentialFile = os.path.join(save_path, filename)
+						CommitFileToDB(filename, databasePath, uploaderid, subjectid)
+						file.save(save_path)
+						return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+					else:
+						pass
+						#todo: make error message appear
 
 				else:
 					pass
-					#todo: make error message appear
-
-			else:
-				pass
-				#todo: make error appear
+					#todo: make error appear
 
 	else:
 		return abort(405)
@@ -320,11 +329,6 @@ def register():
 		last_name = form.lastname.data
 		email = form.email.data
 		password = sha256_crypt.encrypt(str(form.password.data))
-		p = text("SELECT id FROM users WHERE email = :e")
-		mailcheck = conn.execute(p, e=email).fetchone()
-		if mailcheck:
-			form.email.errors.append('An account with that email already exists')
-
 		s = text("INSERT INTO users (first_name, last_name, username, password, email) VALUES (:f, :l, :u, :p, :e)")
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, p=password, e=email)
 		conn.close()

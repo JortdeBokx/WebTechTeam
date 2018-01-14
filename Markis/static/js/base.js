@@ -414,19 +414,70 @@ $(document).ready(()=>{
             evt.preventDefault();
         };
 
+        function objectifyForm(formArray) {//serialize data function
+              var returnArray = {};
+              for (var i = 0; i < formArray.length; i++){
+                returnArray[formArray[i]['name']] = formArray[i]['value'];
+              }
+              return returnArray;
+            }
+
+        var FileToUpload;
         var dropHandler = function (evt) {
             evt.preventDefault();
+
             var files = evt.originalEvent.dataTransfer.files;
-            console.log(files[0]);
+            FileToUpload = files[0];
+            $('#uploadBtn').removeClass('disabled');
+            $('.droparea').text(files[0].name);
         };
 
+        var changeHandler = function(evt){
+            FileToUpload = this.files[0];
+            $('#uploadBtn').removeClass('disabled');
+            $('.droparea').text(this.files[0].name);
+
+        };
+
+         $('#file').on('change', changeHandler);
         var dropHandlerSet = {
             'dragover': dragHandler,
-            'drop': dropHandler
+            'drop': dropHandler,
+            'click': function(){ $('#file').trigger('click'); }
         };
 
         $(".droparea").on(dropHandlerSet);
 
+        //TODO: implement loading indicator untill ajax is done
+        $('#uploadModal').on("click", "#uploadBtn", function() {
+                     var formData = new FormData($('#uploadForm')[0]);
+                     formData.delete('files'); //remove original file field
+                    formData.append("file", FileToUpload);
+                    var url = $('#uploadForm').attr('action');
+                    $.ajax({
+                        url: url,
+                        method: "post",
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        complete: function(xhr, textStatus) {
+                            console.log(textStatus);
+                            console.log(xhr);
+                            if(xhr.status = 400){
+                                //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
+                                //TODO: show error message with xhr.responseText
+                            }else if(xhr.status = 500){
+
+                                //TODO: show error message with xhr.responseText
+
+                            }else if(xhr.status = 200){
+                                //TODO: close modal
+                            }
+                        }
+                    });
+
+
+                });
 
         $('#filetype').children().first().prop({disabled: true, hidden: true});
         $('#subject').children().first().prop({disabled: true, hidden: true});
@@ -439,7 +490,6 @@ $(document).ready(()=>{
             } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "homework" && $('#filetype').val() != undefined) {
                 $('#opt1').addClass('hide');
                 $('#opt2').addClass('hide');
-                $('#uploadBtn').removeClass('disabled');
                 $('#uploadDropzone').removeClass('hide');
             }
         });
@@ -451,7 +501,6 @@ $(document).ready(()=>{
             } else if ($('#subject').val() != undefined && $('#filetype').val() != "exams" && $('#filetype').val() != "homework" && $('#filetype').val() != undefined) {
                 $('#opt1').addClass('hide');
                 $('#opt2').addClass('hide');
-                $('#uploadBtn').removeClass('disabled');
                 $('#uploadDropzone').removeClass('hide');
             }
         });
@@ -553,11 +602,10 @@ $(document).ready(()=>{
                 id: 'uploadModal',
             });
 
+
+
           $('.uploadModaldiv').load('/form/getuploadform', function(response, status, xhr) {
                 initUploadFormHandlers();
-                $('#uploadModal').on("click", "#uploadBtn", function() {
-                    $('#uploadForm').submit();
-                });
           });
             return false;
         });
