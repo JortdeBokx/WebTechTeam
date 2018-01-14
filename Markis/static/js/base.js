@@ -477,7 +477,7 @@ $(document).ready(()=>{
                         contentType: false,
                         data: formData,
                         success: function(xhr, textStatus) {
-                          if(xhr.status = 200){
+                            if(xhr.status = 200){
                                 //TODO: close modal
                             }
                         },
@@ -499,13 +499,14 @@ $(document).ready(()=>{
                                          $('.alert').removeClass("hidden");
                                          $("#alert-text").html(alertText);
                                          console.log("500");
-                                    }else if(xhr.status = 413){
-                                     $('.alert').removeClass("hidden");
-                                     $("#alert-text").html(alertText);
-                                            console.log(xhr)
-                                            //TODO: show error file too large (max = xhr.responseText)
-                          }
-                    }
+                                    }else if(xhr.status = 413) {
+                                        $('.alert').removeClass("hidden");
+                                        $("#alert-text").html(alertText);
+                                        console.log(xhr)
+                                        //TODO: show error file too large (max = xhr.responseText)
+                                    }
+                        }
+                    });
 
 
                 });
@@ -608,9 +609,8 @@ $(document).ready(()=>{
                       id = 'FilePreviewModalSmall';
                       break;
                 default:
-                    console.log(fileType);
-                      content = '<div class="iframe-container"><iframe src="' + link + '"></iframe></div>';
-                      id = 'FilePreviewModal';
+                      content = '<div class="iframe-container">File preview not available for this file type</div>';
+                      id = 'FilePreviewModalSmall';
             }
 
             $.createModal({
