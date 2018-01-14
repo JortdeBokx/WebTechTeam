@@ -779,8 +779,4 @@ class User(UserMixin):
 #############################################
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-	app.run(debug=True,host= '192.168.178.16')
-=======
-	app.run(debug=True, host= '192.168.1.40')
->>>>>>> b52ca15a0ec7e8dd5af68275fdb44fd081e9100b
+	app.run(debug=True, host= '192.168.178.16')

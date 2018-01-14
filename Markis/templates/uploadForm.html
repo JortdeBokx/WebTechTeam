@@ -1,6 +1,11 @@
  <div class="upload-container">
     <h1>Upload File</h1>
-     {% include 'includes/_messages.html' %}
+		<div class="alert alert-danger alert-dismissible fade show hidden" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+  		<p id="alert-text"></p>
+		</div>
     {% from 'includes/_formhelper.html' import render_field %}
 
     <form method="POST" action="/form/getuploadform" id="uploadForm">

@@ -231,8 +231,6 @@ a.signup {
 div.upload-container {
 	width: 80%;
 	margin: 0 auto;
-	text-align: center;
-    line-height: 100px;
 }
 
 div.upload-container input.form-control {
@@ -243,8 +241,24 @@ div#uploadDropzone {
 	border: 1px dashed black;
 	border-radius: 0.5rem;
 	background-color: rgb(247, 245, 244);
-    width: 100%;
-    min-height: 100px;
+  width: 100%;
+  height: 150px;
+	cursor: pointer;
+	text-align: center;
+	line-height: 150px;
+}
+
+div.alert {
+	padding: 0;
+}
+
+div.alert.hidden {
+	display: none;
+}
+
+.alert-dismissible .close {
+	top: 0.4rem;
+	left: 34rem;
 }
 
 
