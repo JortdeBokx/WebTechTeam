@@ -147,7 +147,7 @@ def uploadFileGetForm():
 					potentialFile = os.path.join(save_path, filename)
 				result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
 				if result:
-					file.save(save_path)
+					file.save(os.path.join(save_path, filename))
 					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
 					return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
