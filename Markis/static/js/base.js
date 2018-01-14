@@ -466,53 +466,42 @@ $(document).ready(()=>{
 
         //TODO: implement loading indicator untill ajax is done
         $('#uploadModal').on("click", "#uploadBtn", function() {
-                     var formData = new FormData($('#uploadForm')[0]);
-                     formData.delete('files'); //remove original file field
-                    formData.append("file", FileToUpload);
-                    var url = $('#uploadForm').attr('action');
-                    $.ajax({
-                        url: url,
-                        method: "post",
-                        processData: false,
-                        contentType: false,
-                        data: formData,
-                        success: function(xhr, textStatus) {
-<<<<<<< HEAD
-                            if(xhr.status = 200){
-=======
-                          if(xhr.status = 200){
->>>>>>> 7212e88faaedd37c7210067515361bad2d539fb0
-                                //TODO: close modal
-                            }
-                        }
-                        error: function(xhr, textStatus, errorThrown) {
-                             console.log(errorThrown);
-                             console.log(textStatus);
-                             console.log(xhr);
-                             var alertText = "<strong>Warning</strong>" + xhr.responseText;
-                                    if(xhr.status = 400){
-                                            //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
-                                            //TODO: show error message with xhr.responseText
-                                         $('.alert').removeClass("hidden");
-                                         $("#alert-text").html(alertText);
-                                         console.log("400");
-                                         console.log(xhr);
-                                    }else if(xhr.status = 500){
-
-                                            //TODO: show error message with xhr.responseText
-                                         $('.alert').removeClass("hidden");
-                                         $("#alert-text").html(alertText);
-                                         console.log("500");
-                                    }else if(xhr.status = 413){
-                                     $('.alert').removeClass("hidden");
-                                     $("#alert-text").html(alertText);
-                                            console.log(xhr)
-                                            //TODO: show error file too large (max = xhr.responseText)
-                          }
-                    }
-
-
-                });
+            var formData = new FormData($('#uploadForm')[0]);
+            formData.delete('files'); //remove original file field
+            formData.append("file", FileToUpload);
+            var url = $('#uploadForm').attr('action');
+            $.ajax({
+                url: url,
+                method: "post",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(xhr, textStatus) {
+										$('#uploadModal').modal('hide');
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                   console.log(errorThrown);
+                   console.log(textStatus);
+                   console.log(xhr);
+                   var alertText = "<strong>Warning</strong>" + xhr.responseText;
+                    if(xhr.status === 400){
+                       $('.alert').removeClass("hidden");
+                       $("#alert-text").html(alertText);
+                       console.log("400");
+                       console.log(xhr);
+                    } else if(xhr.status === 500){
+										   $('.alert').removeClass("hidden");
+                       $("#alert-text").html(alertText);
+                       console.log("500");
+                    }else if(xhr.status === 413){
+                       $('.alert').removeClass("hidden");
+                       $("#alert-text").html("<strong>Warning</strong> File too large max:" + xhr.responseText);
+                        console.log(xhr);
+                        //TODO: show error file too large (max = xhr.responseText)
+          					}
+            	},
+        });
+			});
 
         $('#filetype').children().first().prop({disabled: true, hidden: true});
         $('#subject').children().first().prop({disabled: true, hidden: true});
