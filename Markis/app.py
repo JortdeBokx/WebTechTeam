@@ -246,16 +246,20 @@ def removeFavorite():
 
 @app.route('/removefile', methods=["POST"])
 def removeFile():
-	if current_user.is_authenticated and current_user.is_active and current_user.hasRole('admin'):
+	if current_user.is_authenticated and current_user.is_active and current_user.get_admin:
 		if request.method == 'POST':
 			fileid = int(request.json['fileid'])
 			if fileid is not None and type(fileid) is int:
 				if FileExistsByID(fileid):
+					removeFileFromDisk(fileid)
 					conn = engine.connect()
+					s = text("DELETE FROM user_file_favorite WHERE file_ID = :f")
+					rv = conn.execute(s, f=fileid)
+					s = text("DELETE FROM user_file_vote WHERE file_ID = :f")
+					rv = conn.execute(s, f=fileid)
 					s = text("DELETE FROM files WHERE file_ID = :f")
 					rv = conn.execute(s, f=fileid)
 					conn.close()
-					removeFileFromDisk(fileid)
 					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
 					return make_response('File does not exist', 400)

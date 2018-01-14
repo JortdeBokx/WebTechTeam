@@ -141,8 +141,8 @@ $(document).ready(()=>{
 				} else if (tdname == "Size") {
 					x = x.innerHTML.toLowerCase();
 					y = y.innerHTML.toLowerCase();
-					var type1 = x.replace(/[0-9\.]/g, '');
-					var type2 = y.replace(/[0-9\.]/g, '');
+					var type1 = x.replace(/[^a-zA-Z]+/g, '');
+					var type2 = y.replace(/[^a-zA-Z]+/g, '');
 					console.log(type1);
 					x = x.replace(/[^0-9\.]+/g, "");
 					y = y.replace(/[^0-9\.]+/g, "");
@@ -309,6 +309,21 @@ $(document).ready(()=>{
 			});
 		});
 
+        $('.delete-button').on('click', function(event) {
+            $.ajax({
+                url: '/removefile',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
+                type: 'POST',
+                success: function(data){
+                    event.target.closest("tr").remove();
+                    console.log("Removed");
+                },
+                error: function(){
+                    console.log("Error");
+                }
+            });
+        });
 
 		$('.remove-favorite').on('click', function(event) {
 			var currentrow = $(this).parents('tr');
