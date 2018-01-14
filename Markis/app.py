@@ -112,6 +112,7 @@ def uploadFileGetForm():
 		opt1 = form.opt1.data
 		opt2 = form.opt2.data
 		file = request.files["file"]
+		print(file)
 		filename = secure_filename(file.filename)
 		if not file or filename == '':
 			return json.dumps("No File attached"), 400, {'ContentType': 'application/json'}

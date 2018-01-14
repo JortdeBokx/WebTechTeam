@@ -315,7 +315,7 @@ td.row-votes {
 	margin: 4% auto 0;
 }
 
-button.close {
+button.close-red {
 	float:none;
 	padding-left: 10%;
 	font-size: 2rem;

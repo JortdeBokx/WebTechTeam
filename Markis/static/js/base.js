@@ -472,30 +472,34 @@ $(document).ready(()=>{
                     var url = $('#uploadForm').attr('action');
                     $.ajax({
                         url: url,
-                        method: "post",
+                        type: "POST",
                         processData: false,
+                        cache: false,
+                        timeout: 300000,
                         contentType: false,
                         data: formData,
                         success: function(xhr, textStatus) {
                             $('#uploadModal').modal('hide');
                         },
                         error: function(xhr, textStatus, errorThrown) {
-                             console.log(errorThrown);
-                             console.log(textStatus);
-                             console.log(xhr);
                              var alertText = "<strong>Warning</strong>" + xhr.responseText;
-                                    if(xhr.status === 400){
-                                            //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
-                                         $('.alert').removeClass("hidden");
-                                         $("#alert-text").html(alertText);
-                                    }else if(xhr.status === 500){
-                                         $('.alert').removeClass("hidden");
-                                         $("#alert-text").html(alertText);
-                                    }else if(xhr.status === 413) {
+                                if(xhr.readyState === 4) {
+                                    if (xhr.status === 400) {
+                                        //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
                                         $('.alert').removeClass("hidden");
-                                        $("#alert-text").html("<strong>Warning</strong> File too large max:" + xhr.responseText);
+                                        $("#alert-text").html(alertText);
+                                    } else if (xhr.status === 500) {
+                                        $('.alert').removeClass("hidden");
+                                        $("#alert-text").html(alertText);
+                                    }
+                                }
+                                else if(xhr.readyState === 0){
+                                    if (xhr.status === 413) {
+                                        $('.alert').removeClass("hidden");
+                                        $("#alert-text").html(xhr.responseText);
 
                                     }
+                                }
                         }
                     });
 
