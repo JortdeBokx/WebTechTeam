@@ -337,7 +337,7 @@ def login():
 		# Get the password Hash from  the DB where username
 		conn = engine.connect()
 		s = text("SELECT id, password FROM users WHERE username=:u")
-		rv = conn.execute(s, u= str(form.username.data) ).fetchone()
+		rv = conn.execute(s, u= str(form.username.data).lower() ).fetchone()
 		conn.close()
 		if rv:
 			if sha256_crypt.verify(str(form.password.data), str(rv['password'])):
@@ -779,4 +779,4 @@ class User(UserMixin):
 #############################################
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True, host= '192.168.1.40')
