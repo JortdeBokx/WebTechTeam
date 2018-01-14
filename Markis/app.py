@@ -147,8 +147,6 @@ def uploadFileGetForm():
 							databasePath = os.path.join(databasePath, YearPeriod,opt2)
 						else:
 							return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
-
-					#todo: check if file already exists
 					id = FileExistsInDB(databasePath, subjectid, filename)
 					if id:
 						return json.dumps("A file with that name already exists in that location"), 400, {
@@ -163,7 +161,7 @@ def uploadFileGetForm():
 						result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
 						if result:
 							file.save(os.path.join(save_path, filename))
-							return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+							return json.dumps({'success': True}),200, {'ContentType': 'application/json'}
 						else:
 							return json.dumps("Server Error, please try again later"), 500, {'ContentType': 'application/json'}
 				else:
@@ -804,8 +802,4 @@ class User(UserMixin):
 #############################################
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-	app.run(debug=True, host= '192.168.178.16')
-=======
 	app.run(debug=True)
->>>>>>> 16979b8450feb2ff522886594a47550090b0f8d7
