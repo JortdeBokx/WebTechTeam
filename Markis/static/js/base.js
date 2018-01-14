@@ -5,7 +5,8 @@ $(document).ready(()=>{
 		$('#0').find('.up').css("display", "inline-block");
 		if (document.getElementsByClassName('sortTable').length > 0) {
 			sortTable(0);
-			$('body').css("min-width", "1024px");
+			$('table').css("min-width", "1024px");
+
 		}
 
     $('#search-subject').on('keyup', function() {

@@ -367,6 +367,11 @@ span.right {
     display: none;
   }
 
+	.content {
+		overflow-x: scroll;
+		width: 100%;
+	}
+
 	div.dropdown-menu {
 		background-color: #850028;
 		border: none;
@@ -392,6 +397,8 @@ span.right {
 }
 
 @media (max-width: 768px) {
+
+
 
   span.center {
     display: none;
