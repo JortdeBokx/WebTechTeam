@@ -58,7 +58,7 @@
        <td class="buttons"><div class="fileIcons"><a title="Favorite" class="favorites-button" id="favorites-button"><i id = "icon" class="material-icons" style="font-size:25px; color:#850028;">{% if file.user_favorite == 1 %} favorite {% else %}favorite_border{% endif %}</i></a></div></td>
        <td class="buttons"><div class="fileIcons"><a href = "{{ file.downloadpath }}"  download><i id = "icon" class="material-icons download_button" style="font-size:30px; color:#0460bd;">file_download</i></a></div></td>
       {% if current_user.isAdmin %}
-          <td><div class="fileIcons"><a href="#" class="delete-button" id="delete-button"><i class="material-icons" style="font-size:26px;">delete</i></div></td>
+          <td><div class="fileIcons"><a href="" class="delete-button" id="delete-button"><i class="material-icons" style="font-size:26px;">delete</i></div></td>
           {% endif %}
       </tr>
     {% endfor %}
