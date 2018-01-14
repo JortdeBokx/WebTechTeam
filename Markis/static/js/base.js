@@ -477,7 +477,11 @@ $(document).ready(()=>{
                         contentType: false,
                         data: formData,
                         success: function(xhr, textStatus) {
+<<<<<<< HEAD
                             if(xhr.status = 200){
+=======
+                          if(xhr.status = 200){
+>>>>>>> 7212e88faaedd37c7210067515361bad2d539fb0
                                 //TODO: close modal
                             }
                         }
@@ -485,27 +489,27 @@ $(document).ready(()=>{
                              console.log(errorThrown);
                              console.log(textStatus);
                              console.log(xhr);
-														 var alertText = "<strong>Warning</strong>" + xhr.responseText;
-																if(xhr.status = 400){
-																		//Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
-																		//TODO: show error message with xhr.responseText
-																	 $('.alert').removeClass("hidden");
-																	 $("#alert-text").html(alertText);
-																	 console.log("400");
-																	 console.log(xhr);
-																}else if(xhr.status = 500){
+                             var alertText = "<strong>Warning</strong>" + xhr.responseText;
+                                    if(xhr.status = 400){
+                                            //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
+                                            //TODO: show error message with xhr.responseText
+                                         $('.alert').removeClass("hidden");
+                                         $("#alert-text").html(alertText);
+                                         console.log("400");
+                                         console.log(xhr);
+                                    }else if(xhr.status = 500){
 
-																		//TODO: show error message with xhr.responseText
-																	 $('.alert').removeClass("hidden");
-																	 $("#alert-text").html(alertText);
-																	 console.log("500");
-																}else if(xhr.status = 413){
-																 $('.alert').removeClass("hidden");
-																 $("#alert-text").html(alertText);
-																		console.log(xhr)
-																		//TODO: show error file too large (max = xhr.responseText)
+                                            //TODO: show error message with xhr.responseText
+                                         $('.alert').removeClass("hidden");
+                                         $("#alert-text").html(alertText);
+                                         console.log("500");
+                                    }else if(xhr.status = 413){
+                                     $('.alert').removeClass("hidden");
+                                     $("#alert-text").html(alertText);
+                                            console.log(xhr)
+                                            //TODO: show error file too large (max = xhr.responseText)
                           }
-                    });
+                    }
 
 
                 });
