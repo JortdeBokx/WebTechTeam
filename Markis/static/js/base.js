@@ -466,42 +466,41 @@ $(document).ready(()=>{
 
         //TODO: implement loading indicator untill ajax is done
         $('#uploadModal').on("click", "#uploadBtn", function() {
-            var formData = new FormData($('#uploadForm')[0]);
-            formData.delete('files'); //remove original file field
-            formData.append("file", FileToUpload);
-            var url = $('#uploadForm').attr('action');
-            $.ajax({
-                url: url,
-                method: "post",
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function(xhr, textStatus) {
-										$('#uploadModal').modal('hide');
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                   console.log(errorThrown);
-                   console.log(textStatus);
-                   console.log(xhr);
-                   var alertText = "<strong>Warning</strong> " + xhr.responseText;
-                    if(xhr.status === 400){
-                       $('.alert').removeClass("hidden");
-                       $("#alert-text").html(alertText);
-                       console.log("400");
-                       console.log(xhr);
-                    } else if(xhr.status === 500){
-										   $('.alert').removeClass("hidden");
-                       $("#alert-text").html(alertText);
-                       console.log("500");
-                    }else if(xhr.status === 413){
-                       $('.alert').removeClass("hidden");
-                       $("#alert-text").html("<strong>Warning</strong> File too large max:" + xhr.responseText);
-                        console.log(xhr);
-                        //TODO: show error file too large (max = xhr.responseText)
-          					}
-            	},
-        });
-			});
+                     var formData = new FormData($('#uploadForm')[0]);
+                     formData.delete('files'); //remove original file field
+                    formData.append("file", FileToUpload);
+                    var url = $('#uploadForm').attr('action');
+                    $.ajax({
+                        url: url,
+                        method: "post",
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function(xhr, textStatus) {
+                            $('#uploadModal').modal('hide');
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                             console.log(errorThrown);
+                             console.log(textStatus);
+                             console.log(xhr);
+                             var alertText = "<strong>Warning</strong>" + xhr.responseText;
+                                    if(xhr.status === 400){
+                                            //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
+                                         $('.alert').removeClass("hidden");
+                                         $("#alert-text").html(alertText);
+                                    }else if(xhr.status === 500){
+                                         $('.alert').removeClass("hidden");
+                                         $("#alert-text").html(alertText);
+                                    }else if(xhr.status === 413) {
+                                        $('.alert').removeClass("hidden");
+                                        $("#alert-text").html("<strong>Warning</strong> File too large max:" + xhr.responseText);
+
+                                    }
+                        }
+                    });
+
+
+                });
 
         $('#filetype').children().first().prop({disabled: true, hidden: true});
         $('#subject').children().first().prop({disabled: true, hidden: true});
@@ -598,6 +597,12 @@ $(document).ready(()=>{
                 case "svg":
                 case "webp":
                       content = '<div><img src="' + link + '" style="max-width: 100%; max-height: 100%; display: block; margin-left: auto; margin-right: auto;"/></div>';
+                      id = 'FilePreviewModalSmall';
+                      break;
+                case "mov":
+                case "mp4":
+                case "webm":
+                      content = '<div><video controls src="' + link + '" style="max-width: 100%; max-height: 100%; display: block; margin-left: auto; margin-right: auto;">Your browser does not support the video tag.</video></div>';
                       id = 'FilePreviewModalSmall';
                       break;
                 default:
