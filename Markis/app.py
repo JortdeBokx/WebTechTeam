@@ -244,11 +244,11 @@ def removeFile():
 				if FileExistsByID(fileid):
 					removeFileFromDisk(fileid)
 					conn = engine.connect()
-					s = text("DELETE FROM files WHERE file_ID = :f")
-					rv = conn.execute(s, f=fileid)
 					s = text("DELETE FROM user_file_favorite WHERE file_ID = :f")
 					rv = conn.execute(s, f=fileid)
 					s = text("DELETE FROM user_file_vote WHERE file_ID = :f")
+					rv = conn.execute(s, f=fileid)
+					s = text("DELETE FROM files WHERE file_ID = :f")
 					rv = conn.execute(s, f=fileid)
 					conn.close()
 					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}

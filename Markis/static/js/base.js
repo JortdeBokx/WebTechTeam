@@ -316,7 +316,7 @@ $(document).ready(()=>{
                 data: JSON.stringify({ fileid: $(this).closest("tr").attr('data-file-id') }),
                 type: 'POST',
                 success: function(data){
-                    $(this).closest("tr").remove();
+                    event.target.closest("tr").remove();
                     console.log("Removed");
                 },
                 error: function(){
