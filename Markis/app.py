@@ -141,7 +141,8 @@ def uploadFileGetForm():
 						potentialFile = os.path.join(save_path, filename)
 						iteration = 0
 						while os.path.isfile(potentialFile):
-							filename = filename + str(iteration)
+							extension = filename.split('.')[-1]
+							filename = filename.replace(extension, '') + str(iteration) + extension
 							iteration += 1
 							potentialFile = os.path.join(save_path, filename)
 						result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
@@ -573,9 +574,13 @@ def removeFileFromDisk(fileid):
 		"SELECT path, name, subject_code FROM files WHERE file_ID = :i")
 	rv = conn.execute(s, i=fileid).fetchone()
 	conn.close()
-	folderpath = rv['path']
-	filename = rv['name']
-	subjectid = rv['subject_code']
+	d = dict(rv.items())
+	folderpath = d['path']
+	filename = d['name']
+	subjectid = d['subject_code']
+	print(folderpath)
+	print(filename)
+	print(subjectid)
 	if FileExistsInFolderStrucure(subjectid, folderpath, filename):
 		FilePath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath, filename)
 		os.remove(FilePath)
