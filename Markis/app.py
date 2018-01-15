@@ -112,7 +112,6 @@ def uploadFileGetForm():
 		opt1 = form.opt1.data
 		opt2 = form.opt2.data
 		file = request.files["file"]
-		print(file)
 		filename = secure_filename(file.filename)
 		if not file or filename == '':
 			return json.dumps("No File attached"), 400, {'ContentType': 'application/json'}
@@ -128,13 +127,10 @@ def uploadFileGetForm():
 					if category == "exams" or category == "homework":
 						if opt1 and opt2!="type":
 							YearPeriod = opt1 + "-" + str(int(opt1) + 1)
-							if opt2 == "answers" and category == "exams":
-								save_path = os.path.join(save_path, YearPeriod)
-							else:
-								save_path = os.path.join(save_path, YearPeriod, opt2)
+							save_path = os.path.join(save_path, YearPeriod, opt2)
 							if not os.path.isdir(save_path):
 								os.makedirs(save_path)
-							databasePath = os.path.join(databasePath, YearPeriod,opt2)
+							databasePath = databasePath + "/" + YearPeriod + "/" + opt2
 						else:
 							return json.dumps("Second set of options not selected"), 400, {'ContentType': 'application/json'}
 					id = FileExistsInDB(databasePath, subjectid, filename)
@@ -724,7 +720,7 @@ def getFavoriteFiles(userid):
 def CommitFileToDB(filename, databasePath, uploaderid, subjectid):
 	conn = engine.connect()
 	s = text("INSERT INTO files (name, path, uploader_ID, subject_code) VALUES (:n, :p, :u, :i)")
-	rv = conn.execute(s, n=filename, p = databasePath.replace("\\", '/'), u=uploaderid, i = subjectid)
+	rv = conn.execute(s, n=filename, p = databasePath, u=uploaderid, i = subjectid)
 	conn.close()
 	return rv
 

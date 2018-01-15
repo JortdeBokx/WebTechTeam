@@ -144,7 +144,6 @@ $(document).ready(()=>{
 					y = y.innerHTML.toLowerCase();
 					var type1 = x.replace(/[^a-zA-Z]+/g, '');
 					var type2 = y.replace(/[^a-zA-Z]+/g, '');
-					console.log(type1);
 					x = x.replace(/[^0-9\.]+/g, "");
 					y = y.replace(/[^0-9\.]+/g, "");
 					x = parseInt(x);
@@ -305,7 +304,6 @@ $(document).ready(()=>{
                     }
                 },
                 error: function(){
-                    console.log("Error");
                 }
 			});
 		});
@@ -318,10 +316,8 @@ $(document).ready(()=>{
                 type: 'POST',
                 success: function(data){
                     event.target.closest("tr").remove();
-                    console.log("Removed");
                 },
                 error: function(){
-                    console.log("Error");
                 }
             });
         });
@@ -337,7 +333,6 @@ $(document).ready(()=>{
 									currentrow.remove();
 								},
                 error: function(){
-                    console.log("Error");
                 }
 			});
 			return false;

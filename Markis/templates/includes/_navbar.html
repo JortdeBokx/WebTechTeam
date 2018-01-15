@@ -22,6 +22,7 @@
 
 
          {% if current_user.is_authenticated %}
+            <!--
              {% if current_user.isAdmin %}
           <li class="nav-item {% if request.path == "/admin" %}active{% endif %}">
             <a class="nav-link" href="/admin" >Manage Server</a>
@@ -29,6 +30,7 @@
                <div class="nav-item-border"></div>
 
           {% endif %}
+             -->
 				 <li class="nav-item dropdown">
 					 <a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						 Welcome, {{ current_user.username }}!
