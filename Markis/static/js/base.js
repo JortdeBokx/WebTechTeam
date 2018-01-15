@@ -96,9 +96,11 @@ $(document).ready(()=>{
 		} else {
 	  	dir = "asc";
 		}
+		var loopcounter = 0;
 	  /* Make a loop that will continue until
 	  no switching has been done: */
 	  while (switching) {
+			loopcounter++;
 	    // Start by saying: no switching is done:
 	    switching = false;
 	    rows = document.getElementsByTagName("tr");
@@ -106,9 +108,13 @@ $(document).ready(()=>{
 				break;
 			} else if (rows.length < 3) {
 				break;
+			} else if (loopcounter > 5000) {
+				break;
 			}
 	    /* Loop through all table rows (except the
 	    first, which contains table headers): */
+			var detector = rows[1].getElementsByTagName("span")[n];
+			var counter = 0;
 	    for (i = 1; i < (rows.length - 1); i++) {
 	      // Start by saying there should be no switching:
 	      shouldSwitch = false;
@@ -120,20 +126,25 @@ $(document).ready(()=>{
 	      based on the direction, asc or desc: */
 				var tdname = rows[0].getElementsByTagName("th")[n].innerHTML.slice(0,4);
 				if (tdname == "Vote") {
-					x = x.innerHTML.toLowerCase();
-					y = y.innerHTML.toLowerCase();
-					x = x.replace(/[^0-9\.]+/g, "");
-					y = y.replace(/[^0-9\.]+/g, "");
-					x = parseInt(x);
-					y = parseInt(y);
-					if (dir == "asc") {
-		        if (x > y) {
+					x = rows[i].getElementsByTagName("span")[n].innerHTML;
+					y = rows[i + 1].getElementsByTagName("span")[n].innerHTML;
+					if (y != detector) {
+						counter++;
+					}
+					if (counter > rows.length) {
+						switching = false;
+						break;
+					}
+					if (x == y) {
+						switching = false;
+					} else if (dir == "asc") {
+							if (x > y) {
 		          // If so, mark as a switch and break the loop:
 		          shouldSwitch= true;
 		          break;
 		        }
 		      } else if (dir == "desc") {
-		        if (x < y) {
+						if (x < y) {
 		          // If so, mark as a switch and break the loop:
 		          shouldSwitch= true;
 		          break;
