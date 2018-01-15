@@ -458,6 +458,10 @@ span.right {
     margin-right: .5rem!important;
   }
 
+  span.faculties { 
+    display: block;
+  }
+
   div.card-block {
     height: 100px;
     padding: 0.8rem;
