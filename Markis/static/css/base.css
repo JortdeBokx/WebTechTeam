@@ -376,15 +376,18 @@ span.right {
 	}
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1066px) {
   div.nav-item-border {
     display: none;
   }
 
-	.contentscroll {
-		overflow-x: scroll;
-		width: 100%;
+    .content{
+        width: 100%;
 	}
+	.contentscroll{
+        overflow-x: scroll;
+    }
+
 
 	div.dropdown-menu {
 		background-color: #850028;
