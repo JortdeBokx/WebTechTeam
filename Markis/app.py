@@ -578,9 +578,6 @@ def removeFileFromDisk(fileid):
 	folderpath = d['path']
 	filename = d['name']
 	subjectid = d['subject_code']
-	print(folderpath)
-	print(filename)
-	print(subjectid)
 	if FileExistsInFolderStrucure(subjectid, folderpath, filename):
 		FilePath = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath, filename)
 		os.remove(FilePath)
