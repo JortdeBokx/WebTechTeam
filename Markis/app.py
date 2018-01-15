@@ -724,7 +724,7 @@ def getFavoriteFiles(userid):
 def CommitFileToDB(filename, databasePath, uploaderid, subjectid):
 	conn = engine.connect()
 	s = text("INSERT INTO files (name, path, uploader_ID, subject_code) VALUES (:n, :p, :u, :i)")
-	rv = conn.execute(s, n=filename, p = databasePath, u=uploaderid, i = subjectid)
+	rv = conn.execute(s, n=filename, p = databasePath.replace("\\", '/'), u=uploaderid, i = subjectid)
 	conn.close()
 	return rv
 
