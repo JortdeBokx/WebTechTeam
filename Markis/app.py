@@ -336,7 +336,7 @@ def login():
 		# Get the password Hash from  the DB where username
 		conn = engine.connect()
 		s = text("SELECT id, password FROM users WHERE username=:u or email = :u")
-		rv = conn.execute(s, u= str(form.username.data).lower() ).fetchone()
+		rv = conn.execute(s, u= str(form.username.data) ).fetchone()
 		conn.close()
 		if rv:
 			if sha256_crypt.verify(str(form.password.data), str(rv['password'])):
