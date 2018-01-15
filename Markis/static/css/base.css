@@ -381,7 +381,7 @@ span.right {
     display: none;
   }
 
-	.content {
+	.contentscroll {
 		overflow-x: scroll;
 		width: 100%;
 	}
