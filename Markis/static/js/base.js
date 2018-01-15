@@ -285,7 +285,7 @@ $(document).ready(()=>{
                 for (var y = 0; y < card.length; y++) {
                     if (card[y].getElementsByTagName("h4")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1 || card[y].getElementsByTagName("p")[0].innerHTML.toUpperCase().indexOf(searchFilter) > -1) {
                         card[y].style.display = "";
-                        activeCards.push(y);
+                        activeCards[y] = 1;
                     }
                 }
             }
