@@ -146,7 +146,7 @@ def uploadFileGetForm():
 						iteration = 0
 						while os.path.isfile(potentialFile):
 							extension = filename.split('.')[-1]
-							filename = filename.replace(extension, '') + str(iteration) + extension
+							filename = filename.replace("." + extension, '') + str(iteration) + "." + extension 
 							iteration += 1
 							potentialFile = os.path.join(save_path, filename)
 						result = CommitFileToDB(filename, databasePath, uploaderid, subjectid)
@@ -242,11 +242,11 @@ def removeFile():
 			fileid = int(request.json['fileid'])
 			if fileid is not None and type(fileid) is int:
 				if FileExistsByID(fileid):
+					removeFileFromDisk(fileid)
 					conn = engine.connect()
 					s = text("DELETE FROM files WHERE file_ID = :f")
 					rv = conn.execute(s, f=fileid)
 					conn.close()
-					removeFileFromDisk(fileid)
 					return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 				else:
 					return make_response('File does not exist', 400)
@@ -274,6 +274,7 @@ def profile():
 			s = text("UPDATE users SET first_name=:f, last_name=:l, username=:u, password=:p, email=:e WHERE id=:i")
 		rv = conn.execute(s, f=first_name, l = last_name, u=username, e=email, p=password, i=uid)
 		conn.close()
+		flash("Your changes have been saved", 'success')
 		return redirect(url_for('profile'), code=302)
 	else:
 		conn = engine.connect()

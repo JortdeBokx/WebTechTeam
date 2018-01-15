@@ -2,6 +2,7 @@
 {% block body %}
 <div class="starter-template">
   <h1>Account settings</h1>
+    {% include 'includes/_messages.html' %}
     {% from 'includes/_formhelper.html' import render_field %}
 		<form method="POST" action="">
     	<div class="form-group">
