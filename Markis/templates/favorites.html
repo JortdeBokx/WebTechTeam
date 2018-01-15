@@ -31,7 +31,7 @@
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.upload_date }}</td>
          <td class = "preview_file" href = "{{ file.downloadpath }}" data-file-name = "{{ file.name }}">{{ file.size }}</td>
           <td><div class="fileIcons"><a href = "{{ file.downloadpath }}"  download><i class="material-icons download_button" style="font-size:30px; color:#0460bd;">file_download</i></a></div></td>
-          <td><button type="button" class="close-red remove-favorite" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+          <td><button type="button" class="close close-red remove-favorite" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
       </tr>
     {% endfor %}
   {% endif %}
