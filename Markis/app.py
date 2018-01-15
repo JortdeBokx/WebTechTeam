@@ -60,6 +60,10 @@ def home():
 	conn.close()
 	return render_template('home.html', subjects=subjects, faculties=faculties)
 
+@app.route('/guide/')
+def redirect_to_yt():
+	return redirect('https://youtube.com/', 302)
+
 @app.route('/admin/')
 @admin_permission.require(http_exception=403)
 @login_required
