@@ -461,8 +461,11 @@ $(document).ready(()=>{
 
         //TODO: implement loading indicator untill ajax is done
         $('#uploadModal').on("click", "#uploadBtn", function() {
-                     var formData = new FormData($('#uploadForm')[0]);
-                     formData.delete('files'); //remove original file field
+                if($('#uploadBtn').hasClass('disabled')){
+                    return
+                }else {
+                    var formData = new FormData($('#uploadForm')[0]);
+                    formData.delete('files'); //remove original file field
                     formData.append("file", FileToUpload);
                     var url = $('#uploadForm').attr('action');
                     $.ajax({
@@ -473,31 +476,31 @@ $(document).ready(()=>{
                         timeout: 300000,
                         contentType: false,
                         data: formData,
-                        success: function(xhr, textStatus) {
+                        success: function (xhr, textStatus) {
                             $('#uploadModal').modal('hide');
                         },
-                        error: function(xhr, textStatus, errorThrown) {
-                             var alertText = "<strong>Warning</strong>" + xhr.responseText;
-                                if(xhr.readyState === 4) {
-                                    if (xhr.status === 400) {
-                                        //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
-                                        $('.alert').removeClass("hidden");
-                                        $("#alert-text").html(alertText);
-                                    } else if (xhr.status === 500) {
-                                        $('.alert').removeClass("hidden");
-                                        $("#alert-text").html(alertText);
-                                    }
+                        error: function (xhr, textStatus, errorThrown) {
+                            var alertText = "<strong>Warning</strong>" + xhr.responseText;
+                            if (xhr.readyState === 4) {
+                                if (xhr.status === 400) {
+                                    //Ground Control to Major Tom: "There's something wrong, Can you hear me, Major Tom?"
+                                    $('.alert').removeClass("hidden");
+                                    $("#alert-text").html(alertText);
+                                } else if (xhr.status === 500) {
+                                    $('.alert').removeClass("hidden");
+                                    $("#alert-text").html(alertText);
                                 }
-                                else if(xhr.readyState === 0){
-                                    if (xhr.status === 413) {
-                                        $('.alert').removeClass("hidden");
-                                        $("#alert-text").html(xhr.responseText);
+                            }
+                            else if (xhr.readyState === 0) {
+                                if (xhr.status === 413) {
+                                    $('.alert').removeClass("hidden");
+                                    $("#alert-text").html(xhr.responseText);
 
-                                    }
                                 }
+                            }
                         }
                     });
-
+                }
 
                 });
 
