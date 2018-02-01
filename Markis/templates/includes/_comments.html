@@ -1,0 +1,8 @@
+<div class="comment-section">
+  {% for comment in comments %}
+  <div class="commentblock">
+    <p>By: {{comment.username}}</p>
+    <p>{{comment.value}}</p>
+  </div>
+  {% endfor %}
+</div>

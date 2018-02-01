@@ -85,7 +85,8 @@ def subject(subjectid):
 		return render_template('404.html', reason="nosubject"), 404
 	else:
 		foldersToShow = getSubjectFolders(subjectid)
-		return render_template('subject.html', subjectDataSet = subjectDataSet, folders = foldersToShow)
+		commentsToShow = getCommentsToShow(subjectid)
+		return render_template('subject.html', subjectDataSet = subjectDataSet, comments=commentsToShow, folders = foldersToShow)
 
 
 
@@ -177,7 +178,8 @@ def subjectfiles(subjectid, subfolder):
 		if os.path.isdir(Path):
 			foldersToShow = getFoldersToShow(Path)
 			filesToShow = getFilesToShow(Path, subfolder, subjectid.upper(), current_user.get_id())
-			res =  render_template('files.html', folders=foldersToShow, files=filesToShow, subjectDataSet = getSubjectData(subjectid.upper()))
+			commentsToShow = getCommentsToShow(subjectid)
+			res =  render_template('files.html', folders=foldersToShow, files=filesToShow, comments=commentsToShow, subjectDataSet = getSubjectData(subjectid.upper()))
 		elif os.path.isfile(Path):
 			res = send_file(Path)
 		else:
@@ -700,6 +702,12 @@ def getFilesToShow(FolderPath, relativePath, subject, userid):
 				files.append(d)
 	return files
 
+def getCommentsToShow(subjectid):
+	conn = engine.connect()
+	s = text("SELECT comments.*, users.username FROM comments LEFT JOIN users ON users.id = comments.user_id WHERE course=:c")
+	rv = conn.execute(s, c=subjectid.upper()).fetchall()
+	print(rv)
+	return rv
 
 def FileExistsInFolderStrucure(subjectid, folderpath, filename):
 	PathToCheck = os.path.join(app.config['FILE_BASE_DIR'], subjectid, folderpath, filename)
