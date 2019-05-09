@@ -9,16 +9,17 @@ from urllib.parse import urlparse, urljoin
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, abort, send_file, \
 	json, make_response, current_app, session
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required, UserMixin
+from flask_migrate import Migrate
 from flask_principal import Principal, Permission, RoleNeed, identity_changed, Identity, AnonymousIdentity, \
 	identity_loaded, UserNeed
 from passlib.hash import sha256_crypt
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 from werkzeug.utils import secure_filename
 
-from forms import registerForm, loginForm, uploadFileForm, profileForm
-
 app = Flask(__name__, static_url_path='/static')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://luke:luke@localhost:3306/markis'
 
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 REQUIRED_SUBJECT_SUBFOLDERS = ['exams', 'homework', 'literature', 'misc', 'summaries']
@@ -30,12 +31,17 @@ INITIAL_YEAR= 2010
 #				Databse Setup				#
 #############################################
 
-engine = create_engine('mysql://markis:dlSvw7noOQbiExlU@cs-students.nl:3306/markis', pool_pre_ping=True)
+
+
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['FILE_BASE_DIR'] = os.path.join(app.root_path, "storage")
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024 # Max size: 32MB
 app.secret_key = 'kjdnkjfn89dbndh7cg76chb7hjhsbGHmmDDEaQc4By9VH5667HkmFxdxAjhb5Eub' # This is just something random, used for sessions
+engine = create_engine('mysql://luke:luke@localhost:3306/markis', pool_pre_ping=True)
+db = SQLAlchemy(app)
 
+from forms import registerForm, loginForm, uploadFileForm, profileForm
+from models import db
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -44,6 +50,7 @@ login_manager.login_message = "You need to be logged in to view this page!"
 
 principals = Principal(app)
 admin_permission = Permission(RoleNeed('admin'))
+migrate = Migrate(app, db)
 
 #############################################
 #				App routes					#
@@ -469,21 +476,6 @@ def uploaded_file(filename):
 def page_not_found(e):
 	return render_template('404.html'), 404
 
-@app.errorhandler(403)
-def page_not_found(e):
-	return render_template('403.html'), 403
-
-@app.errorhandler(418)
-def page_not_found(e):
-	return render_template('418.html'), 418
-
-@app.errorhandler(500)
-def page_not_found(e):
-	return render_template('500.html'), 500
-
-@app.errorhandler(413)
-def error413(e):
-	return json.dumps("File exeeds " + str(app.config['MAX_CONTENT_LENGTH']/1024/1024) + " Megabytes"), 413, {'ContentType': 'application/json'}
 #############################################
 #			   Helper Functions 			#
 #############################################
@@ -773,17 +765,6 @@ class User(UserMixin):
 
 	def get_admin(self):
 		return self.isAdmin
-
-	def is_active(self):
-		# Here you should write whatever the code is
-		# that checks the database if your user is active
-		return self.active
-
-	def is_anonymous(self):
-		return False
-
-	def is_authenticated(self):
-		return True
 
 	def authenticate(self, uid):
 		self.is_authenticated = True
